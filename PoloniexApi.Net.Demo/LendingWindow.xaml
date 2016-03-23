@@ -1,0 +1,83 @@
+﻿<Window x:Class="Jojatekok.PoloniexAPI.Demo.LendingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DallEX.io 2.5" Height="620" Width="720" ResizeMode="NoResize" Background="#000000" Closed="Window_Closed">
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Lending" x:Name="menuItemLending" Click="menuItemLending_Click" IsChecked="True" />
+            <MenuItem Header="_Exchange" x:Name="menuItemExchange" Click="menuItemExchange_Click" />
+            <MenuItem Header="_Margin Trade"  x:Name="menuItemMarginTrade" />
+            <MenuItem Header="_Account"  x:Name="menuItemAccount" Click="menuItemAccount_Click"  />
+        </Menu>
+
+        <Grid Margin="0,0,0,0" TextElement.Foreground="#ffffff">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+
+            <DataGrid x:Name="DataGrid1" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="80" Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Foreground="#333333">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Rate" Binding="{Binding rate, StringFormat=\{0:0.00000%\}}" SortDirection="Ascending"/>
+                    <DataGridTextColumn Header="Amount" Binding="{Binding amount, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="Range Max" Binding="{Binding rangeMax, StringFormat=\{0:0 days\}}"/>
+                    <DataGridTextColumn Header="Range Min" Binding="{Binding rangeMin, StringFormat=\{0:0 days\}}"/>
+                    <DataGridTextColumn Header="ETH" Binding="{Binding ethExchangeValue, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="BTC" Binding="{Binding btcExchangeValue, StringFormat=\{0:0.00000000\}}"/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBox FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="txtMinutos" HorizontalAlignment="Left" Height="23" Margin="78,61,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="70" Grid.Column="1" Grid.Row="2" PreviewTextInput="txtMinutes_PreviewTextInput" />
+            <Label Foreground="#ffffff" FontWeight="Bold" Content="Minutes:" HorizontalAlignment="Left" Margin="14,61,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
+            <Label Foreground="#5cb85c" Content="High Loan Rate:" HorizontalAlignment="Left" Margin="14,134,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
+            <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtMaiorLoanRate" HorizontalAlignment="Left" Height="30" Margin="16,160,0,0" TextWrapping="Wrap" Text="0%" VerticalAlignment="Top" Width="176" FontSize="20"  Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
+            <Label Foreground="#ffffff" Background="#000000" Content="BTC / ETH:" HorizontalAlignment="Left" Margin="14,320,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtBtcEth" HorizontalAlignment="Left" Height="30" Margin="14,346,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20"  Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+            <Label Foreground="#ffffff" Content="USDT / BTC:" HorizontalAlignment="Left" Margin="14,379,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtUsdtBtc" HorizontalAlignment="Left" Height="30" Margin="14,405,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDataRegistro" HorizontalAlignment="Left" Height="30" Margin="14,104,0,0" TextWrapping="Wrap" Text="1/1/2016 00:00:00" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000"  x:Name="txtRateAverage" HorizontalAlignment="Left" Height="30" Margin="14,285,0,0" TextWrapping="Wrap" Text="0%" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+            <Label BorderBrush="Black" Foreground="#ffffff" Content="Loan Rate Average:" HorizontalAlignment="Left" Margin="14,259,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
+            <Label BorderBrush="Black" Foreground="#d9534f" Content="Low Loan Rate:" HorizontalAlignment="Left" Margin="14,197,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
+            <TextBox  Foreground="#d9534f" Background="#000000" BorderBrush="Black" x:Name="txtMenorLoanRate" HorizontalAlignment="Left" Height="30" Margin="14,223,0,0" TextWrapping="Wrap" Text="0%" VerticalAlignment="Top" Width="176" FontSize="20"  Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtTitlePeriodDashboard" HorizontalAlignment="Left" Height="30" Margin="14,0,0,0" TextWrapping="Wrap" Text="Period Dashboard:" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+            <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtTitleNow" HorizontalAlignment="Left" Height="30" Margin="10,0,0,0" TextWrapping="Wrap" Text="Now >>" VerticalAlignment="Top" Width="72" FontSize="16" IsReadOnly="True" Grid.Row="1"/>
+            <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtEthNow" HorizontalAlignment="Left" Height="30" Margin="280,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" FontSize="16" IsReadOnly="True" Grid.Row="1" Text="USDT/BTC: 0.00000000" />
+            <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtBtcNow" HorizontalAlignment="Left" Height="30" Margin="461,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="188" FontSize="16" IsReadOnly="True" Grid.Row="1" Text="BTC/ETH: 0.00000000" Grid.ColumnSpan="2" />
+            <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtLoanRateNow" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" FontSize="16" IsReadOnly="True" Grid.Row="1" Text="Loan Rate: 0.000%" Margin="103,0,0,0" />
+            
+            <ComboBox  FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="cbCurrency" HorizontalAlignment="Left" Height="23" Margin="78,30,0,0" VerticalAlignment="Top" Width="70" Grid.Column="1" Grid.Row="2">
+                <ComboBoxItem IsSelected="True">BTC</ComboBoxItem>              
+                <ComboBoxItem>ETH</ComboBoxItem>
+                <Separator></Separator>
+                <ComboBoxItem>BTS</ComboBoxItem>
+                <ComboBoxItem>CLAM</ComboBoxItem>
+                <ComboBoxItem>DASH</ComboBoxItem>
+                <ComboBoxItem>DOGE</ComboBoxItem>
+                <ComboBoxItem>FCT</ComboBoxItem>
+                <ComboBoxItem>LTC</ComboBoxItem>
+                <ComboBoxItem>MAID</ComboBoxItem>
+                <ComboBoxItem>STR</ComboBoxItem>
+                <ComboBoxItem>XMR</ComboBoxItem>
+                <ComboBoxItem>XRP</ComboBoxItem>
+            </ComboBox>
+
+
+
+            <Label Foreground="#ffffff" FontWeight="Bold" Content="Currency:" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
+            <Label Foreground="#ffffff" Content="Total Offers:" HorizontalAlignment="Left" Margin="16,446,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtTotal" HorizontalAlignment="Left" Height="30" Margin="16,472,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="176" FontSize="20" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+
+
+        </Grid>
+    </DockPanel>
+
+</Window>

@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jojatekok.PoloniexAPI</RootNamespace>
+    <AssemblyName>PoloniexApi.Net</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\PoloniexApi.Net.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Fleck">
+      <HintPath>..\packages\Fleck.0.11.1.32\lib\net40\Fleck.dll</HintPath>
+    </Reference>
+    <Reference Include="MsgPack">
+      <HintPath>..\packages\MsgPack.Cli.0.5.4\lib\net45\MsgPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Msgpack">
+      <HintPath>..\packages\Newtonsoft.Msgpack.0.1.3\lib\net45\Newtonsoft.Msgpack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="WampSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WampSharp.1.2.0.2-beta\lib\net45\WampSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="WampSharp.Default, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WampSharp.Default.1.2.0.2-beta\lib\net45\WampSharp.Default.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.10\lib\net45\WebSocket4Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="General\CurrencyPair.cs" />
+    <Compile Include="General\EventArgs\TickerChangedEventArgs.cs" />
+    <Compile Include="General\EventArgs\TrollboxMessageEventArgs.cs" />
+    <Compile Include="General\ObservableDictionary.cs" />
+    <Compile Include="LendingTools\LendingDemand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LendingTools\Lendings.cs" />
+    <Compile Include="LendingTools\Lendings.Interface.cs" />
+    <Compile Include="LendingTools\LendingOffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LendingTools\PublicLoanOffersData.Interface.cs" />
+    <Compile Include="LendingTools\PublicLoanOffersData.cs" />
+    <Compile Include="LiveTools\Live.cs" />
+    <Compile Include="LiveTools\Live.Interface.cs" />
+    <Compile Include="MarketTools\OrderBook.Interface.cs" />
+    <Compile Include="MarketTools\OrderBook.cs" />
+    <Compile Include="PoloniexClient.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="General\ApiWebClient.cs" />
+    <Compile Include="General\Authenticator.cs" />
+    <Compile Include="General\Authenticator.Interface.cs" />
+    <Compile Include="General\JsonResponse.cs" />
+    <Compile Include="General\OrderType.cs" />
+    <Compile Include="MarketTools\MarketData.cs" />
+    <Compile Include="MarketTools\MarketData.Interface.cs" />
+    <Compile Include="MarketTools\MarketChartData.cs" />
+    <Compile Include="MarketTools\MarketChartData.Interface.cs" />
+    <Compile Include="MarketTools\MarketPeriod.cs" />
+    <Compile Include="MarketTools\Markets.cs" />
+    <Compile Include="MarketTools\Markets.Interface.cs" />
+    <Compile Include="MarketTools\Order.cs" />
+    <Compile Include="MarketTools\Order.Interface.cs" />
+    <Compile Include="MarketTools\Trade.cs" />
+    <Compile Include="MarketTools\Trade.Interface.cs" />
+    <Compile Include="TradingTools\Order.cs" />
+    <Compile Include="TradingTools\Order.Interface.cs" />
+    <Compile Include="TradingTools\Trade.cs" />
+    <Compile Include="TradingTools\Trade.Interface.cs" />
+    <Compile Include="TradingTools\Trading.cs" />
+    <Compile Include="TradingTools\Trading.Interface.cs" />
+    <Compile Include="WalletTools\Balance.cs" />
+    <Compile Include="WalletTools\Balance.Interface.cs" />
+    <Compile Include="WalletTools\Currencies.cs" />
+    <Compile Include="WalletTools\DepositWithdrawalList.cs" />
+    <Compile Include="WalletTools\DepositWithdrawalList.Interface.cs" />
+    <Compile Include="WalletTools\GeneratedDepositAddress.Interface.cs" />
+    <Compile Include="WalletTools\GeneratedDepositAddress.cs" />
+    <Compile Include="WalletTools\Deposit.cs" />
+    <Compile Include="WalletTools\Deposit.Interface.cs" />
+    <Compile Include="WalletTools\Wallet.cs" />
+    <Compile Include="WalletTools\Wallet.Interface.cs" />
+    <Compile Include="WalletTools\Withdrawal.cs" />
+    <Compile Include="WalletTools\Withdrawal.Interface.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
