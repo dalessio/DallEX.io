@@ -22,11 +22,8 @@ namespace WPFMDIForm
             MainMdiContainer.Children.Add(new MdiChild()
             {
                 Title = " User Registration",
-                Height = (System.Windows.SystemParameters.PrimaryScreenHeight - 15),
-                Width = (System.Windows.SystemParameters.PrimaryScreenWidth - 15),
-                Style = null,
                 //Here UserRegistration is the class that you have created for mainWindow.xaml user control.
-                Content = new UserRegistration()
+                Content = new UserRegistration(),
             });
         }
 
@@ -36,9 +33,6 @@ namespace WPFMDIForm
             MainMdiContainer.Children.Add(new MdiChild()
             {
                 Title = " Company Registration",
-                Height = (System.Windows.SystemParameters.PrimaryScreenHeight - 15),
-                Width = (System.Windows.SystemParameters.PrimaryScreenWidth - 15),
-                Style = null,
                 //Here compRegistration is the class that you have created for mainWindow.xaml user control.
                 Content = new CompRegistration()
             });

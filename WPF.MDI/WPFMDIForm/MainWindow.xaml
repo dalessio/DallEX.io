@@ -21,7 +21,7 @@
             </Menu>
         </DockPanel>
         <DockPanel>
-            <mdi:MdiContainer Theme="Aero" DockPanel.Dock="Top" Margin="0 20 0 0" Name="MainMdiContainer" />
+            <mdi:MdiContainer Theme="Aero" DockPanel.Dock="top" Margin="0 20 0 0" Name="MainMdiContainer" />
         </DockPanel>
     </Grid>
 </Window>

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="300" d:DesignWidth="600"  >
     <Grid Background="LightBlue">
         <Label Height="32" Margin="250,10,22,0" Name="label1" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" FontWeight="SemiBold">
            Company Registration

@@ -80,6 +80,9 @@
     <Compile Include="CompRegistration.xaml.cs">
       <DependentUpon>CompRegistration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Novo.xaml.cs">
+      <DependentUpon>Novo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserRegistration.xaml.cs">
       <DependentUpon>UserRegistration.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Novo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

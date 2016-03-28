@@ -1,0 +1,38 @@
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\bin\Debug\WPFMDIForm.exe.config
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.csprojResolveAssemblyReference.cache
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\MainWindow.baml
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\App.g.cs
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm_MarkupCompile.cache
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.g.resources
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.Properties.Resources.resources
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.csproj.GenerateResource.Cache
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\bin\Debug\WPFMDIForm.exe
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\bin\Debug\WPFMDIForm.pdb
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\bin\Debug\WPF.MDI.dll
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\MainWindow.g.cs
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.exe
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\WPFMDIForm.pdb
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\UserRegistration.baml
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\UserRegistration.g.cs
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\CompRegistration.baml
+c:\users\musakkhir\documents\visual studio 2012\Projects\WPFMDIForm\WPFMDIForm\obj\Debug\CompRegistration.g.cs
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\bin\Debug\WPFMDIForm.exe.config
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.exe
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.pdb
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\bin\Debug\WPFMDIForm.exe
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\bin\Debug\WPFMDIForm.pdb
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\bin\Debug\WPF.MDI.dll
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.csprojResolveAssemblyReference.cache
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\CompRegistration.baml
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\MainWindow.baml
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\UserRegistration.baml
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\CompRegistration.g.cs
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\MainWindow.g.cs
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\UserRegistration.g.cs
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\App.g.cs
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm_MarkupCompile.cache
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.g.resources
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.Properties.Resources.resources
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\WPFMDIForm.csproj.GenerateResource.Cache
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\Novo.baml
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\WPF.MDI\WPFMDIForm\obj\Debug\Novo.g.cs
