@@ -23,7 +23,8 @@ namespace DallEX.io.View.UserControls
     /// </summary>
     public partial class ucTopDisplay : UserControl
     {
-        private ThicknessAnimation ThickAnimation = null;
+        private static ThicknessAnimation ThickAnimation = null;
+        private static string Copy = null;
 
         public ucTopDisplay()
         {
@@ -38,12 +39,10 @@ namespace DallEX.io.View.UserControls
 
         public async void LoadLoanOffersAsync(PoloniexClient PoloniexClient)
         {
-            var markets = await PoloniexClient.Markets.GetSummaryAsync();
-
             var lendings = PoloniexClient.Lendings.GetLoanOffersAsync("BTC").Result;
-
             var firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
 
+            var markets = await PoloniexClient.Markets.GetSummaryAsync();
             var ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
             var btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
 
@@ -75,8 +74,9 @@ namespace DallEX.io.View.UserControls
         {
             txtDisplay.Dispatcher.Invoke(delegate
             {
-                string Copy = string.Concat(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                    txtDisplay.Text);
+                Copy = string.Concat(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                        txtDisplay.Text);
+                
                 double TextGraphicalWidth = new FormattedText(Copy, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface(txtDisplay.FontFamily.Source), txtDisplay.FontSize, txtDisplay.Foreground).WidthIncludingTrailingWhitespace;
                 double TextLenghtGraphicalWidth = 0;
 

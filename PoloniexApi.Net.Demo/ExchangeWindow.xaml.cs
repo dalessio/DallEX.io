@@ -39,6 +39,10 @@ namespace DallEX.io.View
         private static IList<string> currencyItems = null;
         private static string currency = "BTC_ETH";
 
+        ThreadStart startOpenThreadTradeHistory;
+        Thread openThreadTradeHistory;
+
+
 
         //private DbSet<MarketTools.MarketData> contextMarketData = null;
 
@@ -66,7 +70,10 @@ namespace DallEX.io.View
 
             currencyItems = new List<string>();
 
-            //contextMarketData = context.MarketData;
+            startOpenThreadTradeHistory = new ThreadStart(OpenThreadTradeHistory);
+            openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
+            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
+            openThreadTradeHistory.IsBackground = true;
         }
 
         private async void LoadMarketSummaryAsync()
@@ -92,6 +99,8 @@ namespace DallEX.io.View
                         {
 
                             tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(market.Key.ToString()));
+
+
                             FillRightColumn(market);
                             FillDetails(market.Key.ToString());
                         }
@@ -138,30 +147,25 @@ namespace DallEX.io.View
 
         private void FillDetails(string marketKey)
         {
-            var startOpenThreadTradeHistory = new ParameterizedThreadStart(OpenThreadTradeHistory);
-            var openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
+            if (marketKey.Equals(currency))
+            {
+                if (openThreadTradeHistory.IsAlive)
+                    openThreadTradeHistory.Abort();
 
-            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
-            openThreadTradeHistory.IsBackground = true;
-            openThreadTradeHistory.Start(marketKey);
+                    openThreadTradeHistory.Start(marketKey);    
+            }
         }
 
-        private void OpenThreadTradeHistory(object pair)
+        private void OpenThreadTradeHistory()
         {
             this.Dispatcher.Invoke(delegate
             {
-                if (cbCurrency.SelectedValue != null)
-                    currency = cbCurrency.SelectedValue.ToString();
+                var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
+                var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
 
-                    if (pair.Equals(currency))
-                    {
-                        var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
-                        var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
-
-                        lblFirstBid.Content = "1st. Bid: " + FirstBid;
-                        lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
-                        lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
-                    }
+                lblFirstBid.Content = "1st. Bid: " + FirstBid;
+                lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
+                lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
             });
 
         }
@@ -219,7 +223,10 @@ namespace DallEX.io.View
             worker.Dispose();
             worker = null;
 
-            PoloniexClient = null;
+            startOpenThreadTradeHistory = null;
+            
+            openThreadTradeHistory.Abort();
+            openThreadTradeHistory = null;
         }
        
     }

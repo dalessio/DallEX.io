@@ -60,6 +60,8 @@
       <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -80,6 +82,11 @@
     <Compile Include="LoanContext.cs" />
     <Compile Include="LendingWindow.xaml.cs">
       <DependentUpon>LendingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FachadaWSSGS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ucTopDisplay.xaml.cs">
       <DependentUpon>ucTopDisplay.xaml</DependentUpon>
@@ -123,6 +130,31 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getUltimosValoresSerieVOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getUltimoValorXMLResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getValorEspecialResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getValoresSeriesVOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getValoresSeriesXMLResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.getValorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\DallEX.io.View.FachadaWSSGS.WSSerieVO.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FachadaWSSGS\FachadaWSSGS.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PoloniexApi.Net\PoloniexApi.Net.csproj">
@@ -130,7 +162,24 @@
       <Name>PoloniexApi.Net</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\FachadaWSSGS\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FachadaWSSGS\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FachadaWSSGS\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FachadaWSSGS\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

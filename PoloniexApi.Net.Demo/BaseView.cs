@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace DallEX.io.View
 {
-    public abstract class BaseView : System.Windows.Window
+    public abstract class BaseView : Page
     {
         public PoloniexClient PoloniexClient { get; set; }
 

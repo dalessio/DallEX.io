@@ -28,13 +28,13 @@ namespace DallEX.io.View
     public partial class AccountWindow : Window
     {
         private PoloniexClient PoloniexClient { get; set; }
-        private readonly BackgroundWorker worker = new BackgroundWorker();
+        private BackgroundWorker worker;
         private Timer updateTimer;
+        private FachadaWSSGS.FachadaWSSGSClient FachadaWSSGS;
 
         private int updateTimeMiliseconds = 5000;
 
         private IWallet walletClient;
-        private readonly LoanContext context = new LoanContext();
 
         public AccountWindow()
         {
@@ -54,26 +54,42 @@ namespace DallEX.io.View
 
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
 
+            FachadaWSSGS = new FachadaWSSGS.FachadaWSSGSClient();
+
         }
 
         private async void LoadSummaryAsync()
         {          
             var balances = await walletClient.GetBalancesAsync();
 
-            double total = 0.0;
+            double totalBTC = 0.0;
 
             dtgAccount.Items.Clear();
 
             foreach (var balance in balances)
             {
-                total = total + balance.Value.btcValue;
+                totalBTC = totalBTC + balance.Value.btcValue;
 
                 if (balance.Value.btcValue > 0)
                     dtgAccount.Items.Add(balance);
             }
 
-            txtTotal.Text = total.ToString("0.00000000");
+            var markets = await PoloniexClient.Markets.GetSummaryAsync();
+            var btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
 
+            txtTotalBTC.Text = totalBTC.ToString("0.00000000");
+
+            var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
+
+            txtTotalUSD.Text = totalUSD.ToString("000.00000000");
+
+            var bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
+
+            var valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".",","));
+
+            var totalBRL = Math.Round(totalUSD * valorDolarCompraBC, 2);
+
+            txtTotalBRL.Text = Math.Round(totalBRL, 2).ToString("C2").Replace("R$ ","");
         }
 
         private void dtgAccount_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -111,11 +127,17 @@ namespace DallEX.io.View
             });
         }
 
-        private void ucHeader_Unloaded(object sender, RoutedEventArgs e)
+        private void Window_Closed(object sender, EventArgs e)
         {
-            MessageBox.Show("Unload Acc UC");
+            updateTimer.Dispose();
+            updateTimer = null;
+
+            worker.Dispose();
+            worker = null;
+
+            walletClient = null;
+
+            FachadaWSSGS = null;
         }
-
-
     }
 }

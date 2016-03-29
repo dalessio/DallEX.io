@@ -156,13 +156,8 @@ namespace DallEX.io.View
             worker.Dispose();
 
             context.Dispose();
-            
-            PoloniexClient = null;           
-        }
 
-        private void ucHeader_Unloaded(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Unload Lending UC");
+            contextOffers = null;
         }
     }
 }

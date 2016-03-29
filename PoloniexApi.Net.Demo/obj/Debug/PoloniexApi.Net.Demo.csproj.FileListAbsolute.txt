@@ -1,13 +1,13 @@
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.exe.config
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.exe
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.pdb
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.API.dll
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\Newtonsoft.Json.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\EntityFramework.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\EntityFramework.SqlServerCompact.dll
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.exe.config
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\DallEX.io.pdb
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\System.Data.SqlServerCe.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\WampSharp.dll
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\Newtonsoft.Json.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\WampSharp.Default.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\System.Reactive.Core.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\bin\Debug\Castle.Core.dll
