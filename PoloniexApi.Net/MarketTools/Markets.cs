@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace DallEX.io.API.MarketTools
 {
     public class Markets : IMarkets
     {

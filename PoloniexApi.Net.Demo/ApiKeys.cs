@@ -1,5 +1,5 @@
 ﻿using System.Configuration;
-namespace Jojatekok.PoloniexAPI.Demo
+namespace DallEX.io.View
 {
     static class ApiKeys
     {

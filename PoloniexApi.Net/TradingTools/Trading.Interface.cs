@@ -1,9 +1,9 @@
-﻿using Jojatekok.PoloniexAPI.TradingTools;
+﻿using DallEX.io.API.TradingTools;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public interface ITrading
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{BC5546FA-4F27-4A57-ABE0-2691D1E8B51C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Jojatekok.PoloniexAPI</RootNamespace>
-    <AssemblyName>PoloniexApi.Net</AssemblyName>
+    <RootNamespace>DallEX.io.API</RootNamespace>
+    <AssemblyName>DallEX.io.API</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Release\PoloniexApi.Net.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DallEX.io.API.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">

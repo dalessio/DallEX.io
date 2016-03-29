@@ -1,13 +1,17 @@
-﻿using Jojatekok.PoloniexAPI.LendingTools;
-using Jojatekok.PoloniexAPI.LiveTools;
-using Jojatekok.PoloniexAPI.MarketTools;
-using Jojatekok.PoloniexAPI.TradingTools;
-using Jojatekok.PoloniexAPI.WalletTools;
+﻿using DallEX.io.API.LendingTools;
+using DallEX.io.API.LiveTools;
+using DallEX.io.API.MarketTools;
+using DallEX.io.API.TradingTools;
+using DallEX.io.API.WalletTools;
+using System;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public sealed class PoloniexClient
     {
+        private static readonly Lazy<PoloniexClient> lazy =
+        new Lazy<PoloniexClient>(() => new PoloniexClient());
+
         /// <summary>Represents the authenticator object of the client.</summary>
         public IAuthenticator Authenticator { get; private set; }
 
@@ -23,26 +27,32 @@ namespace Jojatekok.PoloniexAPI
         /// <summary>A class which represents live data fetched automatically from the server.</summary>
         public ILive Live { get; private set; }
 
+
+        private static string _publicApiKey = "";
+        private static string _privateApiKey = "";
+
+        public static PoloniexClient Instance(string publicApiKey, string privateApiKey)
+        {
+            _publicApiKey = publicApiKey;
+            _privateApiKey = privateApiKey;
+
+            return lazy.Value;
+        }
+
         /// <summary>Creates a new instance of Poloniex API .NET's client service.</summary>
         /// <param name="publicApiKey">Your public API key.</param>
         /// <param name="privateApiKey">Your private API key.</param>
-        public PoloniexClient(string publicApiKey, string privateApiKey)
+        private PoloniexClient()
         {
             var apiWebClient = new ApiWebClient(Helper.ApiUrlHttpsBase);
 
-            Authenticator = new Authenticator(apiWebClient, publicApiKey, privateApiKey);
+            Authenticator = new Authenticator(apiWebClient, _publicApiKey, _privateApiKey);
 
             Lendings = new Lendings(apiWebClient);
             Markets = new Markets(apiWebClient);
             Trading = new Trading(apiWebClient);
             Wallet = new Wallet(apiWebClient);
             Live = new Live();
-        }
-
-        /// <summary>Creates a new, unauthorized instance of Poloniex API .NET's client service.</summary>
-        public PoloniexClient() : this("", "")
-        {
-
         }
     }
 }

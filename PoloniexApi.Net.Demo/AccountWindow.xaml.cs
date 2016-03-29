@@ -15,11 +15,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Configuration;
-using Jojatekok.PoloniexAPI.MarketTools;
+using DallEX.io.API.MarketTools;
 using System.Collections;
 using System.Data.Entity;
+using DallEX.io.API;
 
-namespace Jojatekok.PoloniexAPI.Demo
+namespace DallEX.io.View
 {
     /// <summary>
     /// Interaction logic for Account.xaml
@@ -45,26 +46,33 @@ namespace Jojatekok.PoloniexAPI.Demo
             // Set icon from the assembly
             Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
 
-            PoloniexClient = new PoloniexClient(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
             walletClient = PoloniexClient.Wallet;
 
             worker = new BackgroundWorker();
             worker.DoWork += worker_DoWork;
 
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
+
         }
 
         private async void LoadSummaryAsync()
-        {
+        {          
             var balances = await walletClient.GetBalancesAsync();
+
+            double total = 0.0;
 
             dtgAccount.Items.Clear();
 
             foreach (var balance in balances)
             {
+                total = total + balance.Value.btcValue;
+
                 if (balance.Value.btcValue > 0)
                     dtgAccount.Items.Add(balance);
             }
+
+            txtTotal.Text = total.ToString("0.00000000");
 
         }
 
@@ -102,6 +110,12 @@ namespace Jojatekok.PoloniexAPI.Demo
                 LoadSummaryAsync();
             });
         }
+
+        private void ucHeader_Unloaded(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Unload Acc UC");
+        }
+
 
     }
 }

@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="DallEX.io.View.UserControls.ucTopDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="720" Background="Black">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Canvas ClipToBounds="True" Name="canMain" Background="Transparent">
+            <Grid Width="{Binding ElementName=canMain, Path=ActualWidth}">
+                <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtTitleNow" HorizontalAlignment="Left" Height="30" Margin="10,0,0,0" TextWrapping="Wrap" Text="Now &gt;&gt;" VerticalAlignment="Top" Width="72" FontSize="16" IsReadOnly="True" />
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <TextBox  ClipToBounds="True"  BorderBrush="Transparent" Foreground="#5bc0de" Background="#000000" x:Name="txtDisplay" HorizontalAlignment="Stretch" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" IsReadOnly="True" Margin="99,0,0,0" />
+                </Border>
+            </Grid>
+        </Canvas>
+    </Grid>
+</UserControl>

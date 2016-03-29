@@ -16,8 +16,9 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.Entity;
+using DallEX.io.API;
 
-namespace Jojatekok.PoloniexAPI.Demo
+namespace DallEX.io.View
 {
     /// <summary>
     /// Interaction logic for PublicLendingOffers.xaml
@@ -33,7 +34,7 @@ namespace Jojatekok.PoloniexAPI.Demo
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
 
-        private DbSet<LendingTools.LendingOffer> contextOffers = null;
+        private DbSet<DallEX.io.API.LendingTools.LendingOffer> contextOffers = null;
 
         public LendingWindow()
         {
@@ -48,7 +49,7 @@ namespace Jojatekok.PoloniexAPI.Demo
 
             InitializeComponent();
 
-            PoloniexClient = new PoloniexClient(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
             worker.DoWork += worker_DoWork;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
@@ -70,23 +71,12 @@ namespace Jojatekok.PoloniexAPI.Demo
 
                 var lendings = PoloniexClient.Lendings.GetLoanOffersAsync(currency.Trim()).Result;
 
-                var firstOffer = lendings.offers.OrderBy(x => x.rate).First();
+                var firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
 
-                var ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-                var btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-
-                firstOffer.ethExchangeValue = ethPriceLast;
-                firstOffer.btcExchangeValue = btcPriceLast;
-
-                
-                txtEthNow.Text = string.Concat("BTC/ETH: ", ethPriceLast.ToString("0.00000000"));
-                txtBtcNow.Text = string.Concat("USDT/BTC: ", btcPriceLast.ToString("0.00000000"));
-                txtLoanRateNow.Text = string.Concat("Loan Rate: ", firstOffer.rate.ToString("0.00000%"));
-
-                if (!contextOffers.Any(x => x.currency.Equals(currency) && x.amount.Equals(firstOffer.amount) && x.rate.Equals(firstOffer.rate) && x.rangeMin.Equals(firstOffer.rangeMin) && x.rangeMax.Equals(firstOffer.rangeMax)))
+                if (!contextOffers.Any(x => x.currency.Equals(currency) && x.amount.Equals(firstLoanOffer.amount) && x.rate.Equals(firstLoanOffer.rate) && x.rangeMin.Equals(firstLoanOffer.rangeMin) && x.rangeMax.Equals(firstLoanOffer.rangeMax)))
                 {
-                    firstOffer.currency = currency;
-                    context.LendingOffers.Add(firstOffer);
+                    firstLoanOffer.currency = currency;
+                    context.LendingOffers.Add(firstLoanOffer);
                     context.SaveChanges();
 
                     var horaInicio = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
@@ -103,7 +93,7 @@ namespace Jojatekok.PoloniexAPI.Demo
                     txtBtcEth.Text = highLoanRate.ethExchangeValue.ToString("0.00000000");
                     txtUsdtBtc.Text = highLoanRate.btcExchangeValue.ToString("0.00000000");
                     txtDataRegistro.Text = highLoanRate.dataRegistro.ToString();
-                    txtTotal.Text = periodOffers.Count() + " in " + txtMinutos.Text + " mins.";
+                    txtCountLoanOffers.Text = periodOffers.Count() + " in " + txtMinutos.Text + " mins.";
 
                     DataGrid1.Items.Clear();
                     foreach (var offer in lendings.offers)
@@ -168,6 +158,11 @@ namespace Jojatekok.PoloniexAPI.Demo
             context.Dispose();
             
             PoloniexClient = null;           
+        }
+
+        private void ucHeader_Unloaded(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Unload Lending UC");
         }
     }
 }

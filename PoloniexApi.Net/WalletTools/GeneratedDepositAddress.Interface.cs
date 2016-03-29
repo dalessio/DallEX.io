@@ -1,4 +1,4 @@
-﻿namespace Jojatekok.PoloniexAPI.WalletTools
+﻿namespace DallEX.io.API.WalletTools
 {
     public interface IGeneratedDepositAddress
     {

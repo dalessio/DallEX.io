@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace DallEX.io.API.MarketTools
 {
     public class MarketChartData  : IMarketChartData
     {

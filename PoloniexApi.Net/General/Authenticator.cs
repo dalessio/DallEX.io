@@ -1,4 +1,4 @@
-﻿namespace Jojatekok.PoloniexAPI
+﻿namespace DallEX.io.API
 {
     public class Authenticator : IAuthenticator
     {

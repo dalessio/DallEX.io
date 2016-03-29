@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Jojatekok.PoloniexAPI.WalletTools
+namespace DallEX.io.API.WalletTools
 {
     public class DepositWithdrawalList : IDepositWithdrawalList
     {

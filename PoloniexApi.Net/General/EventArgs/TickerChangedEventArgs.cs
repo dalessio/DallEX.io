@@ -1,7 +1,7 @@
-﻿using Jojatekok.PoloniexAPI.MarketTools;
+﻿using DallEX.io.API.MarketTools;
 using System;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public class TickerChangedEventArgs : EventArgs
     {

@@ -1,12 +1,11 @@
-﻿<Window x:Class="Jojatekok.PoloniexAPI.Demo.AccountWindow"
+﻿<Window x:Class="DallEX.io.View.AccountWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:DallEX.io.View.UserControls"
         Title="Account" Height="593" Width="653" Background="#000000">
-    <Grid Margin="0,0,0,0" TextElement.Foreground="#ffffff">
+    <Grid Margin="3" TextElement.Foreground="#ffffff">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -17,14 +16,16 @@
         <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="80" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" 
     		Loaded="dtgAccount_Loaded"
                       Margin="0,0,0,0">
-           
+
             <DataGrid.Columns>
                 <DataGridTextColumn x:Uid="id" x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False"/>
                 <DataGridTextColumn x:Uid="btcValue" x:Name="btcValue" Header="BTC Value" Binding="{Binding Value.btcValue, StringFormat=\{0:0.00000000\}}" Width="*"/>
                 <DataGridTextColumn x:Uid="available" x:Name="available" Header="Available" Binding="{Binding Value.available, StringFormat=\{0:0.00000000\}}" Width="*"/>
-                <DataGridTextColumn x:Uid="onOrders" x:Name="onOrders" Header="On Orders" Binding="{Binding Value.onOrders, StringFormat=\{0:0.00000000\}}" Width="*" SortDirection="Descending"/>                
+                <DataGridTextColumn x:Uid="onOrders" x:Name="onOrders" Header="On Orders" Binding="{Binding Value.onOrders, StringFormat=\{0:0.00000000\}}" Width="*" SortDirection="Descending"/>
             </DataGrid.Columns>
         </DataGrid>
-
+        <Label Foreground="#5cb85c" Content="Total:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
+        <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtTotal" HorizontalAlignment="Left" Height="30" Margin="16,56,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1" />
+        <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDataRegistro" HorizontalAlignment="Left" Height="30" Margin="14,10,0,0" TextWrapping="Wrap" Text="Balance" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
     </Grid>
 </Window>

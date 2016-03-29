@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Jojatekok.PoloniexAPI.LendingTools
+namespace DallEX.io.API.LendingTools
 {
     public class LendingDemand
     {

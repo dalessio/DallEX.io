@@ -15,11 +15,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Configuration;
-using Jojatekok.PoloniexAPI.MarketTools;
+using DallEX.io.API.MarketTools;
 using System.Collections;
 using System.Data.Entity;
+using DallEX.io.API;
 
-namespace Jojatekok.PoloniexAPI.Demo
+namespace DallEX.io.View
 {
     public partial class ExchangeWindow : Window
     {
@@ -30,7 +31,7 @@ namespace Jojatekok.PoloniexAPI.Demo
         private readonly LoanContext context = new LoanContext();
 
         private IMarkets marketsClient;
-        private static IList<MarketTools.ITrade> tradesHistory;
+        private static IList<DallEX.io.API.MarketTools.ITrade> tradesHistory;
 
         private double volumeMinimum = 2.1;
         private int updateTimeMiliseconds = 15000;
@@ -55,7 +56,7 @@ namespace Jojatekok.PoloniexAPI.Demo
                 MessageBox.Show("O parametro do App.Config exchangeVolumeMinimun está setado com valor inválido, foi aplicado o valor padrão (" + volumeMinimum + ")!");
 
 
-            PoloniexClient = new PoloniexClient(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
             marketsClient = PoloniexClient.Markets;
 
             worker = new BackgroundWorker();
@@ -72,12 +73,6 @@ namespace Jojatekok.PoloniexAPI.Demo
         {
             var markets = await marketsClient.GetSummaryAsync();
 
-            var ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-            var btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-
-            txtEthNow.Text = string.Concat("BTC/ETH: ", ethPriceLast.ToString("0.00000000"));
-            txtBtcNow.Text = string.Concat("USDT/BTC: ", btcPriceLast.ToString("0.00000000"));
-
             dtgExchange.Items.Clear();
 
             foreach (var market in markets)
@@ -89,68 +84,70 @@ namespace Jojatekok.PoloniexAPI.Demo
                     {
                         if (!currencyItems.Any(x => x.Equals(market.Key.ToString())))
                             currencyItems.Add(market.Key.ToString());
-
-                        if (!currencyItems.Count().Equals(cbCurrency.Items.Count)){
-                            cbCurrency.ItemsSource = currencyItems;                          
-                            cbCurrency.Items.Refresh();
-
-                            foreach (ComboBoxItem item in cbCurrency.Items)
-                                if (item.Content.ToString().Equals("BTC_ETH")){
-                                    item.IsSelected = true;
-                                    break;
-                                }
-                        }
-
-                        
+                       
                         if (cbCurrency.SelectedValue != null)
                             currency = cbCurrency.SelectedValue.ToString();
 
-
                         if (market.Key.ToString().Contains(currency))
                         {
-                            var horaInicio = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
-                            var horaFim = DateTime.Now;
 
-                            var tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(market.Key.ToString()));
-                            var periodMarket = tradesHistory.Where(o => (o.Time >= horaInicio && o.Time <= horaFim));
-
-                            var highLoanRate = periodMarket.OrderByDescending(o => o.PricePerCoin).First();
-                            var lowLoanRate = periodMarket.OrderBy(o => o.PricePerCoin).First();
-                            var averageLoanRate = periodMarket.Average(x => x.PricePerCoin);
-                            var lastMarketOffer = periodMarket.OrderByDescending(x => x.Time).First();
-
-                            txtHighPrice.Text = highLoanRate.PricePerCoin.ToString("0.00000000");
-                            txtLowPrice.Text = string.Concat(lowLoanRate.PricePerCoin.ToString("0.00000000"), " ", "(", lowLoanRate.Time.ToShortTimeString(), ")");
-                            txtPriceAverage.Text = averageLoanRate.ToString("0.00000000");
-                            txtLastPrice.Text = periodMarket.OrderByDescending(x => x.Time).First().PricePerCoin.ToString("0.00000000");
-                            txtDataRegistro.Text = highLoanRate.Time.ToString();
-
-                            txtTotalBuy.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Buy)).ToString() + " buys.";
-                            txtTotalSell.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Sell)).ToString() + " sells.";
-
-                            var startOpenThreadTradeHistory = new ParameterizedThreadStart(OpenThreadTradeHistory);
-                            var openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
-
-                            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
-                            openThreadTradeHistory.IsBackground = true;
-                            openThreadTradeHistory.Start(market.Key.ToString());
-
+                            tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(market.Key.ToString()));
+                            FillRightColumn(market);
+                            FillDetails(market.Key.ToString());
                         }
+
+                        market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
+                        dtgExchange.Items.Add(market);
                     }
                     catch { }
-
-                    market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
-
-                    dtgExchange.Items.Add(market);
                 }
             }
+
+            if (!currencyItems.Count().Equals(cbCurrency.Items.Count))
+            {
+                cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
+                cbCurrency.SelectedItem = "BTC_ETH";
+                cbCurrency.Items.Refresh();
+            }
+
+
             dtgExchange.Items.Refresh();
         }
 
-        private async void OpenThreadTradeHistory(object pair)
+        private void FillRightColumn(KeyValuePair<CurrencyPair, IMarketData> market)
         {
-            tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(pair.ToString()));
+                var startTime = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
+                var endTime = DateTime.Now;
 
+                var periodMarket = tradesHistory.Where(o => (o.Time >= startTime && o.Time <= endTime));
+
+                var highOrderRate = periodMarket.OrderByDescending(o => o.PricePerCoin).First();
+                var lowOrderRate = periodMarket.OrderBy(o => o.PricePerCoin).First();
+                var averageOrderRate = periodMarket.Average(x => x.PricePerCoin);
+                var lastMarketOffer = periodMarket.OrderByDescending(x => x.Time).First();
+
+                txtHighPrice.Text = highOrderRate.PricePerCoin.ToString("0.00000000");
+                txtLowPrice.Text = string.Concat(lowOrderRate.PricePerCoin.ToString("0.00000000"), " ", "(", lowOrderRate.Time.ToShortTimeString(), ")");
+                txtPriceAverage.Text = averageOrderRate.ToString("0.00000000");
+                txtLastPrice.Text = periodMarket.OrderByDescending(x => x.Time).First().PricePerCoin.ToString("0.00000000");
+                txtDataRegistro.Text = highOrderRate.Time.ToString();
+
+                txtTotalBuy.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Buy)).ToString() + " buys.";
+                txtTotalSell.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Sell)).ToString() + " sells.";
+        }
+
+        private void FillDetails(string marketKey)
+        {
+            var startOpenThreadTradeHistory = new ParameterizedThreadStart(OpenThreadTradeHistory);
+            var openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
+
+            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
+            openThreadTradeHistory.IsBackground = true;
+            openThreadTradeHistory.Start(marketKey);
+        }
+
+        private void OpenThreadTradeHistory(object pair)
+        {
             this.Dispatcher.Invoke(delegate
             {
                 if (cbCurrency.SelectedValue != null)

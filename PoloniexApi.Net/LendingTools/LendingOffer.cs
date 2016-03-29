@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using Jojatekok.PoloniexAPI.MarketTools;
+using DallEX.io.API.MarketTools;
 using Newtonsoft.Json;
 
-namespace Jojatekok.PoloniexAPI.LendingTools
+namespace DallEX.io.API.LendingTools
 {
     public class LendingOffer
     {

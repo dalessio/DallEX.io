@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI.WalletTools
+namespace DallEX.io.API.WalletTools
 {
     public class Wallet : IWallet
     {

@@ -5,16 +5,16 @@ winexe
 C#
 .cs
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\obj\Debug\
-Jojatekok.PoloniexAPI.Demo
+DallEX.io.View
 none
 false
 DEBUG;TRACE
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\App.xaml
-439619836
+51737577909
 
-12-583592741
-16-1066262904
-AccountWindow.xaml;ExchangeWindow.xaml;LendingWindow.xaml;MainWindow.xaml;
+14-492154213
+1675992867
+AccountWindow.xaml;ExchangeWindow.xaml;LendingWindow.xaml;MainWindow.xaml;UserControls\ucTopDisplay.xaml;
 
 False
 

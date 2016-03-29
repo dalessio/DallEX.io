@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace DallEX.io.API.MarketTools
 {
     public interface IMarketData
     {

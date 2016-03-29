@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace DallEX.io.API.MarketTools
 {
     public interface IOrderBook
     {

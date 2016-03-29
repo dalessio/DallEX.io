@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Jojatekok.PoloniexAPI.WalletTools
+namespace DallEX.io.API.WalletTools
 {
     public class Balance
     {

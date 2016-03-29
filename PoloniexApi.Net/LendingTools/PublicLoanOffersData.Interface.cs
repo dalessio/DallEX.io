@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace Jojatekok.PoloniexAPI.LendingTools
+namespace DallEX.io.API.LendingTools
 {
     public interface IPublicLoanOffersData
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public interface ILive
     {

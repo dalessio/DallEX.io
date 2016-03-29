@@ -1,4 +1,4 @@
-﻿using Jojatekok.PoloniexAPI.MarketTools;
+﻿using DallEX.io.API.MarketTools;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Numerics;
 using System.Reflection;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public static class Helper
     {

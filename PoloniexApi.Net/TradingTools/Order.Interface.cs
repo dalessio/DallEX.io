@@ -1,4 +1,4 @@
-﻿namespace Jojatekok.PoloniexAPI.TradingTools
+﻿namespace DallEX.io.API.TradingTools
 {
     public interface IOrder
     {

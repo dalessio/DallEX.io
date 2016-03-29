@@ -1,9 +1,9 @@
-﻿using Jojatekok.PoloniexAPI.WalletTools;
+﻿using DallEX.io.API.WalletTools;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public interface IWallet
     {

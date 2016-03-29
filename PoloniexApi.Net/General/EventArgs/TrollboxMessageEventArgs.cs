@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public class TrollboxMessageEventArgs : EventArgs
     {

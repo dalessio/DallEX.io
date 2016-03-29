@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     sealed class ApiWebClient
     {

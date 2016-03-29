@@ -1,31 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DallEX.io.API;
+using System;
+using System.ComponentModel;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace Jojatekok.PoloniexAPI.Demo
+namespace DallEX.io.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BackgroundWorker worker;
+        private Timer updateTimer;
+
         public MainWindow()
         {
             InitializeComponent();
 
             // Set icon from the assembly
             this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
+
+            worker = new BackgroundWorker();
+
+            worker.DoWork += worker_DoWork;
+            updateTimer = new Timer(UpdateView, null, 0, 16000);          
 
             var LendingWindow = new LendingWindow();
             TabItem LendingTab = new TabItem();
@@ -47,12 +48,25 @@ namespace Jojatekok.PoloniexAPI.Demo
             AccountTab.Content = AccountWindow.Content;
             AccountTab.Background = System.Windows.Media.Brushes.Green;
             TabMain.Items.Add(AccountTab);
+        }
 
+        private void UpdateView(object state)
+        {
+            if (!worker.IsBusy)
+                worker.RunWorkerAsync();
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            ucHeader.Dispatcher.Invoke(delegate
+            {
+                ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
+            });
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-
+            
         }
 
     }

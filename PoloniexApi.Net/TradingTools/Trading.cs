@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI.TradingTools
+namespace DallEX.io.API.TradingTools
 {
     public class Trading : ITrading
     {

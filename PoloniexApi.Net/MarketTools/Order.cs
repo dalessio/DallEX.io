@@ -1,4 +1,4 @@
-﻿namespace Jojatekok.PoloniexAPI.MarketTools
+﻿namespace DallEX.io.API.MarketTools
 {
     public class Order : IOrder
     {

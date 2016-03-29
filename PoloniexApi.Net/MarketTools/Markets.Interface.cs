@@ -1,9 +1,9 @@
-﻿using Jojatekok.PoloniexAPI.MarketTools;
+﻿using DallEX.io.API.MarketTools;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     public interface IMarkets
     {

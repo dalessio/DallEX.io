@@ -1,4 +1,4 @@
-﻿using Jojatekok.PoloniexAPI.MarketTools;
+﻿using DallEX.io.API.MarketTools;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,7 +6,7 @@ using System.Web;
 using WampSharp.V2;
 using WampSharp.V2.Realm;
 
-namespace Jojatekok.PoloniexAPI.LiveTools
+namespace DallEX.io.API.LiveTools
 {
     public class Live : ILive
     {

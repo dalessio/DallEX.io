@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace Jojatekok.PoloniexAPI
+namespace DallEX.io.API
 {
     class JsonResponse<T>
     {

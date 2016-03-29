@@ -1,5 +1,5 @@
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.dll
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.pdb
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\DallEX.io.API.dll
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\DallEX.io.API.pdb
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\Castle.Core.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\Fleck.dll
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\MsgPack.dll
@@ -22,5 +22,5 @@ C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\D
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\WampSharp.xml
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\WampSharp.Default.xml
 C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\PoloniexApi.Net.csprojResolveAssemblyReference.cache
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\PoloniexApi.Net.dll
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\PoloniexApi.Net.pdb
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\DallEX.io.API.dll
+C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\DallEX.io.API.pdb

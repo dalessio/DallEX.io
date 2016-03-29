@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jojatekok.PoloniexAPI.WalletTools
+namespace DallEX.io.API.WalletTools
 {
     //public class 1CR
     //    {

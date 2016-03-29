@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Jojatekok.PoloniexAPI.TradingTools
+namespace DallEX.io.API.TradingTools
 {
     public class Order : IOrder
     {

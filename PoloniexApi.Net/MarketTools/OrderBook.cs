@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Jojatekok.PoloniexAPI.MarketTools
+namespace DallEX.io.API.MarketTools
 {
     public class OrderBook : IOrderBook
     {
