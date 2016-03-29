@@ -91,9 +91,14 @@ namespace Jojatekok.PoloniexAPI.Demo
                             currencyItems.Add(market.Key.ToString());
 
                         if (!currencyItems.Count().Equals(cbCurrency.Items.Count)){
-                            cbCurrency.ItemsSource = currencyItems;
-                            cbCurrency.SelectedValue = "BTC_ETH";
+                            cbCurrency.ItemsSource = currencyItems;                          
                             cbCurrency.Items.Refresh();
+
+                            foreach (ComboBoxItem item in cbCurrency.Items)
+                                if (item.Content.ToString().Equals("BTC_ETH")){
+                                    item.IsSelected = true;
+                                    break;
+                                }
                         }
 
                         

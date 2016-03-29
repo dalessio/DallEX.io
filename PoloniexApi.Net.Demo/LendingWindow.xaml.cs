@@ -30,9 +30,6 @@ namespace Jojatekok.PoloniexAPI.Demo
 
         private readonly LoanContext context = new LoanContext();
 
-        private ExchangeWindow exchangeWindow;
-        private AccountWindow accountWindow;
-
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
 
@@ -152,38 +149,6 @@ namespace Jojatekok.PoloniexAPI.Demo
             //window.Show();
         }
 
-        private void menuItemExchange_Click(object sender, RoutedEventArgs e)
-        {
-            if (exchangeWindow == null)
-            {
-                exchangeWindow = new ExchangeWindow();
-                exchangeWindow.Closed += exchangeWindow_Closed;
-                exchangeWindow.Show();
-            }
-        }
-
-        private void menuItemAccount_Click(object sender, RoutedEventArgs e)
-        {
-            if (exchangeWindow == null)
-            {
-                accountWindow = new AccountWindow();
-                accountWindow.Closed += accountWindow_Closed;
-                accountWindow.Show();
-            }
-        }
-
-
-        void accountWindow_Closed(object sender, EventArgs e)
-        {
-            accountWindow = null;
-        }
-
-        void exchangeWindow_Closed(object sender, EventArgs e)
-        {
-            exchangeWindow = null;
-        }
-
-
         private void txtMinutes_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Text))
@@ -195,13 +160,6 @@ namespace Jojatekok.PoloniexAPI.Demo
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (exchangeWindow != null)
-                exchangeWindow.Close();
-
-            if (accountWindow != null)
-                accountWindow.Close();
-
-
             updateTimer.Dispose();
             updateTimer = null;
 

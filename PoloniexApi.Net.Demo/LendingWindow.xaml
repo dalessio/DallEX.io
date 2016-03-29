@@ -1,16 +1,9 @@
 ﻿<Window x:Class="Jojatekok.PoloniexAPI.Demo.LendingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DallEX.io 2.5" Height="620" Width="720" ResizeMode="NoResize" Background="#000000" Closed="Window_Closed">
+        Title="DallEX.io 2.5" Height="620" Width="720" Background="#000000" Closed="Window_Closed">
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Lending" x:Name="menuItemLending" Click="menuItemLending_Click" IsChecked="True" />
-            <MenuItem Header="_Exchange" x:Name="menuItemExchange" Click="menuItemExchange_Click" />
-            <MenuItem Header="_Margin Trade"  x:Name="menuItemMarginTrade" />
-            <MenuItem Header="_Account"  x:Name="menuItemAccount" Click="menuItemAccount_Click"  />
-        </Menu>
-
         <Grid Margin="0,0,0,0" TextElement.Foreground="#ffffff">
             <Grid.RowDefinitions>
                 <RowDefinition Height="5"/>

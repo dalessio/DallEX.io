@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WampSharp.Default</name>
+    </assembly>
+    <members>
+        <member name="T:WampSharp.Fleck.FleckWebSocketTransport">
+            <summary>
+            Represents a WebSocket transport implemented with Fleck.
+            </summary>
+        </member>
+        <member name="M:WampSharp.Fleck.FleckWebSocketTransport.#ctor(System.String)">
+            <summary>
+            Creates a new instance of <see cref="T:WampSharp.Fleck.FleckWebSocketTransport"/>
+            given the server address to run at.
+            </summary>
+            <param name="location">The given server address.</param>
+        </member>
+        <member name="T:WampSharp.Newtonsoft.IWampMessageFormatter`1">
+            <summary>
+            Used in order to convert a JSON message to a
+            <see cref="T:WampSharp.Core.Message.WampMessage`1"/> and vice-versa.
+            </summary>
+            <typeparam name="TMessage"></typeparam>
+        </member>
+        <member name="M:WampSharp.Newtonsoft.IWampMessageFormatter`1.Parse(`0)">
+            <summary>
+            Parses a <see cref="T:WampSharp.Core.Message.WampMessage`1"/>
+            from a JSON-array.
+            </summary>
+            <param name="message">The given JSON array.</param>
+            <returns>The parsed <see cref="T:WampSharp.Core.Message.WampMessage`1"/>.</returns>
+        </member>
+        <member name="M:WampSharp.Newtonsoft.IWampMessageFormatter`1.Format(WampSharp.Core.Message.WampMessage{`0})">
+            <summary>
+            Converts a <see cref="T:WampSharp.Core.Message.WampMessage`1"/>
+            to a JSON-array.
+            </summary>
+            <param name="message">The given <see cref="T:WampSharp.Core.Message.WampMessage`1"/>.</param>
+            <returns>The converted JSON array</returns>
+        </member>
+        <member name="T:WampSharp.Binding.JTokenJsonBinding">
+            <summary>
+            Represents JSON binding implemented using Newtonsoft.Json.
+            </summary>
+        </member>
+        <member name="T:WampSharp.Binding.JTokenMsgpackBinding">
+            <summary>
+            Represents MsgPack binding implemented using Newtonsoft.Msgpack.
+            </summary>
+        </member>
+        <member name="T:WampSharp.V2.DefaultWampChannelFactory">
+            <summary>
+            A default implementation of <see cref="T:WampSharp.V2.IWampChannelFactory"/>.
+            </summary>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampChannelFactory.CreateChannel``1(System.String,System.String,WampSharp.V2.Binding.IWampTextBinding{``0})">
+            <summary>
+            Creates a <see cref="T:WampSharp.V2.IWampChannel"/> that connects to a given realm,
+            using the given address and the given text binding
+            </summary>
+            <param name="address">The given address.</param>
+            <param name="realm">The given realm to connect to.</param>
+            <param name="binding">The given text binding.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampChannelFactory.CreateChannel``1(System.String,System.String,WampSharp.V2.Binding.IWampBinaryBinding{``0})">
+            <summary>
+            Creates a <see cref="T:WampSharp.V2.IWampChannel"/> that connects to a given realm,
+            using the given address and the given binary binding
+            </summary>
+            <param name="address">The given address.</param>
+            <param name="realm">The given realm to connect to.</param>
+            <param name="binding">The given binary binding.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampChannelFactory.CreateJsonChannel(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WampSharp.V2.IWampChannel"/> that connects to a given realm,
+            using the given address and json binding
+            </summary>
+            <param name="address">The given address.</param>
+            <param name="realm">The given realm to connect to.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampChannelFactory.CreateMsgpackChannel(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:WampSharp.V2.IWampChannel"/> that connects to a given realm,
+            using the given address and msgpack binding
+            </summary>
+            <param name="address">The given address.</param>
+            <param name="realm">The given realm to connect to.</param>
+            <returns></returns>
+        </member>
+        <member name="T:WampSharp.V2.DefaultWampHost">
+            <summary>
+            A default implementation of <see cref="T:WampSharp.V2.WampHost"/> that uses
+            <see cref="T:WampSharp.Fleck.FleckWebSocketTransport"/> internally.
+            </summary>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampHost.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:WampSharp.V2.DefaultWampHost"/> listening at
+            the given location with Json and Msgpack support.
+            </summary>
+            <param name="location">The given location.</param>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampHost.#ctor(System.String,System.Collections.Generic.IEnumerable{WampSharp.V2.Binding.IWampBinding})">
+            <summary>
+            Initializes a new instance of <see cref="T:WampSharp.V2.DefaultWampHost"/> listening at
+            the given location with the given bindings.
+            </summary>
+            <param name="location">The given location.</param>
+            <param name="bindings">The given bindings.</param>
+        </member>
+        <member name="M:WampSharp.V2.DefaultWampHost.#ctor(System.String,WampSharp.V2.Realm.IWampRealmContainer,System.Collections.Generic.IEnumerable{WampSharp.V2.Binding.IWampBinding})">
+            <summary>
+            Initializes a new instance of <see cref="T:WampSharp.V2.DefaultWampHost"/> listening at
+            the given location with the given bindings and the given
+            <see cref="T:WampSharp.V2.Realm.IWampRealmContainer"/>.
+            </summary>
+            <param name="location">The given location.</param>
+            <param name="realmContainer">The given <see cref="T:WampSharp.V2.Realm.IWampRealmContainer"/>.</param>
+            <param name="bindings">The given bindings.</param>
+        </member>
+        <member name="T:WampSharp.WebSocket4Net.WebSocket4NetBinaryConnection`1">
+            <summary>
+            Represents a client WebSocket binary connection implemented using WebSocket4Net.
+            </summary>
+            <typeparam name="TMessage"></typeparam>
+        </member>
+        <member name="M:WampSharp.WebSocket4Net.WebSocket4NetBinaryConnection`1.#ctor(WebSocket4Net.WebSocket,WampSharp.V2.Binding.IWampBinaryBinding{`0})">
+            <summary>
+            Creates a new instance of <see cref="T:WampSharp.WebSocket4Net.WebSocket4NetBinaryConnection`1"/>
+            given the underlying <see cref="T:WebSocket4Net.WebSocket"/> to use and the binary binding to use.
+            </summary>
+            <param name="webSocket">The underlying <see cref="T:WebSocket4Net.WebSocket"/> to use..</param>
+            <param name="binding">The <see cref="T:WampSharp.V2.Binding.IWampTextBinding`1"/> to use.</param>
+        </member>
+        <member name="M:WampSharp.WebSocket4Net.WebSocket4NetBinaryConnection`1.#ctor(System.String,WampSharp.V2.Binding.IWampBinaryBinding{`0})">
+            <summary>
+            Creates a new instance of <see cref="T:WampSharp.WebSocket4Net.WebSocket4NetBinaryConnection`1"/>
+            given the server address to connect to and the binary binding to use.
+            </summary>
+            <param name="serverAddress">The server address to connect to.</param>
+            <param name="binding">The <see cref="T:WampSharp.V2.Binding.IWampBinaryBinding`1"/> to use.</param>
+        </member>
+        <member name="T:WampSharp.WebSocket4Net.WebSocket4NetTextConnection`1">
+            <summary>
+            Represents a client WebSocket text connection implemented using WebSocket4Net.
+            </summary>
+            <typeparam name="TMessage"></typeparam>
+        </member>
+        <member name="M:WampSharp.WebSocket4Net.WebSocket4NetTextConnection`1.#ctor(WebSocket4Net.WebSocket,WampSharp.V2.Binding.IWampTextBinding{`0})">
+            <summary>
+            Creates a new instance of <see cref="T:WampSharp.WebSocket4Net.WebSocket4NetTextConnection`1"/>
+            given the underlying <see cref="T:WebSocket4Net.WebSocket"/> to use and the text binding to use.
+            </summary>
+            <param name="webSocket">The underlying <see cref="T:WebSocket4Net.WebSocket"/> to use..</param>
+            <param name="binding">The <see cref="T:WampSharp.V2.Binding.IWampTextBinding`1"/> to use.</param>
+        </member>
+        <member name="M:WampSharp.WebSocket4Net.WebSocket4NetTextConnection`1.#ctor(System.String,WampSharp.V2.Binding.IWampTextBinding{`0})">
+            <summary>
+            Creates a new instance of <see cref="T:WampSharp.WebSocket4Net.WebSocket4NetTextConnection`1"/>
+            given the server address to connect to and the text binding to use.
+            </summary>
+            <param name="serverAddress">The server address to connect to.</param>
+            <param name="binding">The <see cref="T:WampSharp.V2.Binding.IWampTextBinding`1"/> to use.</param>
+        </member>
+    </members>
+</doc>

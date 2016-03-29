@@ -1,0 +1,8 @@
+﻿<Window x:Class="Jojatekok.PoloniexAPI.Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DallEX.io 2.5" Height="620" Width="720" Background="#000000" Closed="Window_Closed">
+    <Grid Margin="0,0,0,0" TextElement.Foreground="#ffffff">
+        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="TabMain" Background="Black" TextElement.Foreground="#ffffff" />
+    </Grid>
+</Window>

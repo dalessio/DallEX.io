@@ -33,12 +33,7 @@ namespace Jojatekok.PoloniexAPI.Demo
         private int updateTimeMiliseconds = 5000;
 
         private IWallet walletClient;
-
-
-        private static IList<string> currencyItems = null;
-
         private readonly LoanContext context = new LoanContext();
-
 
         public AccountWindow()
         {
@@ -47,6 +42,8 @@ namespace Jojatekok.PoloniexAPI.Demo
             if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
                 MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
 
+            // Set icon from the assembly
+            Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
 
             PoloniexClient = new PoloniexClient(ApiKeys.PublicKey, ApiKeys.PrivateKey);
             walletClient = PoloniexClient.Wallet;
