@@ -22,7 +22,7 @@ using DallEX.io.API;
 
 namespace DallEX.io.View
 {
-    public partial class ExchangeWindow : Window
+    public partial class ExchangePage : Page
     {
         private PoloniexClient PoloniexClient { get; set; }
         private BackgroundWorker worker;
@@ -42,89 +42,66 @@ namespace DallEX.io.View
         ThreadStart startOpenThreadTradeHistory;
         Thread openThreadTradeHistory;
 
-
-
-        //private DbSet<MarketTools.MarketData> contextMarketData = null;
-
-        public ExchangeWindow()
+        public ExchangePage()
         {
-            // Set icon from the assembly
-            Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
-
             InitializeComponent();
-
-            if (!int.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
-
-            if (!double.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out volumeMinimum))
-                MessageBox.Show("O parametro do App.Config exchangeVolumeMinimun está setado com valor inválido, foi aplicado o valor padrão (" + volumeMinimum + ")!");
-
-
-            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-            marketsClient = PoloniexClient.Markets;
-
-            worker = new BackgroundWorker();
-            worker.DoWork += worker_DoWork;
-
-            updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
-
-            currencyItems = new List<string>();
-
-            startOpenThreadTradeHistory = new ThreadStart(OpenThreadTradeHistory);
-            openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
-            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
-            openThreadTradeHistory.IsBackground = true;
         }
 
         private async void LoadMarketSummaryAsync()
         {
-            var markets = await marketsClient.GetSummaryAsync();
-
-            dtgExchange.Items.Clear();
-
-            foreach (var market in markets)
+            if (marketsClient != null)
             {
+                var markets = await marketsClient.GetSummaryAsync();
 
-                if (market.Key.ToString().Contains("BTC_") && market.Value.Volume24HourBase > 2.1)
+                dtgExchange.Items.Clear();
+
+                foreach (var market in markets)
                 {
-                    try
+                    var currentKey = market.Key.ToString();
+                    if (currentKey.Contains("BTC_") && market.Value.Volume24HourBase > 2.1)
                     {
-                        if (!currencyItems.Any(x => x.Equals(market.Key.ToString())))
-                            currencyItems.Add(market.Key.ToString());
-                       
-                        if (cbCurrency.SelectedValue != null)
-                            currency = cbCurrency.SelectedValue.ToString();
-
-                        if (market.Key.ToString().Contains(currency))
+                        try
                         {
+                            if (!currencyItems.Any(x => x.Equals(market.Key.ToString())))
+                                currencyItems.Add(market.Key.ToString());
 
-                            tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(market.Key.ToString()));
+                            if (cbCurrency.SelectedValue != null)
+                                currency = cbCurrency.SelectedValue.ToString();
 
+                            if (market.Key.ToString().Contains(currency))
+                            {
 
-                            FillRightColumn(market);
-                            FillDetails(market.Key.ToString());
+                                tradesHistory = await marketsClient.GetTradesAsync(CurrencyPair.Parse(market.Key.ToString()));
+
+                                FillRightColumn(market);
+                                FillDetails(market.Key.ToString());
+                            }
                         }
+                        catch { }
 
                         market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
                         dtgExchange.Items.Add(market);
+
                     }
-                    catch { }
+
                 }
+
+                if (!currencyItems.Count().Equals(cbCurrency.Items.Count))
+                {
+                    cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
+                    cbCurrency.SelectedItem = "BTC_ETH";
+                    cbCurrency.Items.Refresh();
+                }
+
+
+                dtgExchange.Items.Refresh();
             }
-
-            if (!currencyItems.Count().Equals(cbCurrency.Items.Count))
-            {
-                cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
-                cbCurrency.SelectedItem = "BTC_ETH";
-                cbCurrency.Items.Refresh();
-            }
-
-
-            dtgExchange.Items.Refresh();
         }
 
         private void FillRightColumn(KeyValuePair<CurrencyPair, IMarketData> market)
         {
+            if (tradesHistory != null)
+            {
                 var startTime = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
                 var endTime = DateTime.Now;
 
@@ -143,30 +120,37 @@ namespace DallEX.io.View
 
                 txtTotalBuy.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Buy)).ToString() + " buys.";
                 txtTotalSell.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Sell)).ToString() + " sells.";
+            }
         }
 
         private void FillDetails(string marketKey)
         {
-            if (marketKey.Equals(currency))
+            if (openThreadTradeHistory != null)
             {
-                if (openThreadTradeHistory.IsAlive)
-                    openThreadTradeHistory.Abort();
+                if (marketKey.Equals(currency))
+                {
+                    if (openThreadTradeHistory.IsAlive)
+                        openThreadTradeHistory.Abort();
 
-                    openThreadTradeHistory.Start(marketKey);    
+                    openThreadTradeHistory.Start();
+                }
             }
         }
 
         private void OpenThreadTradeHistory()
         {
-            this.Dispatcher.Invoke(delegate
+            if (tradesHistory != null)
             {
-                var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
-                var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
+                this.Dispatcher.Invoke(delegate
+                {
+                    var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
+                    var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
 
-                lblFirstBid.Content = "1st. Bid: " + FirstBid;
-                lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
-                lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
-            });
+                    lblFirstBid.Content = "1st. Bid: " + FirstBid;
+                    lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
+                    lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
+                });
+            }
 
         }
 
@@ -214,18 +198,47 @@ namespace DallEX.io.View
                 e.Handled = true;
         }
 
-
-        private void Window_Closed(object sender, EventArgs e)
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            updateTimer.Dispose();
+            if (!int.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out updateTimeMiliseconds))
+                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+
+            if (!double.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out volumeMinimum))
+                MessageBox.Show("O parametro do App.Config exchangeVolumeMinimun está setado com valor inválido, foi aplicado o valor padrão (" + volumeMinimum + ")!");
+
+
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            marketsClient = PoloniexClient.Markets;
+
+            worker = new BackgroundWorker();
+            worker.DoWork += worker_DoWork;
+
+            updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
+
+            currencyItems = new List<string>();
+
+            startOpenThreadTradeHistory = new ThreadStart(OpenThreadTradeHistory);
+            openThreadTradeHistory = new Thread(startOpenThreadTradeHistory);
+            openThreadTradeHistory.Priority = ThreadPriority.AboveNormal;
+            openThreadTradeHistory.IsBackground = true;
+
+        }
+
+        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (updateTimer != null)
+                updateTimer.Dispose();
             updateTimer = null;
 
-            worker.Dispose();
+            if (worker != null)
+                worker.Dispose();
             worker = null;
 
             startOpenThreadTradeHistory = null;
-            
-            openThreadTradeHistory.Abort();
+
+            if (openThreadTradeHistory != null)
+                if (openThreadTradeHistory.IsAlive)
+                    openThreadTradeHistory.Abort();
             openThreadTradeHistory = null;
         }
        

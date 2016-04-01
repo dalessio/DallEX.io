@@ -11,7 +11,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="TabMain" Background="Black" TextElement.Foreground="#ffffff" Grid.Row="1" />
+        <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="TabMain" Background="Black" TextElement.Foreground="#ffffff" Grid.Row="1" SelectionChanged="TabMain_SelectionChanged"/>
         <UserControls:ucTopDisplay x:Name="ucHeader" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
     </Grid>
 </Window>

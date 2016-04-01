@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -25,7 +25,7 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for Account.xaml
     /// </summary>
-    public partial class AccountWindow : Window
+    public partial class AccountPage : Page
     {
         private PoloniexClient PoloniexClient { get; set; }
         private BackgroundWorker worker;
@@ -36,30 +36,13 @@ namespace DallEX.io.View
 
         private IWallet walletClient;
 
-        public AccountWindow()
+        public AccountPage()
         {
             InitializeComponent();
-
-            if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds est√° setado com valor inv√°lido, foi aplicado o valor padr√£o (" + updateTimeMiliseconds + ")!");
-
-            // Set icon from the assembly
-            Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
-
-            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-            walletClient = PoloniexClient.Wallet;
-
-            worker = new BackgroundWorker();
-            worker.DoWork += worker_DoWork;
-
-            updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
-
-            FachadaWSSGS = new FachadaWSSGS.FachadaWSSGSClient();
-
         }
 
         private async void LoadSummaryAsync()
-        {          
+        {
             var balances = await walletClient.GetBalancesAsync();
 
             double totalBTC = 0.0;
@@ -85,11 +68,11 @@ namespace DallEX.io.View
 
             var bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
 
-            var valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".",","));
+            var valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
 
             var totalBRL = Math.Round(totalUSD * valorDolarCompraBC, 2);
 
-            txtTotalBRL.Text = Math.Round(totalBRL, 2).ToString("C2").Replace("R$ ","");
+            txtTotalBRL.Text = Math.Round(totalBRL, 2).ToString("C2").Replace("R$ ", "");
         }
 
         private void dtgAccount_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -127,17 +110,40 @@ namespace DallEX.io.View
             });
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            updateTimer.Dispose();
+            if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
+                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds est· setado com valor inv·lido, foi aplicado o valor padr„o (" + updateTimeMiliseconds + ")!");
+
+            // Set icon from the assembly
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            walletClient = PoloniexClient.Wallet;
+
+            worker = new BackgroundWorker();
+            worker.DoWork += worker_DoWork;
+
+            updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
+
+            FachadaWSSGS = new FachadaWSSGS.FachadaWSSGSClient();
+        }
+
+        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (updateTimer != null)
+                updateTimer.Dispose();
             updateTimer = null;
 
-            worker.Dispose();
+            if (worker != null)
+                worker.Dispose();
             worker = null;
 
             walletClient = null;
 
             FachadaWSSGS = null;
+
+            PoloniexClient = null;
         }
+
+
     }
 }

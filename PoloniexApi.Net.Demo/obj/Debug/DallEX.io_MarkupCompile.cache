@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\obj\Debug\
+D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\obj\Debug\
 DallEX.io.View
 none
 false
 DEBUG;TRACE
-C:\Users\DAlessio\Desktop\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\App.xaml
-51737577909
+D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net.Demo\App.xaml
+5-1395069228
 
-111347387366
-181371969671
-AccountWindow.xaml;ExchangeWindow.xaml;LendingWindow.xaml;MainWindow.xaml;UserControls\ucTopDisplay.xaml;
+121469020748
+181857120372
+AccountPage.xaml;ExchangePage.xaml;LendingPage.xaml;MainWindow.xaml;UserControls\ucTopDisplay.xaml;
 
 False
 

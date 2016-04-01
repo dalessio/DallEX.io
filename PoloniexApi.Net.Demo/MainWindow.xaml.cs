@@ -16,9 +16,9 @@ namespace DallEX.io.View
         private BackgroundWorker worker;
         private Timer updateTimer;
 
-        private LendingWindow lendingWindow;
-        private ExchangeWindow exchangeWindow;
-        private AccountWindow accountWindow;
+        private LendingPage lendingPage;
+        private ExchangePage exchangePage;
+        private AccountPage accountPage;
 
         private TabItem ExchangeTab;
         private TabItem AccountTab;
@@ -36,74 +36,26 @@ namespace DallEX.io.View
             worker.DoWork += worker_DoWork;
             updateTimer = new Timer(UpdateView, null, 0, 16000);
 
-            lendingWindow = new LendingWindow();
+            lendingPage = new LendingPage();
             LendingTab = new TabItem();
-            LendingTab.Loaded += LendingTab_Initialized;
-            LendingTab.Unloaded += LendingTab_Unloaded;
             LendingTab.Header = "Lending";
             LendingTab.Background = System.Windows.Media.Brushes.Red;
             TabMain.Items.Add(LendingTab);
 
-            exchangeWindow = new ExchangeWindow();
+            exchangePage = new ExchangePage();
             ExchangeTab = new TabItem();
-            ExchangeTab.Loaded += ExchangeTab_Initialized;
-            ExchangeTab.Unloaded += ExchangeTab_Unloaded;
+            //ExchangeTab.Content = exchangePage.Content;
             ExchangeTab.Header = "Exchange";
             ExchangeTab.Background = System.Windows.Media.Brushes.Yellow;
             TabMain.Items.Add(ExchangeTab);
 
-            accountWindow = new AccountWindow();
+            accountPage = new AccountPage();
             AccountTab = new TabItem();
-            AccountTab.Loaded += AccountTab_Initialized;
-            AccountTab.Unloaded += AccountTab_Unloaded;
+            //AccountTab.Content = accountPage.Content;
             AccountTab.Header = "Account";
             AccountTab.Background = System.Windows.Media.Brushes.Green;
             TabMain.Items.Add(AccountTab);
         }
-
-        void AccountTab_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (AccountTab != null)
-                AccountTab.Content = null;
-
-            if (accountWindow != null)
-                accountWindow.Close();
-        }
-
-        void AccountTab_Initialized(object sender, EventArgs e)
-        {
-            AccountTab.Content = accountWindow.Content;
-        }
-
-        void LendingTab_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (LendingTab != null)
-                LendingTab.Content = null;
-
-            if (lendingWindow != null)
-                lendingWindow.Close();
-
-        }
-
-        void LendingTab_Initialized(object sender, EventArgs e)
-        {
-            LendingTab.Content = lendingWindow.Content;
-        }
-
-        void ExchangeTab_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (ExchangeTab != null)
-            ExchangeTab.Content = null;
-
-            if (exchangeWindow != null)
-                exchangeWindow.Close(); 
-        }
-
-        void ExchangeTab_Initialized(object sender, EventArgs e)
-        {
-            ExchangeTab.Content = exchangeWindow.Content;
-        }
-
 
         private void UpdateView(object state)
         {
@@ -127,24 +79,41 @@ namespace DallEX.io.View
             updateTimer.Dispose();
             updateTimer = null;
 
-            if (lendingWindow.IsLoaded)
-                lendingWindow.Close();
-            lendingWindow = null;
-
-            if (exchangeWindow.IsLoaded)
-                exchangeWindow.Close();
-            exchangeWindow = null;
-
-            if (accountWindow.IsLoaded)
-                accountWindow.Close();
-            accountWindow = null;
+            lendingPage = null;
+            exchangePage = null;
+            accountPage = null;
 
             TabMain.Items.Clear();
             TabMain = null;
 
+            ExchangeTab.Content = null;
+            AccountTab.Content = null;
+            LendingTab.Content = null;
+
             ExchangeTab = null;
             AccountTab = null;
             LendingTab = null;
+        }
+
+        private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ExchangeTab.Content = null;
+            AccountTab.Content = null;
+            LendingTab.Content = null;
+            
+            switch(TabMain.SelectedIndex){
+                    case 0:
+                        LendingTab.Content = lendingPage.Content;
+                        break;
+
+                    case 1:
+                        ExchangeTab.Content = exchangePage.Content;
+                        break;
+
+                    case 2:
+                        AccountTab.Content = accountPage.Content;
+                        break;
+            }
         }
 
     }

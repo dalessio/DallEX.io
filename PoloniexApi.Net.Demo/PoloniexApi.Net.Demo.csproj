@@ -75,13 +75,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AccountWindow.xaml.cs">
-      <DependentUpon>AccountWindow.xaml</DependentUpon>
+    <Compile Include="AccountPage.xaml.cs">
+      <DependentUpon>AccountPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="BaseView.cs" />
+    <Compile Include="Library\Singleton.cs" />
     <Compile Include="LoanContext.cs" />
-    <Compile Include="LendingWindow.xaml.cs">
-      <DependentUpon>LendingWindow.xaml</DependentUpon>
+    <Compile Include="LendingPage.xaml.cs">
+      <DependentUpon>LendingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service References\FachadaWSSGS\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -91,21 +92,21 @@
     <Compile Include="UserControls\ucTopDisplay.xaml.cs">
       <DependentUpon>ucTopDisplay.xaml</DependentUpon>
     </Compile>
-    <Page Include="AccountWindow.xaml">
+    <Page Include="AccountPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExchangeWindow.xaml">
+    <Page Include="ExchangePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="ExchangeWindow.xaml.cs">
-      <DependentUpon>ExchangeWindow.xaml</DependentUpon>
+    <Compile Include="ExchangePage.xaml.cs">
+      <DependentUpon>ExchangePage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ApiKeys.cs" />
     <Compile Include="Helper.cs" />
-    <Page Include="LendingWindow.xaml">
+    <Page Include="LendingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
