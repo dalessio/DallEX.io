@@ -21,6 +21,5 @@ D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\System.Rea
 D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\System.Reactive.PlatformServices.xml
 D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\WampSharp.xml
 D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\bin\Debug\WampSharp.Default.xml
-D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\PoloniexApi.Net.csprojResolveAssemblyReference.cache
 D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\DallEX.io.API.dll
 D:\Codigos\PoloniexApi.Net-master\DallEX.io\PoloniexApi.Net\obj\Debug\DallEX.io.API.pdb

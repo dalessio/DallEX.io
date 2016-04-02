@@ -11,7 +11,7 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, IDisposable
     {
         private BackgroundWorker worker;
         private Timer updateTimer;
@@ -32,6 +32,7 @@ namespace DallEX.io.View
             this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
 
             worker = new BackgroundWorker();
+            worker.WorkerSupportsCancellation = true;
 
             worker.DoWork += worker_DoWork;
             updateTimer = new Timer(UpdateView, null, 0, 16000);
@@ -44,18 +45,18 @@ namespace DallEX.io.View
 
             exchangePage = new ExchangePage();
             ExchangeTab = new TabItem();
-            //ExchangeTab.Content = exchangePage.Content;
             ExchangeTab.Header = "Exchange";
             ExchangeTab.Background = System.Windows.Media.Brushes.Yellow;
             TabMain.Items.Add(ExchangeTab);
 
             accountPage = new AccountPage();
             AccountTab = new TabItem();
-            //AccountTab.Content = accountPage.Content;
             AccountTab.Header = "Account";
             AccountTab.Background = System.Windows.Media.Brushes.Green;
             TabMain.Items.Add(AccountTab);
-        }
+
+            disposedValue = false;
+    }
 
         private void UpdateView(object state)
         {
@@ -65,34 +66,12 @@ namespace DallEX.io.View
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            ucHeader.Dispatcher.Invoke(delegate
-            {
-                ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
-            });
+            ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            worker.Dispose();
-            worker = null;
-
-            updateTimer.Dispose();
-            updateTimer = null;
-
-            lendingPage = null;
-            exchangePage = null;
-            accountPage = null;
-
-            TabMain.Items.Clear();
-            TabMain = null;
-
-            ExchangeTab.Content = null;
-            AccountTab.Content = null;
-            LendingTab.Content = null;
-
-            ExchangeTab = null;
-            AccountTab = null;
-            LendingTab = null;
+            Dispose();
         }
 
         private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -102,19 +81,80 @@ namespace DallEX.io.View
             LendingTab.Content = null;
             
             switch(TabMain.SelectedIndex){
-                    case 0:
+                    case 0: //Lending
                         LendingTab.Content = lendingPage.Content;
                         break;
 
-                    case 1:
+                    case 1:  //Exchange
                         ExchangeTab.Content = exchangePage.Content;
                         break;
 
-                    case 2:
+                    case 2: //Account
                         AccountTab.Content = accountPage.Content;
                         break;
             }
         }
 
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (worker != null)
+                    {
+                        if (worker.IsBusy)
+                            worker.CancelAsync();
+
+                        worker.Dispose();
+                    }
+
+                    worker = null;
+
+                    if (updateTimer != null)
+                        updateTimer.Dispose();
+
+                    updateTimer = null;
+
+                    if(lendingPage != null)
+                        lendingPage.Dispose();
+                    lendingPage = null;
+
+                    if (exchangePage != null)
+                        exchangePage.Dispose();
+                    exchangePage = null;
+
+                    if (accountPage != null)
+                        accountPage.Dispose();
+                    accountPage = null;
+
+                    if (TabMain != null)
+                        if (TabMain.Items != null)
+                            TabMain.Items.Clear();
+
+                    TabMain = null;
+
+                    ExchangeTab.Content = null;
+                    AccountTab.Content = null;
+                    LendingTab.Content = null;
+
+                    ExchangeTab = null;
+                    AccountTab = null;
+                    LendingTab = null;
+
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

@@ -18,9 +18,7 @@
             </Grid.ColumnDefinitions>
 
 
-            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="80" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="0" Foreground="#333333" 
-				Loaded="dtgExchange_Loaded"
-                      >
+            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="0" Foreground="#333333">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False"/>
                     <DataGridTextColumn x:Name="priceLast" Header="Last" Binding="{Binding Value.PriceLast, StringFormat=\{0:0.00000000\}}" Width="*"/>

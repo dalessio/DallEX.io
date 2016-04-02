@@ -1,31 +1,27 @@
-﻿using System;
+﻿using DallEX.io.API;
+using DallEX.io.API.LendingTools;
+using DallEX.io.API.MarketTools;
+using DallEX.io.View.Library;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data.Entity;
-using DallEX.io.API;
+using System.Windows.Threading;
 
 namespace DallEX.io.View
 {
     /// <summary>
     /// Interaction logic for PublicLendingOffers.xaml
     /// </summary>
-    public partial class LendingPage : Page
+    public sealed partial class LendingPage : Page, IDisposable
     {
-        private PoloniexClient PoloniexClient { get; set; }
+        private PoloniexClient PoloniexClient;
         private BackgroundWorker worker;
         private Timer updateTimer;
 
@@ -34,58 +30,101 @@ namespace DallEX.io.View
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
 
-        private DbSet<DallEX.io.API.LendingTools.LendingOffer> contextOffers;
-
         public LendingPage()
         {
             InitializeComponent();
         }
 
-        private async void LoadLoanOffersAsync()
+        private void LoadLoanOffersAsync()
         {
-            var markets = await PoloniexClient.Markets.GetSummaryAsync();
-
-            DataGrid1.Dispatcher.Invoke(delegate
-            {
-                if (contextOffers != null && context != null && PoloniexClient != null)
-                {
-                    var currency = cbCurrency.SelectedValue.ToString().Split(':')[1].ToString();
-
-                    var lendings = PoloniexClient.Lendings.GetLoanOffersAsync(currency.Trim()).Result;
-
-                    var firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
-
-                    if (!contextOffers.Any(x => x.currency.Equals(currency) && x.amount.Equals(firstLoanOffer.amount) && x.rate.Equals(firstLoanOffer.rate) && x.rangeMin.Equals(firstLoanOffer.rangeMin) && x.rangeMax.Equals(firstLoanOffer.rangeMax)))
+            if (PoloniexClient != null)
+                if (context != null)
+                    if (context.LendingOffers != null)
                     {
-                        firstLoanOffer.currency = currency;
-                        context.LendingOffers.Add(firstLoanOffer);
-                        context.SaveChanges();
-
-                        var horaInicio = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
-                        var horaFim = DateTime.Now;
-
-                        var periodOffers = contextOffers.Where(o => (o.currency.Equals(currency) && (o.dataRegistro >= horaInicio && o.dataRegistro <= horaFim)));
-                        var highLoanRate = periodOffers.OrderByDescending(o => o.rate).First();
-                        var lowLoanRate = periodOffers.OrderBy(o => o.rate).First();
-                        var averageLoanRate = periodOffers.Average(x => x.rate);
-
-                        txtMaiorLoanRate.Text = highLoanRate.rate.ToString("0.0000%");
-                        txtMenorLoanRate.Text = string.Concat(lowLoanRate.rate.ToString("0.0000%"), " ", "(", lowLoanRate.dataRegistro.ToShortTimeString(), ")");
-                        txtRateAverage.Text = averageLoanRate.ToString("0.0000%");
-                        txtBtcEth.Text = highLoanRate.ethExchangeValue.ToString("0.00000000");
-                        txtUsdtBtc.Text = highLoanRate.btcExchangeValue.ToString("0.00000000");
-                        txtDataRegistro.Text = highLoanRate.dataRegistro.ToString();
-                        txtCountLoanOffers.Text = periodOffers.Count() + " in " + txtMinutos.Text + " mins.";
-
-                        DataGrid1.Items.Clear();
-                        foreach (var offer in lendings.offers)
+                        try
                         {
-                            DataGrid1.Items.Add(offer);
+                            string currency = "BTC";
+
+                            IDictionary<CurrencyPair, IMarketData> markets = null;
+
+                                if (PoloniexClient != null)
+                                    markets = PoloniexClient.Markets.GetSummaryAsync().Result;
+
+                                cbCurrency.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                                {
+                                    currency = cbCurrency.SelectedValue.ToString().Split(':')[1].ToString();
+                                });
+
+                                PublicLoanOffersData lendings = null;
+
+                                if (PoloniexClient != null)
+                                    lendings = PoloniexClient.Lendings.GetLoanOffersAsync(currency.Trim()).Result;
+
+                                LendingOffer firstLoanOffer = null;
+
+                                if (lendings != null)
+                                    firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
+
+                                if (firstLoanOffer != null)
+                                    if (context != null)
+                                        if (context.Database != null)
+                                            if (!context.LendingOffers.Any(x => x.currency.Equals(currency) && x.amount.Equals(firstLoanOffer.amount) && x.rate.Equals(firstLoanOffer.rate) && x.rangeMin.Equals(firstLoanOffer.rangeMin) && x.rangeMax.Equals(firstLoanOffer.rangeMax)))
+                                            {
+                                                firstLoanOffer.currency = currency;
+                                                context.LendingOffers.Add(firstLoanOffer);
+                                                context.SaveChanges();
+
+                                                DateTime horaInicio = DateTime.Now;
+                                                txtMinutos.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                                                {
+                                                    horaInicio = DateTime.Now.AddMinutes(-int.Parse(txtMinutos.Text));
+                                                });
+
+                                                var horaFim = DateTime.Now;
+
+                                                var periodOffers = context.LendingOffers.Where(o => (o.currency.Equals(currency) && (o.dataRegistro >= horaInicio && o.dataRegistro <= horaFim)));
+                                                var highLoanRate = periodOffers.OrderByDescending(o => o.rate).First();
+                                                var lowLoanRate = periodOffers.OrderBy(o => o.rate).First();
+
+                                                var averageLoanRate = periodOffers.Average(x => x.rate);
+
+                                                this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                                                {
+                                                    txtMaiorLoanRate.Text = highLoanRate.rate.ToString("0.0000%");
+                                                    txtMenorLoanRate.Text = string.Concat(lowLoanRate.rate.ToString("0.0000%"), " ", "(", lowLoanRate.dataRegistro.ToShortTimeString(), ")");
+                                                    txtRateAverage.Text = averageLoanRate.ToString("0.0000%");
+                                                    txtBtcEth.Text = highLoanRate.ethExchangeValue.ToString("0.00000000");
+                                                    txtUsdtBtc.Text = highLoanRate.btcExchangeValue.ToString("0.00000000");
+                                                    txtDataRegistro.Text = highLoanRate.dataRegistro.ToString();
+                                                    txtCountLoanOffers.Text = periodOffers.Count() + " in " + txtMinutos.Text + " mins.";
+
+                                                    DataGrid1.Items.Clear();
+                                                    foreach (var offer in lendings.offers)
+                                                    {
+                                                        DataGrid1.Items.Add(offer);
+                                                    }
+                                                    DataGrid1.Items.Refresh();
+                                                });
+
+                                                periodOffers = null;
+                                                highLoanRate = null;
+                                                lowLoanRate = null;
+                                            }
+
+                                firstLoanOffer = null;
+                                lendings = null;
+                                markets = null;
+
                         }
-                        DataGrid1.Items.Refresh();
+
+                        catch (Exception ex)
+
+                        {
+                            //TODO: Log
+                        }
+                        finally { }
+
                     }
-                }
-            });
         }
 
         private void UpdateLoans(object state)
@@ -96,29 +135,7 @@ namespace DallEX.io.View
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                LoadLoanOffersAsync();
-            }
-            catch(Exception ex)
-            {                
-            }
-
-            finally
-            {                
-            }
-        }
-
-        private void worker_RunWorkerCompleted(object sender,
-                                       RunWorkerCompletedEventArgs e)
-        {
-            //update ui once worker complete his work
-        }
-
-        private void menuItemLending_Click(object sender, RoutedEventArgs e)
-        {
-            //PublicLendingOffers window = new PublicLendingOffers();
-            //window.Show();
+            LoadLoanOffersAsync();
         }
 
         private void txtMinutes_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -139,37 +156,82 @@ namespace DallEX.io.View
                 MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + lendingPeriodMinute + ")!");
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-            worker = new BackgroundWorker();
+            
             context = Singleton<LoanContext>.Instance;
 
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            if (worker == null)
+            {
+                worker = new BackgroundWorker();
+                worker.DoWork += worker_DoWork;
+                worker.WorkerSupportsCancellation = true;
+            }
 
             updateTimer = new Timer(UpdateLoans, null, 0, updateTimeMiliseconds);
 
             txtMinutos.Text = lendingPeriodMinute.ToString();
 
-            contextOffers = context.LendingOffers;
-
+            disposedValue = false;
         }
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            CancelTimer();
+        }
+
+
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    try
+                    {
+                        CancelTimer();
+
+                        if (context != null)
+                            context.Dispose();
+                    }
+                    catch (Exception ex)
+                    { }
+                    finally
+                    {
+                        updateTimer = null;
+                        worker = null;
+                        PoloniexClient = null;
+                        context = null;
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        private void CancelTimer()
+        {
             if (updateTimer != null)
                 updateTimer.Dispose();
-            updateTimer = null;
 
             if (worker != null)
+            {
+                if (worker.IsBusy)
+                    worker.CancelAsync();
+
                 worker.Dispose();
+            }
+
+            updateTimer = null;
             worker = null;
-
-            if (context != null)
-                context.Dispose();
-            context = null;
-
-            contextOffers = null;
-
-            PoloniexClient = null;
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

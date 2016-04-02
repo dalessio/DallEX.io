@@ -15,15 +15,12 @@
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-            <DataGrid x:Name="DataGrid1" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="80" Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Foreground="#333333">
+            <DataGrid x:Name="DataGrid1" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*"  AutoGenerateColumns="False"  Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Foreground="#333333">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Rate" Binding="{Binding rate, StringFormat=\{0:0.00000%\}}" SortDirection="Ascending"/>
                     <DataGridTextColumn Header="Amount" Binding="{Binding amount, StringFormat=\{0:0.00000000\}}"/>
                     <DataGridTextColumn Header="Range Max" Binding="{Binding rangeMax, StringFormat=\{0:0 days\}}"/>
                     <DataGridTextColumn Header="Range Min" Binding="{Binding rangeMin, StringFormat=\{0:0 days\}}"/>
-                    <DataGridTextColumn Header="ETH" Binding="{Binding ethExchangeValue, StringFormat=\{0:0.00000000\}}"/>
-                    <DataGridTextColumn Header="BTC" Binding="{Binding btcExchangeValue, StringFormat=\{0:0.00000000\}}"/>
-
                 </DataGrid.Columns>
             </DataGrid>
             <TextBox FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="txtMinutos" HorizontalAlignment="Left" Height="23" Margin="78,61,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="70" Grid.Column="1" Grid.Row="2" PreviewTextInput="txtMinutes_PreviewTextInput" />

@@ -1,7 +1,8 @@
-﻿<Page x:Class="DallEX.io.View.AccountPage"
+﻿<local:PageBase x:Class="DallEX.io.View.AccountPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:DallEX.io.View.UserControls"
+        xmlns:local="clr-namespace:DallEX.io.View.Library"
         Height="593" Width="653" Background="#000000">
     <Grid Margin="3" TextElement.Foreground="#ffffff" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded">
 
@@ -13,7 +14,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="80" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" 
+        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" 
     		Loaded="dtgAccount_Loaded"
                       Margin="0,0,0,0">
 
@@ -32,4 +33,4 @@
         <Label Foreground="#5cb85c" Content="Total R$:" HorizontalAlignment="Left" Margin="5,86,0,0" VerticalAlignment="Top" Grid.Column="1" Width="71"/>
         <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtTotalBRL" HorizontalAlignment="Left" Height="30" Margin="76,86,0,0" TextWrapping="Wrap" Text="000.00000000" VerticalAlignment="Top" Width="123" FontSize="17" IsReadOnly="True" Grid.Column="1" FontWeight="Bold" />
     </Grid>
-</Page>
+</local:PageBase>
