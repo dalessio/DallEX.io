@@ -1,6 +1,7 @@
 ﻿using DallEX.io.API;
 using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -17,16 +18,25 @@ namespace DallEX.io.View
         private Timer updateTimer;
 
         private LendingPage lendingPage;
-        private ExchangePage exchangePage;
+        private ExchangePage exchangeBTCPage;
+        private ExchangePage exchangeXMRPage;
+        private ExchangePage exchangeUSDTPage;
         private AccountPage accountPage;
 
-        private TabItem ExchangeTab;
-        private TabItem AccountTab;
-        private TabItem LendingTab;
+        private TabItem exchangeBTCTab;
+        private TabItem exchangeXMRTab;
+        private TabItem exchangeUSDTTab;
+        private TabItem accountTab;
+        private TabItem lendingTab;
+
+        private int updateTimeMiliseconds = 15000;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            if (!int.TryParse(ConfigurationManager.AppSettings.Get("headerUpdateTimeMiliseconds"), out updateTimeMiliseconds))
+                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
 
             // Set icon from the assembly
             this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
@@ -35,28 +45,77 @@ namespace DallEX.io.View
             worker.WorkerSupportsCancellation = true;
 
             worker.DoWork += worker_DoWork;
-            updateTimer = new Timer(UpdateView, null, 0, 16000);
+            updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);
 
+            //0
             lendingPage = new LendingPage();
-            LendingTab = new TabItem();
-            LendingTab.Header = "Lending";
-            LendingTab.Background = System.Windows.Media.Brushes.Red;
-            TabMain.Items.Add(LendingTab);
+            lendingTab = new TabItem();
+            lendingTab.Header = "Lending";
+            lendingTab.Background = System.Windows.Media.Brushes.SteelBlue;
+            TabMain.Items.Add(lendingTab);
 
-            exchangePage = new ExchangePage();
-            ExchangeTab = new TabItem();
-            ExchangeTab.Header = "Exchange";
-            ExchangeTab.Background = System.Windows.Media.Brushes.Yellow;
-            TabMain.Items.Add(ExchangeTab);
+            //1
+            exchangeBTCPage = new ExchangePage("BTC");
+            exchangeBTCTab = new TabItem();
+            exchangeBTCTab.Header = "Exchange BTC";
+            exchangeBTCTab.Background = System.Windows.Media.Brushes.LightSteelBlue;
+            TabMain.Items.Add(exchangeBTCTab);
 
+            //2
+            exchangeXMRPage = new ExchangePage("XMR");
+            exchangeXMRTab = new TabItem();
+            exchangeXMRTab.Header = "Exchange XMR";
+            exchangeXMRTab.Background = System.Windows.Media.Brushes.IndianRed;
+            TabMain.Items.Add(exchangeXMRTab);
+
+            //3
+            exchangeUSDTPage = new ExchangePage("USDT");
+            exchangeUSDTTab = new TabItem();
+            exchangeUSDTTab.Header = "Exchange USDT";
+            exchangeUSDTTab.Background = System.Windows.Media.Brushes.LightGoldenrodYellow;
+            TabMain.Items.Add(exchangeUSDTTab);
+
+            //4
             accountPage = new AccountPage();
-            AccountTab = new TabItem();
-            AccountTab.Header = "Account";
-            AccountTab.Background = System.Windows.Media.Brushes.Green;
-            TabMain.Items.Add(AccountTab);
+            accountTab = new TabItem();
+            accountTab.Header = "Account";
+            accountTab.Background = System.Windows.Media.Brushes.GreenYellow;
+            TabMain.Items.Add(accountTab);
 
             disposedValue = false;
-    }
+        }
+
+        private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            exchangeBTCTab.Content = null;
+            exchangeXMRTab.Content = null;
+            exchangeUSDTTab.Content = null;
+            accountTab.Content = null;
+            lendingTab.Content = null;
+
+            switch (TabMain.SelectedIndex)
+            {
+                case 0: //Lending
+                    lendingTab.Content = lendingPage.Content;
+                    break;
+
+                case 1:  //Exchange BTC
+                    exchangeBTCTab.Content = exchangeBTCPage.Content;
+                    break;
+
+                case 2:  //Exchange XMR
+                    exchangeXMRTab.Content = exchangeXMRPage.Content;
+                    break;
+
+                case 3:  //Exchange USDT
+                    exchangeUSDTTab.Content = exchangeUSDTPage.Content;
+                    break;
+
+                case 4: //Account
+                    accountTab.Content = accountPage.Content;
+                    break;
+            }
+        }
 
         private void UpdateView(object state)
         {
@@ -72,27 +131,6 @@ namespace DallEX.io.View
         private void Window_Closed(object sender, EventArgs e)
         {
             Dispose();
-        }
-
-        private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ExchangeTab.Content = null;
-            AccountTab.Content = null;
-            LendingTab.Content = null;
-            
-            switch(TabMain.SelectedIndex){
-                    case 0: //Lending
-                        LendingTab.Content = lendingPage.Content;
-                        break;
-
-                    case 1:  //Exchange
-                        ExchangeTab.Content = exchangePage.Content;
-                        break;
-
-                    case 2: //Account
-                        AccountTab.Content = accountPage.Content;
-                        break;
-            }
         }
 
         #region IDisposable Support
@@ -119,13 +157,23 @@ namespace DallEX.io.View
 
                     updateTimer = null;
 
-                    if(lendingPage != null)
+                    if (lendingPage != null)
                         lendingPage.Dispose();
                     lendingPage = null;
 
-                    if (exchangePage != null)
-                        exchangePage.Dispose();
-                    exchangePage = null;
+                    if (exchangeBTCPage != null)
+                        exchangeBTCPage.Dispose();
+                    exchangeBTCPage = null;
+
+
+                    if (exchangeXMRPage != null)
+                        exchangeXMRPage.Dispose();
+                    exchangeXMRPage = null;
+
+
+                    if (exchangeUSDTPage != null)
+                        exchangeUSDTPage.Dispose();
+                    exchangeUSDTPage = null;
 
                     if (accountPage != null)
                         accountPage.Dispose();
@@ -137,13 +185,17 @@ namespace DallEX.io.View
 
                     TabMain = null;
 
-                    ExchangeTab.Content = null;
-                    AccountTab.Content = null;
-                    LendingTab.Content = null;
+                    exchangeBTCTab.Content = null;
+                    exchangeXMRTab.Content = null;
+                    exchangeUSDTTab.Content = null;
+                    accountTab.Content = null;
+                    lendingTab.Content = null;
 
-                    ExchangeTab = null;
-                    AccountTab = null;
-                    LendingTab = null;
+                    exchangeBTCTab = null;
+                    exchangeXMRTab = null;
+                    exchangeUSDTTab = null;
+                    accountTab = null;
+                    lendingTab = null;
 
                 }
 

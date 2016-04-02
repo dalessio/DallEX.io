@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,6 +15,7 @@ namespace DallEX.io.View
 {
     public sealed partial class ExchangePage : Page, IDisposable
     {
+
         private PoloniexClient PoloniexClient;
         private BackgroundWorker worker;
         private Timer updateTimer;
@@ -26,58 +26,73 @@ namespace DallEX.io.View
         private int updateTimeMiliseconds = 15000;
 
         private IList<string> currencyItems = null;
-        private string currency = "BTC_ETH";
+        private string selectedCurrency;
+        private string currentExchangeCoin;
 
         private ThreadStart startOpenThreadTradeHistory;
         private Thread openThreadTradeHistory;
 
         private static object _syncRoot = new object();
 
-        public ExchangePage()
+        public ExchangePage(string _currentExchangeCoin = "BTC")
         {
             InitializeComponent();
+            currentExchangeCoin = _currentExchangeCoin;
+
+            switch (currentExchangeCoin)
+            {
+                case "XMR":
+                    selectedCurrency = "XMR_LTC";
+                    break;
+
+                case "USDT":
+                    selectedCurrency = "USDT_BTC";
+                    break;
+
+                default:
+                    selectedCurrency = "BTC_ETH";
+                    break;
+            }
         }
 
         private void LoadMarketSummaryAsync()
         {
             try
-            {
+            {          
                 if (PoloniexClient.Markets != null)
                 {
-                    var markets = PoloniexClient.Markets.GetSummaryAsync().Result.Where(x => x.Key.ToString().Contains("BTC_") && x.Value.Volume24HourBase > volumeMinimum).OrderByDescending(x => x.Value.Volume24HourBase);
+                    var markets = PoloniexClient.Markets.GetSummaryAsync().Result.Where(x => x.Key.ToString().Contains(string.Concat(currentExchangeCoin, "_")) && x.Value.Volume24HourBase > volumeMinimum).OrderByDescending(x => x.Value.Volume24HourBase);
 
                     this.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
                     {
                         if (cbCurrency.SelectedValue != null)
-                            currency = cbCurrency.SelectedValue.ToString();
+                            selectedCurrency = string.Concat(string.Concat(currentExchangeCoin, "_"), cbCurrency.SelectedValue.ToString());
 
                         dtgExchange.Items.Clear();
                         foreach (var market in markets)
                         {
                             if (currencyItems != null)
-                                if (!currencyItems.Any(x => x.Equals(market.Key.ToString())))
-                                    currencyItems.Add(market.Key.ToString());
+                                if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
+                                    currencyItems.Add(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""));
 
                             market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
 
                             dtgExchange.Items.Add(market);
                         }
 
-
-                        if (!currencyItems.Count().Equals(cbCurrency.Items.Count))
+                        if (currencyItems.Count() != cbCurrency.Items.Count)
                         {
                             cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
-                            cbCurrency.SelectedItem = "BTC_ETH";
-                            cbCurrency.Items.Refresh();
+                            cbCurrency.SelectedItem = selectedCurrency.Replace(string.Concat(currentExchangeCoin, "_"), "");
                         }
                     });
+
+                    markets = null;
 
                     FillDetails();
                 }
             }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
             catch (Exception ex)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
             {
                 //TODO: Log
             }
@@ -108,7 +123,9 @@ namespace DallEX.io.View
 
         private async void OpenThreadTradeHistory()
         {
-            tradesHistory = await PoloniexClient.Markets.GetTradesAsync(CurrencyPair.Parse(currency));
+            tradesHistory = await PoloniexClient.Markets.GetTradesAsync(CurrencyPair.Parse(selectedCurrency));
+
+            ResetDetailsFields();
 
             if (tradesHistory != null)
             {
@@ -124,34 +141,69 @@ namespace DallEX.io.View
                 if (tradesHistory != null)
                     periodMarket = tradesHistory.Where(o => (o.Time >= startTime && o.Time <= endTime));
 
-                var highOrderRate = periodMarket.OrderByDescending(o => o.PricePerCoin).First();
-                var lowOrderRate = periodMarket.OrderBy(o => o.PricePerCoin).First();
-                var averageOrderRate = periodMarket.Average(x => x.PricePerCoin);
-                var lastMarketOffer = periodMarket.OrderByDescending(x => x.Time).First();
-
-                if (periodMarket != null && tradesHistory != null)
-                {
-                    this.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+                if (periodMarket != null)
+                    if (periodMarket.Any())
                     {
-                        txtHighPrice.Text = highOrderRate.PricePerCoin.ToString("0.00000000");
-                        txtLowPrice.Text = string.Concat(lowOrderRate.PricePerCoin.ToString("0.00000000"), " ", "(", lowOrderRate.Time.ToShortTimeString(), ")");
-                        txtPriceAverage.Text = averageOrderRate.ToString("0.00000000");
-                        txtLastPrice.Text = periodMarket.OrderByDescending(x => x.Time).First().PricePerCoin.ToString("0.00000000");
-                        txtDataRegistro.Text = highOrderRate.Time.ToString();
+                        var highOrderRate = periodMarket.OrderByDescending(o => o.PricePerCoin).First();
+                        var lowOrderRate = periodMarket.OrderBy(o => o.PricePerCoin).First();
+                        var averageOrderRate = periodMarket.Average(x => x.PricePerCoin);
+                        var lastMarketOffer = periodMarket.OrderByDescending(x => x.Time).First();
 
-                        txtTotalBuy.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Buy)).ToString() + " buys.";
-                        txtTotalSell.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Sell)).ToString() + " sells.";
+                        if (periodMarket != null && tradesHistory != null)
+                        {
+                            this.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+                            {
+                                if (highOrderRate != null)
+                                    txtHighPrice.Text = highOrderRate.PricePerCoin.ToString("0.00000000");
 
-                        var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
-                        var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
+                                if (lowOrderRate != null)
+                                    txtLowPrice.Text = string.Concat(lowOrderRate.PricePerCoin.ToString("0.00000000"), " ", "(", lowOrderRate.Time.ToShortTimeString(), ")");
 
-                        lblFirstBid.Content = "1st. Bid: " + FirstBid;
-                        lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
-                        lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
-                    });
-                }
+                                txtPriceAverage.Text = averageOrderRate.ToString("0.00000000");
+
+                                txtLastPrice.Text = periodMarket.OrderByDescending(x => x.Time).First().PricePerCoin.ToString("0.00000000");
+                                txtDataRegistro.Text = highOrderRate.Time.ToString();
+
+                                txtTotalBuy.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Buy)).ToString() + " buys.";
+                                txtTotalSell.Text = periodMarket.Count(x => x.Type.Equals(OrderType.Sell)).ToString() + " sells.";
+
+                                var FirstBid = tradesHistory.Where(x => x.Type == OrderType.Buy).First().Time;
+                                var FirstAsk = tradesHistory.Where(x => x.Type == OrderType.Sell).First().Time;
+
+                                lblFirstBid.Content = "1st. Bid: " + FirstBid;
+                                lblFirstAsk.Content = "1st. Ask: " + FirstAsk;
+                                lblGapSenconds.Content = "Trade Gap: " + (FirstAsk - FirstBid).TotalSeconds + "s.";
+                            });
+                        }
+
+                        highOrderRate = null;
+                        lowOrderRate = null;
+                        lastMarketOffer = null;
+                    }
             }
 
+        }
+
+        private void ResetDetailsFields()
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)delegate
+            {
+                txtHighPrice.Text = 0.ToString("0.00000000");
+                txtLowPrice.Text = 0.ToString("0.00000000");
+                txtPriceAverage.Text = 0.ToString("0.00000000");
+                txtPriceAverage.Text = 0.ToString("0.00000000");
+                txtLastPrice.Text = 0.ToString("0.00000000");
+                txtDataRegistro.Text = 0.ToString("0.00000000");
+                lblFirstBid.Content = "1st. Bid: " + 0.ToString("0.00000000");
+                lblFirstAsk.Content = "1st. Ask: " + 0.ToString("0.00000000");
+
+
+                txtTotalBuy.Text = 0 + " buys.";
+                txtTotalSell.Text = 0 + " sells.";
+
+
+                lblGapSenconds.Content = "Trade Gap: " + 0 + "s.";
+            });
         }
 
         private void dtgExchange_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -211,7 +263,8 @@ namespace DallEX.io.View
 
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
 
-            currencyItems = new List<string>();
+            if (currencyItems == null)
+                currencyItems = new List<string>();
 
             if (startOpenThreadTradeHistory == null)
                 startOpenThreadTradeHistory = new ThreadStart(OpenThreadTradeHistory);
@@ -244,6 +297,9 @@ namespace DallEX.io.View
                         if (tradesHistory != null)
                             tradesHistory.Clear();
 
+                        if (currencyItems != null)
+                            currencyItems.Clear();
+
                     }
                     catch (Exception ex)
                     { }
@@ -255,6 +311,9 @@ namespace DallEX.io.View
                         startOpenThreadTradeHistory = null;
                         tradesHistory = null;
                         PoloniexClient = null;
+
+                        currencyItems = null;
+
                     }
                 }
 

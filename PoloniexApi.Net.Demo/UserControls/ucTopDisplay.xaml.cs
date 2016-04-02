@@ -38,7 +38,7 @@ namespace DallEX.io.View.UserControls
             ThickAnimation.From = new Thickness(0, 0, 0, 0);
             ThickAnimation.RepeatBehavior = RepeatBehavior.Forever;
             ThickAnimation.FillBehavior = FillBehavior.Stop;
-            ThickAnimation.Duration = new Duration(TimeSpan.FromSeconds(8));
+            ThickAnimation.Duration = new Duration(TimeSpan.FromSeconds(6));
 
             if (threadStart == null)
                 threadStart = new ThreadStart(LeftToRightMarqueeOnTextBox);
