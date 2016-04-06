@@ -14,13 +14,24 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" 
-    		Loaded="dtgAccount_Loaded"
-                      Margin="0,0,0,0">
+        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" Loaded="dtgAccount_Loaded" Margin="0,0,0,0"  AlternatingRowBackground="LightGray" FontSize="16" TextBlock.TextAlignment="Right">
 
             <DataGrid.Columns>
-                <DataGridTextColumn x:Uid="id" x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False"/>
-                <DataGridTextColumn x:Uid="btcValue" x:Name="btcValue" Header="BTC Value" Binding="{Binding Value.btcValue, StringFormat=\{0:0.00000000\}}" Width="*"/>
+                <DataGridTextColumn x:Uid="id" x:Name="id" Header="Coin" Binding="{Binding Key}" CanUserResize="False" FontWeight="Bold">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn x:Uid="brzValue" x:Name="brzValue" Header="R$ Value" Binding="{Binding Value.brzValue, StringFormat=\{0:0.00000000\}}" Width="*" FontWeight="Bold" />
+                <DataGridTextColumn x:Uid="btcValue" x:Name="btcValue" Header="BTC Value" Binding="{Binding Value.btcValue, StringFormat=\{0:0.00000000\}}" Width="*" FontWeight="Bold">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="Green" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn x:Uid="available" x:Name="available" Header="Available" Binding="{Binding Value.available, StringFormat=\{0:0.00000000\}}" Width="*"/>
                 <DataGridTextColumn x:Uid="onOrders" x:Name="onOrders" Header="On Orders" Binding="{Binding Value.onOrders, StringFormat=\{0:0.00000000\}}" Width="*" SortDirection="Descending"/>
             </DataGrid.Columns>

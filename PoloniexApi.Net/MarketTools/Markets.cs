@@ -68,37 +68,37 @@ namespace DallEX.io.API.MarketTools
 
         public Task<IDictionary<CurrencyPair, IMarketData>> GetSummaryAsync()
         {
-            return Task.Factory.StartNew(() => GetSummary());
+            return Task.Run(() => GetSummary());
         }
 
         public Task<IOrderBook> GetOpenOrdersAsync(CurrencyPair currencyPair, uint depth)
         {
-            return Task.Factory.StartNew(() => GetOpenOrders(currencyPair, depth));
+            return Task.Run(() => GetOpenOrders(currencyPair, depth));
         }
 
         public Task<IList<ITrade>> GetTradesAsync(CurrencyPair currencyPair)
         {
-            return Task.Factory.StartNew(() => GetTrades(currencyPair));
+            return Task.Run(() => GetTrades(currencyPair));
         }
 
         public Task<IList<ITrade>> GetTradesAsync(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
         {
-            return Task.Factory.StartNew(() => GetTrades(currencyPair, startTime, endTime));
+            return Task.Run(() => GetTrades(currencyPair, startTime, endTime));
         }
 
         public Task<IList<IMarketChartData>> GetChartDataAsync(CurrencyPair currencyPair, MarketPeriod period, DateTime startTime, DateTime endTime)
         {
-            return Task.Factory.StartNew(() => GetChartData(currencyPair, period, startTime, endTime));
+            return Task.Run(() => GetChartData(currencyPair, period, startTime, endTime));
         }
 
         public Task<IList<IMarketChartData>> GetChartDataAsync(CurrencyPair currencyPair, MarketPeriod period)
         {
-            return Task.Factory.StartNew(() => GetChartData(currencyPair, period, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
+            return Task.Run(() => GetChartData(currencyPair, period, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
         }
 
         public Task<IList<IMarketChartData>> GetChartDataAsync(CurrencyPair currencyPair)
         {
-            return Task.Factory.StartNew(() => GetChartData(currencyPair, MarketPeriod.Minutes30, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
+            return Task.Run(() => GetChartData(currencyPair, MarketPeriod.Minutes30, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

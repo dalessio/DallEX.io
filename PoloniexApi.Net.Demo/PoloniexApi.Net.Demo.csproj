@@ -111,6 +111,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="TradeHistory.xaml.cs">
+      <DependentUpon>TradeHistory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ucTopDisplay.xaml.cs">
       <DependentUpon>ucTopDisplay.xaml</DependentUpon>
     </Compile>
@@ -133,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TradeHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

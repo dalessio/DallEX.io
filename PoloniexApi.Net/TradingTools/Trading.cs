@@ -62,27 +62,27 @@ namespace DallEX.io.API.TradingTools
 
         public Task<IList<IOrder>> GetOpenOrdersAsync(CurrencyPair currencyPair)
         {
-            return Task.Factory.StartNew(() => GetOpenOrders(currencyPair));
+            return Task.Run(() => GetOpenOrders(currencyPair));
         }
 
         public Task<IList<ITrade>> GetTradesAsync(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
         {
-            return Task.Factory.StartNew(() => GetTrades(currencyPair, startTime, endTime));
+            return Task.Run(() => GetTrades(currencyPair, startTime, endTime));
         }
 
         public Task<IList<ITrade>> GetTradesAsync(CurrencyPair currencyPair)
         {
-            return Task.Factory.StartNew(() => GetTrades(currencyPair, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
+            return Task.Run(() => GetTrades(currencyPair, Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
         }
 
         public Task<ulong> PostOrderAsync(CurrencyPair currencyPair, OrderType type, double pricePerCoin, double amountQuote)
         {
-            return Task.Factory.StartNew(() => PostOrder(currencyPair, type, pricePerCoin, amountQuote));
+            return Task.Run(() => PostOrder(currencyPair, type, pricePerCoin, amountQuote));
         }
 
         public Task<bool> DeleteOrderAsync(CurrencyPair currencyPair, ulong orderId)
         {
-            return Task.Factory.StartNew(() => DeleteOrder(currencyPair, orderId));
+            return Task.Run(() => DeleteOrder(currencyPair, orderId));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -6,6 +6,8 @@ namespace DallEX.io.API.MarketTools
         double PriceLast { get; }
         double PriceChangePercentage { get; }
 
+        bool isPositiveChange { get; set; }
+
         double Volume24HourBase { get; }
         double Volume24HourQuote { get; }
 
@@ -20,6 +22,7 @@ namespace DallEX.io.API.MarketTools
         DateTime primeiraVenda { get; set; }
         double gapTradeSeconds { get; set; }
         double indiceMaluco { get; set; }
+
 
         double btcExchangeValue { get; set; }
         double ethExchangeValue { get; set; }

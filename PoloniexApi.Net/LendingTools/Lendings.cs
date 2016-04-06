@@ -22,7 +22,7 @@ namespace DallEX.io.API.LendingTools
         }
         public Task<PublicLoanOffersData> GetLoanOffersAsync(string currency)
         {
-            return Task.Factory.StartNew(() => GetLoanOffers(currency));
+            return Task.Run(() => GetLoanOffers(currency));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

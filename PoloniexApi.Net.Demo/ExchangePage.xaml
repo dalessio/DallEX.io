@@ -13,27 +13,66 @@
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-
-            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="0" Foreground="#333333">
+            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="0" Foreground="#333333" FontSize="16" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False"/>
-                    <DataGridTextColumn x:Name="priceLast" Header="Last" Binding="{Binding Value.PriceLast, StringFormat=\{0:0.00000000\}}" Width="*"/>
-                    <DataGridTextColumn x:Uid="volume" x:Name="volume" Header="Volume" Binding="{Binding Value.Volume24HourBase, StringFormat=\{0:0.00000000\}}" Width="*" SortDirection="Descending"/>
-                    <DataGridTextColumn x:Name="volumeQuote" Header="Vol. Quote" Binding="{Binding Value.Volume24HourQuote, StringFormat=\{0:0.00000000\}}" Width="*"/>
-                    <DataGridTextColumn x:Name="priceChange" Header="Change" Binding="{Binding Value.PriceChangePercentage, StringFormat=\{0:0.000000%\}}" Width="*"/>
+                    <DataGridTextColumn x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False" TextBlock.TextAlignment="Left" FontWeight="Bold">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn x:Name="priceLast" Header="Last Price" Binding="{Binding Value.PriceLast, StringFormat=\{0:0.00000000\}}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="TextElement.FontSize" Value="19"/>
+                                <Setter Property="Foreground" Value="DarkBlue"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn x:Uid="volume" x:Name="volume" Header="Volume" Binding="{Binding Value.Volume24HourBase, StringFormat=\{0:0.00000000\}}" SortDirection="Descending" />
+                    <DataGridTextColumn x:Name="volumeQuote" Header="Vol. Quote" Binding="{Binding Value.Volume24HourQuote, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn x:Name="priceChange" Header="Change" Binding="{Binding Value.PriceChangePercentage, StringFormat=\{0:0.000000%\}}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Value.isPositiveChange}" Value="True">
+                                        <Setter Property="Foreground" Value="Green" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Value.isPositiveChange}" Value="False">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
 
-                    <DataGridTextColumn x:Name="topBid" Header="Top bid" Binding="{Binding Value.OrderTopBuy, StringFormat=\{0:0.00000000\}}" Width="*"/>
-                    <DataGridTextColumn x:Name="topAsk" Header="Top ask" Binding="{Binding Value.OrderTopSell, StringFormat=\{0:0.00000000\}}" Width="*"/>
+                    <DataGridTextColumn x:Name="topBid" Header="Top bid" Binding="{Binding Value.OrderTopBuy, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn x:Name="topAsk" Header="Top ask" Binding="{Binding Value.OrderTopSell, StringFormat=\{0:0.00000000\}}"/>
 
-                    <DataGridTextColumn x:Name="orderSpread" Header="Spread" Binding="{Binding Value.OrderSpreadPercentage, StringFormat=\{0:0.00000000\}}" Width="*"/>
-                    <DataGridTextColumn x:Name="spread" Header="Spread%" Binding="{Binding Value.OrderSpreadPercentage, StringFormat=\{0:0.000%\}}" Width="*"/>
+                    <DataGridTextColumn x:Name="orderSpread" Header="Spread" Binding="{Binding Value.OrderSpreadPercentage, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn x:Name="spread" Header="Spread%" Binding="{Binding Value.OrderSpreadPercentage, StringFormat=\{0:0.000%\}}"/>
 
-                    <DataGridTextColumn x:Name="indiceMaluco" Header="OBINA%" Binding="{Binding Value.indiceMaluco, StringFormat=\{0:0.000%\}}" Width="*"/>
+                    <DataGridTextColumn x:Name="indiceMaluco" Header="OBINA%" Binding="{Binding Value.indiceMaluco, StringFormat=\{0:0.000%\}}"/>
 
+                    <DataGridTextColumn x:Name="priceHigh24hr" Header="Price High 24hr" Binding="{Binding Value.PriceHigh24hr, StringFormat=\{0:0.00000000\}}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="Green"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn x:Name="priceLow24hr" Header="Price Low 24hr" Binding="{Binding Value.PriceLow24hr, StringFormat=\{0:0.00000000\}}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
 
                 </DataGrid.Columns>
             </DataGrid>
@@ -56,7 +95,13 @@
             <Label x:Name="lblFirstBid" BorderBrush="Black" Foreground="#ffffff" Content="1st. Bid:" HorizontalAlignment="Left" Margin="12,416,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
             <Label x:Name="lblFirstAsk" BorderBrush="Black" Foreground="#ffffff" Content="1st. Ask" HorizontalAlignment="Left" Margin="12,442,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
             <Label x:Name="lblGapSenconds" BorderBrush="Black" Foreground="#ffffff" Content="Gap Seconds: " HorizontalAlignment="Left" Margin="12,468,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
-            <ComboBox  FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="cbCurrency" HorizontalAlignment="Left" Height="23" Margin="88,37,0,0" VerticalAlignment="Top" Width="102" Grid.Column="1" Grid.Row="2"/>
+            <ComboBox  FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="cbCurrency" HorizontalAlignment="Left" Height="23" Margin="88,37,0,0" VerticalAlignment="Top" Width="102" Grid.Column="1" Grid.Row="2" SelectionChanged="cbCurrency_SelectionChanged" />
+            <Button x:Name="btnTradeHistory" Content="TradeHistory" Grid.Column="1" HorizontalAlignment="Left" Margin="10,527,0,0" VerticalAlignment="Top" Width="180" Height="25" Click="btnTradeHistory_Click" />
+            <Button x:Name="btnBuy" Content="Buy" Grid.Column="1" HorizontalAlignment="Left" Margin="15,562,0,0" VerticalAlignment="Top" Width="25" Height="25" />
+            <Button x:Name="btnSell" Content="Sell" Grid.Column="1" HorizontalAlignment="Left" Margin="45,562,0,0" VerticalAlignment="Top" Width="25" Height="25" />
+            <Button x:Name="btnOpenOrders" Content="OO" Grid.Column="1" HorizontalAlignment="Left" Margin="75,562,0,0" VerticalAlignment="Top" Width="25" Height="25" />
+            <Button x:Name="btnMainGraph" Content="MG" Grid.Column="1" HorizontalAlignment="Left" Margin="105,562,0,0" VerticalAlignment="Top" Width="25" Height="25" />
+            <Button x:Name="btnMarketDeepGraph" Content="MD" Grid.Column="1" HorizontalAlignment="Left" Margin="135,562,0,0" VerticalAlignment="Top" Width="25" Height="25" />
         </Grid>
     </DockPanel>
 </Page>

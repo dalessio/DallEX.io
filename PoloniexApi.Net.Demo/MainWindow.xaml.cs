@@ -123,9 +123,9 @@ namespace DallEX.io.View
                 worker.RunWorkerAsync();
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        private async void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
+            await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey)).ConfigureAwait(false);
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -138,66 +138,67 @@ namespace DallEX.io.View
 
         void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            try
             {
-                if (disposing)
+                if (!disposedValue)
                 {
-                    if (worker != null)
+                    if (disposing)
                     {
-                        if (worker.IsBusy)
-                            worker.CancelAsync();
+                        if (worker != null)
+                        {
+                            if (worker.IsBusy)
+                                worker.CancelAsync();
 
-                        worker.Dispose();
-                    }
+                            worker.Dispose();
+                        }
 
-                    worker = null;
+                        worker = null;
 
-                    if (updateTimer != null)
-                        updateTimer.Dispose();
+                        if (updateTimer != null)
+                            updateTimer.Dispose();
 
-                    updateTimer = null;
+                        updateTimer = null;
 
-                    if (lendingPage != null)
-                        lendingPage.Dispose();
-                    lendingPage = null;
+                        if (lendingPage != null)
+                            lendingPage.Dispose();
+                        lendingPage = null;
 
-                    if (exchangeBTCPage != null)
-                        exchangeBTCPage.Dispose();
-                    exchangeBTCPage = null;
-
-
-                    if (exchangeXMRPage != null)
-                        exchangeXMRPage.Dispose();
-                    exchangeXMRPage = null;
+                        if (exchangeBTCPage != null)
+                            exchangeBTCPage.Dispose();
+                        exchangeBTCPage = null;
 
 
-                    if (exchangeUSDTPage != null)
-                        exchangeUSDTPage.Dispose();
-                    exchangeUSDTPage = null;
+                        if (exchangeXMRPage != null)
+                            exchangeXMRPage.Dispose();
+                        exchangeXMRPage = null;
 
-                    if (accountPage != null)
-                        accountPage.Dispose();
-                    accountPage = null;
 
-                    if (TabMain != null)
-                        if (TabMain.Items != null)
-                            TabMain.Items.Clear();
+                        if (exchangeUSDTPage != null)
+                            exchangeUSDTPage.Dispose();
+                        exchangeUSDTPage = null;
 
-                    TabMain = null;
+                        if (accountPage != null)
+                            accountPage.Dispose();
+                        accountPage = null;
 
-                    exchangeBTCTab.Content = null;
-                    exchangeXMRTab.Content = null;
-                    exchangeUSDTTab.Content = null;
-                    accountTab.Content = null;
-                    lendingTab.Content = null;
+                        if (TabMain != null)
+                            if (TabMain.Items != null)
+                                TabMain.Items.Clear();
 
-                    exchangeBTCTab = null;
-                    exchangeXMRTab = null;
-                    exchangeUSDTTab = null;
-                    accountTab = null;
-                    lendingTab = null;
+                        LoanContext.Instance().Dispose();
 
+                    }                    
                 }
+            }
+            finally
+            {
+                TabMain = null;
+
+                exchangeBTCTab = null;
+                exchangeXMRTab = null;
+                exchangeUSDTTab = null;
+                accountTab = null;
+                lendingTab = null;
 
                 disposedValue = true;
             }

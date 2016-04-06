@@ -1,4 +1,6 @@
 ﻿using DallEX.io.API;
+using DallEX.io.API.LendingTools;
+using DallEX.io.API.MarketTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +24,9 @@ namespace DallEX.io.View.UserControls
     /// <summary>
     /// Interaction logic for ucTopDisplay.xaml
     /// </summary>
-    public partial class ucTopDisplay : UserControl, IDisposable
+    public sealed partial class ucTopDisplay : UserControl, IDisposable
     {
         private ThicknessAnimation ThickAnimation = null;
-        private ThreadStart threadStart = null;
-        private Thread thread = null;
 
         private static object _syncRoot = new object();
 
@@ -40,97 +40,75 @@ namespace DallEX.io.View.UserControls
             ThickAnimation.FillBehavior = FillBehavior.Stop;
             ThickAnimation.Duration = new Duration(TimeSpan.FromSeconds(6));
 
-            if (threadStart == null)
-                threadStart = new ThreadStart(LeftToRightMarqueeOnTextBox);
-
             disposedValue = false;
 
         }
 
-        public async void LoadLoanOffersAsync(PoloniexClient PoloniexClient)
+        public async Task LoadLoanOffersAsync(PoloniexClient PoloniexClient)
         {
+            PublicLoanOffersData lendings = null;
+            LendingOffer firstLoanOffer = null;
+            IDictionary<CurrencyPair, IMarketData> markets = null;
+
             try
             {
-                var lendings = await PoloniexClient.Lendings.GetLoanOffersAsync("BTC");
-                var firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
+                lendings = await PoloniexClient.Lendings.GetLoanOffersAsync("BTC");
+                firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
 
-                var markets = await PoloniexClient.Markets.GetSummaryAsync();
-                double ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-                double btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                markets = await PoloniexClient.Markets.GetSummaryAsync();
+                if (markets != null)
+                    if (markets.Any())
+                    {
+                        double ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                        double btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
 
-                firstLoanOffer.ethExchangeValue = ethPriceLast;
-                firstLoanOffer.btcExchangeValue = btcPriceLast;
+                        firstLoanOffer.ethExchangeValue = ethPriceLast;
+                        firstLoanOffer.btcExchangeValue = btcPriceLast;
 
 
-                string eth = string.Concat("BTC/ETH: ", firstLoanOffer.ethExchangeValue.ToString("0.00000000"));
-                string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.00000000"));
-                string loan = string.Concat("BTC Loan Rate: ", firstLoanOffer.rate.ToString("0.00000%"));
+                        string eth = string.Concat("BTC/ETH: ", firstLoanOffer.ethExchangeValue.ToString("0.00000000"));
+                        string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.00000000"));
+                        string loan = string.Concat("BTC Loan Rate: ", firstLoanOffer.rate.ToString("0.00000%"));
 
-                txtDisplay.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
-                {
-                    txtDisplay.Text = string.Concat(btc, "          ", eth, "          ", loan);
-                });
+                        txtDisplay.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                        {
+                            txtDisplay.Text = string.Concat(btc, "          ", eth, "          ", loan);
+                        });
 
-                LeftToRightMarqueeOnTextBoxThread();
-
+                        await LeftToRightMarqueeOnTextBox().ConfigureAwait(false);
+                    }
+            }
+            finally
+            {
                 lendings = null;
                 firstLoanOffer = null;
                 markets = null;
             }
-            catch (Exception ex)
-            {
-                //todo: log
-            }
-            finally
-            {
-            }
         }
 
-        private void LeftToRightMarqueeOnTextBoxThread()
+        public async Task LeftToRightMarqueeOnTextBox()
         {
-            try
+            await Task.Run(() =>
             {
-                if (thread == null ||
-                    (thread.ThreadState != System.Threading.ThreadState.Running &&
-                    thread.ThreadState != System.Threading.ThreadState.WaitSleepJoin)
-                )
+                txtDisplay.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
                 {
-                    lock (_syncRoot)
+
+                    string Copy = string.Concat(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                        txtDisplay.Text);
+
+                    double TextGraphicalWidth = new FormattedText(Copy, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface(txtDisplay.FontFamily.Source), txtDisplay.FontSize, txtDisplay.Foreground).WidthIncludingTrailingWhitespace;
+                    double TextLenghtGraphicalWidth = 0;
+
+                    while (TextLenghtGraphicalWidth < txtDisplay.ActualWidth)
                     {
-                        thread = new Thread(threadStart);
-                        thread.Priority = ThreadPriority.AboveNormal;
-                        thread.IsBackground = true;
-                        thread.Start();
+                        txtDisplay.Text += Copy;
+                        TextLenghtGraphicalWidth = new FormattedText(txtDisplay.Text, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface(txtDisplay.FontFamily.Source), txtDisplay.FontSize, txtDisplay.Foreground).WidthIncludingTrailingWhitespace;
                     }
-                }
-
-            }
-            catch (Exception ex)
-            { }
-
-        }
-
-
-        public void LeftToRightMarqueeOnTextBox()
-        {
-            txtDisplay.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
-            {
-
-                string Copy = string.Concat(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
-                    txtDisplay.Text);
-
-                double TextGraphicalWidth = new FormattedText(Copy, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface(txtDisplay.FontFamily.Source), txtDisplay.FontSize, txtDisplay.Foreground).WidthIncludingTrailingWhitespace;
-                double TextLenghtGraphicalWidth = 0;
-
-                while (TextLenghtGraphicalWidth < txtDisplay.ActualWidth)
-                {
-                    txtDisplay.Text += Copy;
-                    TextLenghtGraphicalWidth = new FormattedText(txtDisplay.Text, System.Globalization.CultureInfo.CurrentCulture, System.Windows.FlowDirection.LeftToRight, new Typeface(txtDisplay.FontFamily.Source), txtDisplay.FontSize, txtDisplay.Foreground).WidthIncludingTrailingWhitespace;
-                }
-                txtDisplay.Text += " " + txtDisplay.Text;
-                ThickAnimation.To = new Thickness(-TextGraphicalWidth, 0, 0, 0);
-                txtDisplay.BeginAnimation(TextBox.PaddingProperty, ThickAnimation);
-            });
+                    txtDisplay.Text += " " + txtDisplay.Text;
+                    ThickAnimation.To = new Thickness(-TextGraphicalWidth, 0, 0, 0);
+                    txtDisplay.BeginAnimation(TextBox.PaddingProperty, ThickAnimation);
+                });
+            }).ConfigureAwait(true) ;
         }
 
         #region IDisposable Support
@@ -142,14 +120,8 @@ namespace DallEX.io.View.UserControls
             {
                 if (disposing)
                 {
-                    if (thread != null)
-                        thread.Abort();
-
                     ThickAnimation = null;
-                    threadStart = null;
-                    thread = null;
                 }
-
                 disposedValue = true;
             }
         }

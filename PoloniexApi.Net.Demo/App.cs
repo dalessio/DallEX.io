@@ -7,59 +7,20 @@ using System.Windows;
 
 namespace DallEX.io.View
 {
-    public sealed partial class App : Application, IDisposable
+    public sealed partial class App : Application
     {
-        private MainWindow wnd = null;
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            wnd = new MainWindow();
-            wnd.Show();
+            using (var wnd = new MainWindow())
+            {
+                wnd.ShowDialog();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            Dispose();
         }
-
-
-        #region IDisposable Support
-        private bool disposedValue = false;
-
-        void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    try
-                    {
-                        if (wnd != null)
-                            wnd.Close();
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                    finally
-                    {
-                        wnd = null;
-                        GC.Collect();
-                    }
-                }
-
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-        #endregion
-
     }
 }

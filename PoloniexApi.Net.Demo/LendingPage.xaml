@@ -15,10 +15,10 @@
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-            <DataGrid x:Name="DataGrid1" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*"  AutoGenerateColumns="False"  Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Foreground="#333333">
+            <DataGrid x:Name="DataGrid1" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*"  AutoGenerateColumns="False"  Margin="0,0,0,0" Grid.Column="0" Grid.Row="2" Foreground="#333333"  AlternatingRowBackground="LightGray" TextBlock.TextAlignment="Right" FontSize="16">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Rate" Binding="{Binding rate, StringFormat=\{0:0.00000%\}}" SortDirection="Ascending"/>
-                    <DataGridTextColumn Header="Amount" Binding="{Binding amount, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="Rate" Binding="{Binding rate, StringFormat=\{0:0.00000%\}}" SortDirection="Ascending" FontWeight="Bold" />
+                        <DataGridTextColumn Header="Amount" Binding="{Binding amount, StringFormat=\{0:0.00000000\}}"/>
                     <DataGridTextColumn Header="Range Max" Binding="{Binding rangeMax, StringFormat=\{0:0 days\}}"/>
                     <DataGridTextColumn Header="Range Min" Binding="{Binding rangeMin, StringFormat=\{0:0 days\}}"/>
                 </DataGrid.Columns>
@@ -27,10 +27,6 @@
             <Label Foreground="#ffffff" FontWeight="Bold" Content="Minutes:" HorizontalAlignment="Left" Margin="14,61,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
             <Label Foreground="#5cb85c" Content="High Loan Rate:" HorizontalAlignment="Left" Margin="14,134,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
             <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtMaiorLoanRate" HorizontalAlignment="Left" Height="30" Margin="16,160,0,0" TextWrapping="Wrap" Text="0%" VerticalAlignment="Top" Width="176" FontSize="20"  Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
-            <Label Foreground="#ffffff" Background="#000000" Content="BTC / ETH:" HorizontalAlignment="Left" Margin="14,320,0,0" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="2"/>
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtBtcEth" HorizontalAlignment="Left" Height="30" Margin="14,346,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20"  Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
-            <Label Foreground="#ffffff" Content="USDT / BTC:" HorizontalAlignment="Left" Margin="14,379,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtUsdtBtc" HorizontalAlignment="Left" Height="30" Margin="14,405,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
             <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDataRegistro" HorizontalAlignment="Left" Height="30" Margin="14,104,0,0" TextWrapping="Wrap" Text="1/1/2016 00:00:00" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
 
             <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000"  x:Name="txtRateAverage" HorizontalAlignment="Left" Height="30" Margin="14,285,0,0" TextWrapping="Wrap" Text="0%" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
@@ -58,8 +54,8 @@
 
 
             <Label Foreground="#ffffff" FontWeight="Bold" Content="Currency:" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <Label Foreground="#ffffff" Content="Total Offers:" HorizontalAlignment="Left" Margin="16,446,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="2"/>
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtCountLoanOffers" HorizontalAlignment="Left" Height="30" Margin="16,472,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="176" FontSize="20" Grid.Column="1" IsReadOnly="True" Grid.Row="2"/>
+            <Label Foreground="#ffffff" Content="Total Offers:" HorizontalAlignment="Left" Margin="16,332,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtCountLoanOffers" HorizontalAlignment="Left" Height="30" Margin="16,358,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="176" FontSize="20" Grid.Column="1" IsReadOnly="True"/>
 
 
         </Grid>

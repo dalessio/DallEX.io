@@ -1,26 +1,15 @@
+using DallEX.io.API;
+using DallEX.io.API.MarketTools;
+using DallEX.io.API.WalletTools;
+using DallEX.io.View.Library;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Configuration;
-using DallEX.io.API.MarketTools;
-using System.Collections;
-using System.Data.Entity;
-using DallEX.io.API;
-
-using DallEX.io.View.Library;
 using System.Windows.Threading;
 
 namespace DallEX.io.View
@@ -40,75 +29,71 @@ namespace DallEX.io.View
         public AccountPage() : base()
         {
             InitializeComponent();
+
+            if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
+                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+
+            FachadaWSSGS = Singleton<FachadaWSSGS.FachadaWSSGSClient>.Instance;
         }
 
         private async Task LoadSummaryAsync()
         {
+            IDictionary<string, Balance> balances = null;
+            DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
+            IDictionary<CurrencyPair, IMarketData> markets = null;
+
+            double btcTheterPriceLast = 0;
+
             try
             {
-                if (PoloniexClient != null)
-                {
-                    var balances = await PoloniexClient.Wallet.GetBalancesAsync();
+                if (PoloniexClient != null) 
+                    balances = await PoloniexClient.Wallet.GetBalancesAsync();
 
-                    double totalBTC = 0.0;
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                if (balances != null)
+                    if (balances.Any())
                     {
-                        dtgAccount.Items.Clear();
-                        if (balances != null)
-                            foreach (var balance in balances)
-                            {
-                                totalBTC = totalBTC + balance.Value.btcValue;
+                        double totalBTC = 0.0;
 
-                                if (balance.Value.btcValue > 0)
-                                    dtgAccount.Items.Add(balance);
-                            }
-                    });
+                        markets = await PoloniexClient.Markets.GetSummaryAsync();
+                        btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;                      
 
-                    if (PoloniexClient != null)
-                    {
-                        double btcTheterPriceLast = 0;
+                        bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
 
-                        var markets = await PoloniexClient.Markets.GetSummaryAsync();
-                        if (markets != null)
+                        double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
                         {
-                            btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-
-                            var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
-                            if (FachadaWSSGS != null)
+                            if (balances != null)
                             {
-                                var bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
-
-                                if (bcAsync != null)
+                                dtgAccount.Items.Clear();
+                                foreach (var balance in balances.OrderBy(x => x.Key))
                                 {
-                                    var valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
+                                    totalBTC = totalBTC + balance.Value.btcValue;
 
-                                    var totalBRL = Math.Round(totalUSD * valorDolarCompraBC, 2);
-
-                                    this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                                    if (balance.Value.btcValue > 0)
                                     {
-                                        txtTotalBTC.Text = totalBTC.ToString("0.00000000");
-                                        txtTotalUSD.Text = totalUSD.ToString("000.00000000");
-                                        txtTotalBRL.Text = Math.Round(totalBRL, 2).ToString("C2").Replace("R$ ", "");
-                                    });
-
-                                    bcAsync = null;
+                                        balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
+                                        dtgAccount.Items.Add(balance);
+                                    }
                                 }
                             }
-                        }
-                        balances = null;
-                        markets = null;
+
+                            var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
+
+                            txtTotalBTC.Text = totalBTC.ToString("0.00000000");
+                            txtTotalUSD.Text = totalUSD.ToString("000.00000000");
+                            txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
+
+                        });
                     }
-                }
-            }
-#pragma warning disable CS0168 // The variable 'ex' is declared but never used
-            catch (Exception ex)
-#pragma warning restore CS0168 // The variable 'ex' is declared but never used
-            {
-                //todo: log
             }
             finally
             {
+                balances = null;
+                bcAsync = null;
+                markets = null;
             }
 
         }
@@ -124,14 +109,10 @@ namespace DallEX.io.View
             dtgAccount.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, ListSortDirection.Descending));
 
             // Apply sort
-            foreach (var col in dtgAccount.Columns)
-            {
+            foreach (var col in dtgAccount.Columns){
                 col.SortDirection = null;
             }
             column.SortDirection = ListSortDirection.Descending;
-
-            // Refresh items to display sort
-            dtgAccount.Items.Refresh();
         }
 
         private void UpdateGrid(object state)
@@ -142,68 +123,21 @@ namespace DallEX.io.View
 
         private async void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            await LoadSummaryAsync();
+            await LoadSummaryAsync().ConfigureAwait(false);
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
-
-            // Set icon from the assembly
-            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-
             worker = new BackgroundWorker();
             worker.WorkerSupportsCancellation = true;
             worker.DoWork += worker_DoWork;
 
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
-
-            FachadaWSSGS = new FachadaWSSGS.FachadaWSSGSClient();
-
-            disposedValue = false;
         }
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
             CancelTimer();
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false;
-
-        void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    try
-                    {
-                        CancelTimer();
-
-                        if (FachadaWSSGS != null)
-                            FachadaWSSGS.Close();
-
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                    finally
-                    {
-                        updateTimer = null;
-
-                        worker = null;
-
-                        FachadaWSSGS = null;
-
-                        PoloniexClient = null;
-                    }
-                }
-
-                disposedValue = true;
-            }
         }
 
         private void CancelTimer()
@@ -223,6 +157,45 @@ namespace DallEX.io.View
             worker = null;
 
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false;
+
+        public bool IsDisposed
+        {
+            get
+            {
+                return disposedValue;
+            }
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    try
+                    {
+                        CancelTimer();
+
+                        if (FachadaWSSGS != null)
+                            FachadaWSSGS.Close();
+                    }
+                    finally
+                    {
+                        updateTimer = null;
+                        worker = null;
+                        FachadaWSSGS = null;
+                        PoloniexClient = null;
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+
 
 
         public void Dispose()

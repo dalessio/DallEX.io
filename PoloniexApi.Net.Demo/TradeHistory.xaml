@@ -1,0 +1,65 @@
+﻿<Window x:Class="DallEX.io.View.TradeHistory"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DallEX.io.View"
+        mc:Ignorable="d"
+        Title="TradeHistory" Height="Auto" Width="Auto">
+    <Grid>
+        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="tabControl_SelectionChanged">
+            <TabItem Header="Trade Hisotry">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dtgTradeHistory" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Column="0" Foreground="#333333" FontSize="12" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Uid="Time" Header="Time" Binding="{Binding Time}" FontSize="10" />
+                            <DataGridTextColumn x:Uid="Type" Header="Type" Binding="{Binding Type}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Type}" Value="Sell">
+                                                <Setter Property="Foreground" Value="Green" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Buy">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Your Trade History">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dtgYourTradeHistory" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="false" Grid.Column="0" Foreground="#333333" FontSize="12" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Uid="Time" Header="Time" Binding="{Binding Time}" FontSize="10" />
+                            <DataGridTextColumn x:Uid="Type" Header="Type" Binding="{Binding Type}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Type}" Value="Sell">
+                                                <Setter Property="Foreground" Value="Green" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Buy">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

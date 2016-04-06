@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DallEX.io.API.MarketTools;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -66,39 +67,58 @@ namespace DallEX.io.API.WalletTools
             PostData<IGeneratedDepositAddress>("withdraw", postData);
         }
 
+        #region Trade
+        private IList<ITrade> GetTradesHistory(CurrencyPair currencyPair)
+        {
+            var postData = new Dictionary<string, object> {
+                { "currencyPair", currencyPair }
+            };
+
+            var data = PostData<IList<Trade>>("returnTradeHistory" , postData);
+
+            return new List<ITrade>(data);
+        }
+        public Task<IList<ITrade>> GetTradesHistoryAsync(CurrencyPair currencyPair)
+        {
+            return Task.Run(() => GetTradesHistory(currencyPair));
+        }
+
+        #endregion
+
+
         public Task<IDictionary<string, Balance>> GetBalancesAsync()
         {
-            return Task.Factory.StartNew(() => GetBalances());
+            return Task.Run(() => GetBalances());
         }
 
         public Task<IDictionary<string, string>> GetDepositAddressesAsync()
         {
-            return Task.Factory.StartNew(() => GetDepositAddresses());
+            return Task.Run(() => GetDepositAddresses());
         }
 
         public Task<IDepositWithdrawalList> GetDepositsAndWithdrawalsAsync(DateTime startTime, DateTime endTime)
         {
-            return Task.Factory.StartNew(() => GetDepositsAndWithdrawals(startTime, endTime));
+            return Task.Run(() => GetDepositsAndWithdrawals(startTime, endTime));
         }
 
         public Task<IDepositWithdrawalList> GetDepositsAndWithdrawalsAsync()
         {
-            return Task.Factory.StartNew(() => GetDepositsAndWithdrawals(Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
+            return Task.Run(() => GetDepositsAndWithdrawals(Helper.DateTimeUnixEpochStart, DateTime.MaxValue));
         }
 
         public Task<IGeneratedDepositAddress> PostGenerateNewDepositAddressAsync(string currency)
         {
-            return Task.Factory.StartNew(() => PostGenerateNewDepositAddress(currency));
+            return Task.Run(() => PostGenerateNewDepositAddress(currency));
         }
 
         public Task PostWithdrawalAsync(string currency, double amount, string address, string paymentId)
         {
-            return Task.Factory.StartNew(() => PostWithdrawal(currency, amount, address, paymentId));
+            return Task.Run(() => PostWithdrawal(currency, amount, address, paymentId));
         }
 
         public Task PostWithdrawalAsync(string currency, double amount, string address)
         {
-            return Task.Factory.StartNew(() => PostWithdrawal(currency, amount, address, null));
+            return Task.Run(() => PostWithdrawal(currency, amount, address, null));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,4 +1,5 @@
-﻿using DallEX.io.API.WalletTools;
+﻿using DallEX.io.API.MarketTools;
+using DallEX.io.API.WalletTools;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -50,5 +51,9 @@ namespace DallEX.io.API
         /// </param>
         /// <param name="address">The address you wish to withdraw to.</param>
         Task PostWithdrawalAsync(string currency, double amount, string address);
+
+        /// <param name="currencyPair">The currency pair to stop fetching data at.</param>
+        /// <summary>Returns all of your Trade History.</summary>
+        Task<IList<ITrade>> GetTradesHistoryAsync(CurrencyPair currencyPair);
     }
 }
