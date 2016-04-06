@@ -40,62 +40,64 @@ namespace DallEX.io.View
 
         private async Task LoadSummaryAsync()
         {
-            IDictionary<string, Balance> balances = null;
-            DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
-            IDictionary<CurrencyPair, IMarketData> markets = null;
-
-            double btcTheterPriceLast = 0;
-
-            try
+            await Task.Run(async () =>
             {
-                if (PoloniexClient != null) 
-                    balances = await PoloniexClient.Wallet.GetBalancesAsync();
+                IDictionary<string, Balance> balances = null;
+                DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
+                IDictionary<CurrencyPair, IMarketData> markets = null;
 
-                if (balances != null)
-                    if (balances.Any())
-                    {
-                        double totalBTC = 0.0;
+                double btcTheterPriceLast = 0;
 
-                        markets = await PoloniexClient.Markets.GetSummaryAsync();
-                        btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;                      
+                try
+                {
+                    if (PoloniexClient != null)
+                        balances = await PoloniexClient.Wallet.GetBalancesAsync();
 
-                        bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
-
-                        double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                    if (balances != null)
+                        if (balances.Any())
                         {
-                            if (balances != null)
-                            {
-                                dtgAccount.Items.Clear();
-                                foreach (var balance in balances.OrderBy(x => x.Key))
-                                {
-                                    totalBTC = totalBTC + balance.Value.btcValue;
+                            double totalBTC = 0.0;
 
-                                    if (balance.Value.btcValue > 0)
+                            markets = await PoloniexClient.Markets.GetSummaryAsync();
+                            btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+
+                            bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
+
+                            double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
+
+                            this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                            {
+                                if (balances != null)
+                                {
+                                    dtgAccount.Items.Clear();
+                                    foreach (var balance in balances.OrderBy(x => x.Key))
                                     {
-                                        balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
-                                        dtgAccount.Items.Add(balance);
+                                        totalBTC = totalBTC + balance.Value.btcValue;
+
+                                        if (balance.Value.btcValue > 0)
+                                        {
+                                            balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
+                                            dtgAccount.Items.Add(balance);
+                                        }
                                     }
                                 }
-                            }
 
-                            var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
+                                var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
 
-                            txtTotalBTC.Text = totalBTC.ToString("0.00000000");
-                            txtTotalUSD.Text = totalUSD.ToString("000.00000000");
-                            txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
+                                txtTotalBTC.Text = totalBTC.ToString("0.00000000");
+                                txtTotalUSD.Text = totalUSD.ToString("000.00000000");
+                                txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
 
-                        });
-                    }
-            }
-            finally
-            {
-                balances = null;
-                bcAsync = null;
-                markets = null;
-            }
-
+                            });
+                        }
+                }
+                finally
+                {
+                    balances = null;
+                    bcAsync = null;
+                    markets = null;
+                }
+            });
         }
 
         private void dtgAccount_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -109,7 +111,8 @@ namespace DallEX.io.View
             dtgAccount.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, ListSortDirection.Descending));
 
             // Apply sort
-            foreach (var col in dtgAccount.Columns){
+            foreach (var col in dtgAccount.Columns)
+            {
                 col.SortDirection = null;
             }
             column.SortDirection = ListSortDirection.Descending;
@@ -194,9 +197,6 @@ namespace DallEX.io.View
                 disposedValue = true;
             }
         }
-
-
-
 
         public void Dispose()
         {

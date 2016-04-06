@@ -145,7 +145,6 @@
     <Compile Include="TradingTools\Trading.Interface.cs" />
     <Compile Include="WalletTools\Balance.cs" />
     <Compile Include="WalletTools\Balance.Interface.cs" />
-    <Compile Include="WalletTools\Currencies.cs" />
     <Compile Include="WalletTools\DepositWithdrawalList.cs" />
     <Compile Include="WalletTools\DepositWithdrawalList.Interface.cs" />
     <Compile Include="WalletTools\GeneratedDepositAddress.Interface.cs" />

@@ -56,7 +56,7 @@ namespace DallEX.io.API
                     }
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 return default(T);
             }

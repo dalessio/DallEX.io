@@ -11,11 +11,11 @@ namespace DallEX.io.View.Library
 {
     public abstract class PageBase : Page
     {
-        //public PoloniexClient PoloniexClient { get; set; }
+        
 
         public PageBase() : base()
         {
-            //PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            
         }
     }
 }

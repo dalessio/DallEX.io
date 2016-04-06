@@ -93,25 +93,36 @@ namespace DallEX.io.View
             accountTab.Content = null;
             lendingTab.Content = null;
 
+            exchangeBTCPage.IsEnabled = false;
+            exchangeXMRPage.IsEnabled = false;
+            exchangeUSDTPage.IsEnabled = false;
+            lendingPage.IsEnabled = false;
+            accountPage.IsEnabled = false;
+
             switch (TabMain.SelectedIndex)
             {
                 case 0: //Lending
+                    lendingPage.IsEnabled = true;
                     lendingTab.Content = lendingPage.Content;
                     break;
 
                 case 1:  //Exchange BTC
+                    exchangeBTCPage.IsEnabled = true;
                     exchangeBTCTab.Content = exchangeBTCPage.Content;
                     break;
 
                 case 2:  //Exchange XMR
+                    exchangeXMRPage.IsEnabled = true;
                     exchangeXMRTab.Content = exchangeXMRPage.Content;
                     break;
 
                 case 3:  //Exchange USDT
+                    exchangeUSDTPage.IsEnabled = true;
                     exchangeUSDTTab.Content = exchangeUSDTPage.Content;
                     break;
 
                 case 4: //Account
+                    accountPage.IsEnabled = true;
                     accountTab.Content = accountPage.Content;
                     break;
             }

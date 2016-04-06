@@ -26,28 +26,22 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for TradeHistory.xaml
     /// </summary>
-    public partial class TradeHistory : Window, IDisposable
+    public partial class TradeHistory : Window
     {
         private PoloniexClient PoloniexClient;
-        private CurrencyPair CurrencyPair;
+        public CurrencyPair CurrencyPair;
 
-        private Timer updateTimer;
-
-        private int updateTimeMiliseconds = 3000;
+        public TradeHistoryService TradeHistoryService;
 
         private static int selectedIndex;
 
+        public int Minutos = 20;
 
         public TradeHistory(CurrencyPair currencyPair)
         {
             InitializeComponent();
 
-            if (!int.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
-
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-
-            updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
 
             CurrencyPair = currencyPair;
         }
@@ -63,12 +57,8 @@ namespace DallEX.io.View
             dtgTradeHistory.Items.Clear();
         }
 
-        private async void UpdateGrid(object state)
-        {
-            await LoadMarketSummaryAsync();
-        }
 
-        private async Task LoadMarketSummaryAsync()
+        public async Task LoadTradeSummaryAsync()
         {
             await Task.Run(async () =>
             {
@@ -81,16 +71,12 @@ namespace DallEX.io.View
                         switch (selectedIndex)
                         {
                             case 0: //All
-                                var TradeHistory = await PoloniexClient.Markets.GetTradesAsync(CurrencyPair);
-                                    if (TradeHistory != null)
+                                    if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
                                     {
                                         ClearGrids();
-                                        foreach (var trade in TradeHistory)
+                                        foreach (var trade in TradeHistoryService.Instance().TradesHistoryListAsync)
                                             dtgTradeHistory.Items.Add(trade);
-
-                                        TradeHistory.Clear();
                                     }
-                                TradeHistory = null;
                                 break;
 
                             case 1:  //Your  
@@ -109,36 +95,8 @@ namespace DallEX.io.View
                         });
                     }
                 }
-                finally
-                {
-
-                }
+                catch{}
             });
         }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    if (updateTimer != null)
-                        updateTimer.Dispose();
-
-                    updateTimer = null;
-                    
-                }
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-        #endregion
     }
 }

@@ -111,9 +111,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service\MarketService.cs" />
+    <Compile Include="Service\LendingService.cs" />
     <Compile Include="TradeHistory.xaml.cs">
       <DependentUpon>TradeHistory.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Service\TradeHistoryService.cs" />
     <Compile Include="UserControls\ucTopDisplay.xaml.cs">
       <DependentUpon>ucTopDisplay.xaml</DependentUpon>
     </Compile>
