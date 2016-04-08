@@ -2,6 +2,7 @@ using DallEX.io.API;
 using DallEX.io.API.MarketTools;
 using DallEX.io.API.WalletTools;
 using DallEX.io.View.Library;
+using DallEX.io.View.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -44,7 +45,6 @@ namespace DallEX.io.View
             {
                 IDictionary<string, Balance> balances = null;
                 DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
-                IDictionary<CurrencyPair, IMarketData> markets = null;
 
                 double btcTheterPriceLast = 0;
 
@@ -58,8 +58,7 @@ namespace DallEX.io.View
                         {
                             double totalBTC = 0.0;
 
-                            markets = await PoloniexClient.Markets.GetSummaryAsync();
-                            btcTheterPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                            btcTheterPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
 
                             bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
 
@@ -95,7 +94,6 @@ namespace DallEX.io.View
                 {
                     balances = null;
                     bcAsync = null;
-                    markets = null;
                 }
             });
         }

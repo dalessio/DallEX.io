@@ -2,6 +2,7 @@
 using DallEX.io.API.MarketTools;
 using DallEX.io.API.WalletTools;
 using DallEX.io.View.Library;
+using DallEX.io.View.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;

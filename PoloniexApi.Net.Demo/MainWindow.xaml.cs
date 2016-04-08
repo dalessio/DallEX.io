@@ -1,4 +1,5 @@
 ﻿using DallEX.io.API;
+using DallEX.io.View.Service;
 using System;
 using System.ComponentModel;
 using System.Configuration;
@@ -14,6 +15,8 @@ namespace DallEX.io.View
     /// </summary>
     public sealed partial class MainWindow : Window, IDisposable
     {
+        private PoloniexClient PoloniexClient;
+
         private BackgroundWorker worker;
         private Timer updateTimer;
 
@@ -29,7 +32,7 @@ namespace DallEX.io.View
         private TabItem accountTab;
         private TabItem lendingTab;
 
-        private int updateTimeMiliseconds = 15000;
+        private int updateTimeMiliseconds = 5000;
 
         public MainWindow()
         {
@@ -40,6 +43,8 @@ namespace DallEX.io.View
 
             // Set icon from the assembly
             this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
+
+            PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
             worker = new BackgroundWorker();
             worker.WorkerSupportsCancellation = true;
@@ -136,7 +141,8 @@ namespace DallEX.io.View
 
         private async void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey)).ConfigureAwait(false);
+            MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
+            await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -203,6 +209,8 @@ namespace DallEX.io.View
             }
             finally
             {
+                MarketService.Instance().MarketAsync = null;
+
                 TabMain = null;
 
                 exchangeBTCTab = null;

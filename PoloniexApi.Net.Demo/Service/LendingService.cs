@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DallEX.io.View
+namespace DallEX.io.View.Service
 {
     public class LendingService
     {

@@ -1,6 +1,7 @@
 ﻿using DallEX.io.API;
 using DallEX.io.API.LendingTools;
 using DallEX.io.API.MarketTools;
+using DallEX.io.View.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,19 +38,17 @@ namespace DallEX.io.View.UserControls
             {
                 PublicLoanOffersData lendings = null;
                 LendingOffer firstLoanOffer = null;
-                IDictionary<CurrencyPair, IMarketData> markets = null;
 
                 try
                 {
                     lendings = await PoloniexClient.Lendings.GetLoanOffersAsync("BTC");
                     firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
 
-                    markets = await PoloniexClient.Markets.GetSummaryAsync();
-                    if (markets != null)
-                        if (markets.Any())
+                    if (MarketService.Instance().MarketAsync != null)
+                        if (MarketService.Instance().MarketAsync.Any())
                         {
-                            double ethPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-                            double btcPriceLast = markets.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                            double ethPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                            double btcPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
 
                             firstLoanOffer.ethExchangeValue = ethPriceLast;
                             firstLoanOffer.btcExchangeValue = btcPriceLast;
@@ -70,7 +69,6 @@ namespace DallEX.io.View.UserControls
                 {
                     lendings = null;
                     firstLoanOffer = null;
-                    markets = null;
                 }
             });
         }

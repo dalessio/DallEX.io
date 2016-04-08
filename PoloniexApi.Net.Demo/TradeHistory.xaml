@@ -54,8 +54,8 @@
                                 </DataGridTextColumn.CellStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
-                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
-                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

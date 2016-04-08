@@ -3,21 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:DallEX.io.View.UserControls"
         xmlns:local="clr-namespace:DallEX.io.View.Library"
-        Width="800" Height="600" Background="Black">
+        Width="1000" Height="750" Background="Black">
     <DockPanel>
 
         <Grid Margin="3" TextElement.Foreground="#ffffff" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="300">
+                </RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Row="2" Grid.Column="0" Foreground="#333333" FontSize="16" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <DataGrid x:Name="dtgExchange" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Row="0" Grid.Column="0" Foreground="#333333" FontSize="16" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="id" Header="Market" Binding="{Binding Key}" CanUserResize="False" TextBlock.TextAlignment="Left" FontWeight="Bold">
                         <DataGridTextColumn.CellStyle>
@@ -76,32 +79,52 @@
 
                 </DataGrid.Columns>
             </DataGrid>
-            <Label Foreground="#ffffff" FontWeight="Bold" Content="Currency:" HorizontalAlignment="Left" Margin="23,34,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <Label Foreground="#5cb85c" Content="High Price:" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtHighPrice" HorizontalAlignment="Left" Height="30" Margin="16,146,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1" />
-            <Label Foreground="#ffffff" Background="#000000" Content="Last Price:" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtLastPrice" HorizontalAlignment="Left" Height="30" Margin="14,292,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <Label Foreground="#f2f2f2" x:Name="lblOrdersTotal" Content="Orders Totals:" HorizontalAlignment="Left" Margin="12,323,0,0" VerticalAlignment="Top" Grid.Column="1" Width="148"/>
-            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000" x:Name="txtTotalSell" HorizontalAlignment="Left" Height="30" Margin="14,344,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDataRegistro" HorizontalAlignment="Left" Height="30" Margin="14,100,0,0" TextWrapping="Wrap" Text="1/1/2016 00:00:00" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000"  x:Name="txtPriceAverage" HorizontalAlignment="Left" Height="30" Margin="14,244,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <Label BorderBrush="Black" Foreground="#f2f2f2" Content="Price Average:" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <Label BorderBrush="Black" Foreground="#d9534f" Content="Low Price:" HorizontalAlignment="Left" Margin="10,172,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <TextBox  Foreground="#d9534f" Background="#000000" BorderBrush="Black" x:Name="txtLowPrice" HorizontalAlignment="Left" Height="30" Margin="14,194,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1" />
-            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtTitlePeriodDashboard" HorizontalAlignment="Left" Height="30" Margin="14,4,0,0" TextWrapping="Wrap" Text="Dashboard:" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <TextBox FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="txtMinutos" HorizontalAlignment="Left" Height="23" Margin="88,65,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="102" Grid.Column="1" Grid.Row="2" PreviewTextInput="txtMinutes_PreviewTextInput" />
-            <Label Foreground="#ffffff" FontWeight="Bold" Content="Minutes:" HorizontalAlignment="Left" Margin="22,65,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000" x:Name="txtTotalBuy" HorizontalAlignment="Left" Height="30" Margin="14,370,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
-            <Label x:Name="lblFirstBid" BorderBrush="Black" Foreground="#ffffff" Content="1st. Bid:" HorizontalAlignment="Left" Margin="12,416,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
-            <Label x:Name="lblFirstAsk" BorderBrush="Black" Foreground="#ffffff" Content="1st. Ask" HorizontalAlignment="Left" Margin="12,442,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
-            <Label x:Name="lblGapSenconds" BorderBrush="Black" Foreground="#ffffff" Content="Gap Seconds: " HorizontalAlignment="Left" Margin="12,468,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Width="180"/>
-            <ComboBox  FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="cbCurrency" HorizontalAlignment="Left" Height="23" Margin="88,37,0,0" VerticalAlignment="Top" Width="102" Grid.Column="1" Grid.Row="2" SelectionChanged="cbCurrency_SelectionChanged" />
-            <Button x:Name="btnTradeHistory" Content="TradeHistory" Grid.Column="1" HorizontalAlignment="Left" Margin="10,527,0,0" VerticalAlignment="Top" Width="85" Height="25" Click="btnTradeHistory_Click" />
+            <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
+            <Label Foreground="#ffffff" FontWeight="Bold" Content="Currency:" HorizontalAlignment="Left" Margin="23,83,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <Label Foreground="#5cb85c" Content="High Price:" HorizontalAlignment="Left" Margin="10,174,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtHighPrice" HorizontalAlignment="Left" Height="30" Margin="16,195,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Column="2" />
+            <Label Foreground="#ffffff" Background="#000000" Content="Last Price:" HorizontalAlignment="Left" Margin="10,319,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtLastPrice" HorizontalAlignment="Left" Height="30" Margin="14,341,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Column="2"/>
+            <Label Foreground="#f2f2f2" x:Name="lblOrdersTotal" Content="Orders Totals:" HorizontalAlignment="Left" Margin="12,372,0,0" VerticalAlignment="Top" Grid.Column="2" Width="148"/>
+            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000" x:Name="txtTotalSell" HorizontalAlignment="Left" Height="30" Margin="14,393,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Column="2"/>
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDataRegistro" HorizontalAlignment="Left" Height="30" Margin="14,149,0,0" TextWrapping="Wrap" Text="1/1/2016 00:00:00" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Column="2"/>
+            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000"  x:Name="txtPriceAverage" HorizontalAlignment="Left" Height="30" Margin="14,293,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Column="2"/>
+            <Label BorderBrush="Black" Foreground="#f2f2f2" Content="Price Average:" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <Label BorderBrush="Black" Foreground="#d9534f" Content="Low Price:" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <TextBox  Foreground="#d9534f" Background="#000000" BorderBrush="Black" x:Name="txtLowPrice" HorizontalAlignment="Left" Height="30" Margin="14,243,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Column="2" />
+            <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtTitlePeriodDashboard" HorizontalAlignment="Left" Height="30" Margin="14,53,0,0" TextWrapping="Wrap" Text="Dashboard:" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Column="2"/>
+            <TextBox FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="txtMinutos" HorizontalAlignment="Left" Height="23" Margin="88,114,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="102" Grid.Column="2" PreviewTextInput="txtMinutes_PreviewTextInput" />
+            <Label Foreground="#ffffff" FontWeight="Bold" Content="Minutes:" HorizontalAlignment="Left" Margin="22,114,0,0" VerticalAlignment="Top" Grid.Column="2"/>
+            <TextBox BorderBrush="Black" Foreground="#f2f2f2" Background="#000000" x:Name="txtTotalBuy" HorizontalAlignment="Left" Height="30" Margin="14,419,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="176" FontSize="20" IsReadOnly="True" Grid.Column="2"/>
+            <Label x:Name="lblFirstBid" BorderBrush="Black" Foreground="#ffffff" Content="1st. Bid:" HorizontalAlignment="Left" Margin="10,456,0,0" VerticalAlignment="Top" Grid.Column="2" Width="180"/>
+            <Label x:Name="lblFirstAsk" BorderBrush="Black" Foreground="#ffffff" Content="1st. Ask" HorizontalAlignment="Left" Margin="10,482,0,0" VerticalAlignment="Top" Grid.Column="2" Width="180"/>
+            <Label x:Name="lblGapSenconds" BorderBrush="Black" Foreground="#ffffff" Content="Gap Seconds: " HorizontalAlignment="Left" Margin="10,508,0,0" VerticalAlignment="Top" Grid.Column="2" Width="180"/>
+            <ComboBox  FontSize="16" FontWeight="Bold" Foreground="#428bca" x:Name="cbCurrency" HorizontalAlignment="Left" Height="23" Margin="88,86,0,0" VerticalAlignment="Top" Width="102" Grid.Column="2" SelectionChanged="cbCurrency_SelectionChanged" />
+            <Button x:Name="btnTradeHistory" Content="Trade History" Grid.Column="2" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top" Width="168" Height="25" Click="btnTradeHistory_Click" />
             <Button x:Name="btnBuy" Content="Buy" Grid.Column="1" HorizontalAlignment="Left" Margin="15,562,0,0" VerticalAlignment="Top" Width="25" Height="25" Visibility="Hidden" />
             <Button x:Name="btnSell" Content="Sell" Grid.Column="1" HorizontalAlignment="Left" Margin="45,562,0,0" VerticalAlignment="Top" Width="25" Height="25" Visibility="Hidden" />
             <Button x:Name="btnOpenOrders" Content="OO" Grid.Column="1" HorizontalAlignment="Left" Margin="75,562,0,0" VerticalAlignment="Top" Width="25" Height="25" Visibility="Hidden" />
             <Button x:Name="btnMainGraph" Content="MG" Grid.Column="1" HorizontalAlignment="Left" Margin="105,562,0,0" VerticalAlignment="Top" Width="25" Height="25" Visibility="Hidden" />
             <Button x:Name="btnMarketDeepGraph" Content="MD" Grid.Column="1" HorizontalAlignment="Left" Margin="135,562,0,0" VerticalAlignment="Top" Width="25" Height="25" Visibility="Hidden" />
+            </Grid>
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+
+            <DataGrid x:Name="dtgTradeHistorySells" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="0" Foreground="#333333" FontSize="16" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,30,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PricePerCoin" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="AmountQuote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="AmountBase" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="dtgTradeHistoryBuys" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Row="1" Grid.Column="1" Foreground="#333333" FontSize="16" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,30,0,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PricePerCoin" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="AmountQuote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}"/>
+                    <DataGridTextColumn Header="AmountBase" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Label Foreground="#5cb85c" Content="Sell Orders" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" />
+            <Label BorderBrush="Black" Foreground="#d9534f" Content="Buy Orders" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
         </Grid>
     </DockPanel>
 </local:PageBase>

@@ -3,9 +3,9 @@ using DallEX.io.API.MarketTools;
 using System;
 using System.Collections.Generic;
 
-namespace DallEX.io.View
+namespace DallEX.io.View.Service
 {
-    public class MarketService
+    public sealed class MarketService
     {
         private static readonly Lazy<MarketService> lazy = new Lazy<MarketService>(() => new MarketService());    
 
