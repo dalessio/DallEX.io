@@ -9,6 +9,7 @@ namespace DallEX.io.API.WalletTools
         public double onOrders { get; set; }
         public double btcValue { get; set; }
         public double brzValue { get; set; }
+        public double marketValue { get; set; }
 
         internal Balance()
         {

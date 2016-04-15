@@ -40,6 +40,7 @@ namespace DallEX.io.API.MarketTools
 
 
         public bool isPositiveChange { get; set; }
+        public bool isHave { get; set; }
         public DateTime primeiraCompra { get; set; }
         public DateTime primeiraVenda { get; set; }
         public double gapTradeSeconds { get; set; }

@@ -7,6 +7,7 @@ namespace DallEX.io.API.MarketTools
         double PriceChangePercentage { get; }
 
         bool isPositiveChange { get; set; }
+        bool isHave { get; set; }
 
         double Volume24HourBase { get; }
         double Volume24HourQuote { get; }

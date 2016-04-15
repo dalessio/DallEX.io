@@ -17,7 +17,8 @@ namespace DallEX.io.View
     {
         private PoloniexClient PoloniexClient;
 
-        private BackgroundWorker worker;
+        private SemaphoreSlim semaphoreSlim;
+
         private Timer updateTimer;
 
         private LendingPage lendingPage;
@@ -46,10 +47,8 @@ namespace DallEX.io.View
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
-            worker = new BackgroundWorker();
-            worker.WorkerSupportsCancellation = true;
+            semaphoreSlim = new SemaphoreSlim(1);
 
-            worker.DoWork += worker_DoWork;
             updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);
 
             //0
@@ -133,16 +132,39 @@ namespace DallEX.io.View
             }
         }
 
-        private void UpdateView(object state)
+        private async void UpdateView(object state)
         {
-            if (!worker.IsBusy)
-                worker.RunWorkerAsync();
+            if (semaphoreSlim != null)
+            {
+                await semaphoreSlim.WaitAsync();
+                try
+                {
+                    MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
+                    await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
+                    WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+                }
+                finally
+                {
+                    if (semaphoreSlim != null)
+                        semaphoreSlim.Release();
+                }
+            }
+
         }
 
-        private async void worker_DoWork(object sender, DoWorkEventArgs e)
+        private void button_Click(object sender, RoutedEventArgs e)
         {
-            MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
-            await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
+            if (!chatColumn.Width.Equals(new GridLength(0)))
+            {
+                chatColumn.Width = new GridLength(0);
+                btnChat.Content = "<<";
+                Grid.SetColumn(btnChat, 0);
+            }
+            else {
+                chatColumn.Width = new GridLength(200);
+                btnChat.Content = ">>";
+                Grid.SetColumn(btnChat, 1);
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -161,20 +183,15 @@ namespace DallEX.io.View
                 {
                     if (disposing)
                     {
-                        if (worker != null)
-                        {
-                            if (worker.IsBusy)
-                                worker.CancelAsync();
-
-                            worker.Dispose();
-                        }
-
-                        worker = null;
-
                         if (updateTimer != null)
                             updateTimer.Dispose();
 
                         updateTimer = null;
+
+                        if (semaphoreSlim != null)
+                            semaphoreSlim.Dispose();
+                        semaphoreSlim = null;
+
 
                         if (lendingPage != null)
                             lendingPage.Dispose();
@@ -210,7 +227,7 @@ namespace DallEX.io.View
             finally
             {
                 MarketService.Instance().MarketAsync = null;
-
+                WalletService.Instance().WalletAsync = null;
                 TabMain = null;
 
                 exchangeBTCTab = null;
@@ -228,5 +245,7 @@ namespace DallEX.io.View
             Dispose(true);
         }
         #endregion
+
+        
     }
 }

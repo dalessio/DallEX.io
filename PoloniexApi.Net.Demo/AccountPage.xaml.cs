@@ -21,8 +21,10 @@ namespace DallEX.io.View
     public sealed partial class AccountPage : PageBase, IDisposable
     {
         private PoloniexClient PoloniexClient;
-        private BackgroundWorker worker;
+        private SemaphoreSlim semaphoreSlim;
+
         private Timer updateTimer;
+
         private FachadaWSSGS.FachadaWSSGSClient FachadaWSSGS;
 
         private int updateTimeMiliseconds = 5000;
@@ -43,7 +45,6 @@ namespace DallEX.io.View
         {
             await Task.Run(async () =>
             {
-                IDictionary<string, Balance> balances = null;
                 DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
 
                 double btcTheterPriceLast = 0;
@@ -51,10 +52,10 @@ namespace DallEX.io.View
                 try
                 {
                     if (PoloniexClient != null)
-                        balances = await PoloniexClient.Wallet.GetBalancesAsync();
+                        WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
 
-                    if (balances != null)
-                        if (balances.Any())
+                    if (WalletService.Instance().WalletAsync != null)
+                        if (WalletService.Instance().WalletAsync.Any())
                         {
                             double totalBTC = 0.0;
 
@@ -64,18 +65,46 @@ namespace DallEX.io.View
 
                             double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
 
+                            CurrencyPair CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_ETH"));
+
                             this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
                             {
-                                if (balances != null)
+                                if (WalletService.Instance().WalletAsync != null)
                                 {
                                     dtgAccount.Items.Clear();
-                                    foreach (var balance in balances.OrderBy(x => x.Key))
+                                    foreach (var balance in WalletService.Instance().WalletAsync.OrderBy(x => x.Key))
                                     {
                                         totalBTC = totalBTC + balance.Value.btcValue;
 
-                                        if (balance.Value.btcValue > 0)
+                                        if (balance.Value.btcValue > 0 && btcTheterPriceLast > 0 && valorDolarCompraBC > 0)
                                         {
                                             balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
+
+                                            balance.Value.marketValue = 0;
+
+                                            CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_", balance.Key));
+
+                                            if (balance.Key.Equals("IFC"))
+                                                CurrencyPair = CurrencyPair.Parse(string.Concat("XMR_", balance.Key));
+
+                                            if (balance.Key.Equals("BTC"))
+                                                CurrencyPair = CurrencyPair.Parse(string.Concat("USDT_BTC"));
+
+                                            var marketAsync = MarketService.Instance().MarketAsync.Where(x => x.Key.Equals(CurrencyPair)).OrderBy(x => x.Value.PriceLast);
+
+                                            if (marketAsync != null)
+                                                if (marketAsync.Any())
+                                                    if (!balance.Key.Equals("IFC"))
+                                                        balance.Value.marketValue = marketAsync.First().Value.PriceLast;
+                                                    else
+                                                    {
+                                                        var ifcXmrValue = marketAsync.First().Value.PriceLast;
+                                                        var xmrBtcValue = MarketService.Instance().MarketAsync.Where(x => x.Key.Equals(CurrencyPair.Parse("BTC_XMR"))).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+
+                                                        balance.Value.marketValue = ifcXmrValue * xmrBtcValue;
+                                                    }
+
+
                                             dtgAccount.Items.Add(balance);
                                         }
                                     }
@@ -92,47 +121,57 @@ namespace DallEX.io.View
                 }
                 finally
                 {
-                    balances = null;
                     bcAsync = null;
                 }
             });
         }
 
+        private bool dtgAccount_Loaded_fistTime = true;
+
         private void dtgAccount_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            var column = dtgAccount.Columns[2];
-
-            // Clear current sort descriptions
-            dtgAccount.Items.SortDescriptions.Clear();
-
-            // Add the new sort description
-            dtgAccount.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, ListSortDirection.Descending));
-
-            // Apply sort
-            foreach (var col in dtgAccount.Columns)
+            if (dtgAccount_Loaded_fistTime)
             {
-                col.SortDirection = null;
+                dtgAccount_Loaded_fistTime = false;
+
+                var column = dtgAccount.Columns[2];
+
+                // Clear current sort descriptions
+                dtgAccount.Items.SortDescriptions.Clear();
+
+                // Add the new sort description
+                dtgAccount.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, ListSortDirection.Descending));
+
+                // Apply sort
+                foreach (var col in dtgAccount.Columns)
+                {
+                    col.SortDirection = null;
+                }
+                column.SortDirection = ListSortDirection.Descending;
             }
-            column.SortDirection = ListSortDirection.Descending;
         }
 
-        private void UpdateGrid(object state)
+        private async void UpdateGrid(object state)
         {
-            if (!worker.IsBusy)
-                worker.RunWorkerAsync();
-        }
+            if (semaphoreSlim != null)
+            {
+                await semaphoreSlim.WaitAsync();
 
-        private async void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            await LoadSummaryAsync().ConfigureAwait(false);
+                try
+                {
+                    await LoadSummaryAsync();
+                }
+                finally
+                {
+                    if (semaphoreSlim != null)
+                        semaphoreSlim.Release();
+                }
+            }
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            worker = new BackgroundWorker();
-            worker.WorkerSupportsCancellation = true;
-            worker.DoWork += worker_DoWork;
-
+            semaphoreSlim = new SemaphoreSlim(1);
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
         }
 
@@ -145,18 +184,7 @@ namespace DallEX.io.View
         {
             if (updateTimer != null)
                 updateTimer.Dispose();
-
-            if (worker != null)
-            {
-                if (worker.IsBusy)
-                    worker.CancelAsync();
-
-                worker.Dispose();
-            }
-
             updateTimer = null;
-            worker = null;
-
         }
 
         #region IDisposable Support
@@ -182,11 +210,14 @@ namespace DallEX.io.View
 
                         if (FachadaWSSGS != null)
                             FachadaWSSGS.Close();
+
+                        if (semaphoreSlim != null)
+                            semaphoreSlim.Dispose();
                     }
                     finally
                     {
                         updateTimer = null;
-                        worker = null;
+                        semaphoreSlim = null;
                         FachadaWSSGS = null;
                         PoloniexClient = null;
                     }

@@ -20,8 +20,9 @@ namespace DallEX.io.View
     {
         private PoloniexClient PoloniexClient;
 
+        private SemaphoreSlim semaphoreSlim;
+
         private Timer updateTimer;
-        private BackgroundWorker worker;
 
         private TradeHistory TradeHistoryWindow = null;
 
@@ -61,9 +62,10 @@ namespace DallEX.io.View
                                             if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
                                                 currencyItems.Add(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""));
 
+
                                         market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
 
-                                        market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
+                                        market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
 
                                         dtgExchange.Items.Add(market);
                                     }
@@ -227,15 +229,22 @@ namespace DallEX.io.View
             });
         }
 
-        private void UpdateGrid(object state)
+        private async void UpdateGrid(object state)
         {
-            if (!worker.IsBusy)
-                worker.RunWorkerAsync();
-        }
+            if (semaphoreSlim != null)
+            {
+                await semaphoreSlim.WaitAsync();
 
-        private async void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            await LoadMarketSummaryAsync().ConfigureAwait(false);
+                try
+                {
+                    await LoadMarketSummaryAsync();
+                }
+                finally
+                {
+                    if (semaphoreSlim != null)
+                        semaphoreSlim.Release();
+                }
+            }
         }
 
         private void txtMinutes_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -275,9 +284,7 @@ namespace DallEX.io.View
             }
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
-            worker = new BackgroundWorker();
-            worker.WorkerSupportsCancellation = true;
-            worker.DoWork += worker_DoWork;
+            semaphoreSlim = new SemaphoreSlim(1);
 
             updateTimer = new Timer(UpdateGrid, null, 0, updateTimeMiliseconds);
 
@@ -365,19 +372,25 @@ namespace DallEX.io.View
             else if ((sender as Window).WindowState == WindowState.Minimized)
             {
                 MainWindow.WindowState = (sender as Window).WindowState;
-                TradeHistoryWindow.WindowState = (sender as Window).WindowState;
+
+                if (TradeHistoryWindow != null)
+                    TradeHistoryWindow.WindowState = (sender as Window).WindowState;
             }
 
             else if ((sender as Window).WindowState == WindowState.Normal)
             {
                 MainWindow.WindowState = WindowState.Normal;
-                TradeHistoryWindow.WindowState = WindowState.Normal;
-
-                TradeHistoryWindow.Width = 430;
-                TradeHistoryWindow.Height = MainWindow.Height;
-
                 MainWindow.Focus();
-                TradeHistoryWindow.Focus();
+
+                if (TradeHistoryWindow != null)
+                {
+                    TradeHistoryWindow.WindowState = WindowState.Normal;
+
+                    TradeHistoryWindow.Width = 430;
+                    TradeHistoryWindow.Height = MainWindow.Height;
+
+                    TradeHistoryWindow.Focus();
+                }
             }
 
         }
@@ -425,10 +438,13 @@ namespace DallEX.io.View
                         if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
                             TradeHistoryService.Instance().TradesHistoryListAsync.Clear();
 
+                        if (semaphoreSlim != null)
+                            semaphoreSlim.Dispose();
                     }
                     finally
                     {
                         updateTimer = null;
+                        semaphoreSlim = null;
                         PoloniexClient = null;
                         currencyItems = null;
                         TradeHistoryWindow = null;
@@ -446,15 +462,6 @@ namespace DallEX.io.View
             if (updateTimer != null)
                 updateTimer.Dispose();
             updateTimer = null;
-
-            if (worker != null)
-            {
-                if (worker.IsBusy)
-                    worker.CancelAsync();
-
-                worker.Dispose();
-            }
-            worker = null;
         }
 
         public void Dispose()

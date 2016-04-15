@@ -5,5 +5,6 @@
         double available { get; }
         double onOrders { get; }
         double btcValue { get; }
+        double marketValue { get; }       
     }
 }

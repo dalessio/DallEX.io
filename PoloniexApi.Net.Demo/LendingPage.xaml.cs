@@ -22,15 +22,13 @@ namespace DallEX.io.View
     public sealed partial class LendingPage : Page, IDisposable
     {
         private PoloniexClient PoloniexClient;
-        private BackgroundWorker worker;
+
+        private SemaphoreSlim semaphoreSlim;
+
         private Timer updateTimer;
 
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
-
-        private bool isCompleted = false;
-
-        private object lockObject = new object();
 
         public LendingPage()
         {
@@ -93,7 +91,7 @@ namespace DallEX.io.View
 
                                             }
 
-                                    await FillDetails(currency).ConfigureAwait(false);
+                                    await FillDetails(currency);
 
                                 }
                     }
@@ -180,19 +178,20 @@ namespace DallEX.io.View
             });
         }
 
-        private void UpdateLoans(object state)
+        private async void UpdateLoans(object state)
         {
-            lock (lockObject)
-                if (!worker.IsBusy)
-                    worker.RunWorkerAsync();
-        }
-
-        private async void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            if (isCompleted)
+            if (semaphoreSlim != null)
             {
-                isCompleted = false;
-                await LoadLoanOffersAsync().ConfigureAwait(true);
+                await semaphoreSlim.WaitAsync();
+                try
+                {
+                    await LoadLoanOffersAsync();
+                }
+                finally
+                {
+                    if (semaphoreSlim != null)
+                        semaphoreSlim.Release();
+                }
             }
         }
 
@@ -215,10 +214,7 @@ namespace DallEX.io.View
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
-            worker = new BackgroundWorker();
-            worker.DoWork += worker_DoWork;
-            worker.WorkerSupportsCancellation = true;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            semaphoreSlim = new SemaphoreSlim(1);
 
             updateTimer = new Timer(UpdateLoans, null, 0, updateTimeMiliseconds);
 
@@ -227,17 +223,10 @@ namespace DallEX.io.View
             disposedValue = false;
         }
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            isCompleted = true;
-        }
-
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
             CancelTimer();
         }
-
-
 
         #region IDisposable Support
         private bool disposedValue = false;
@@ -251,11 +240,15 @@ namespace DallEX.io.View
                     try
                     {
                         CancelTimer();
+
+                        if (semaphoreSlim != null)
+                            semaphoreSlim.Dispose();
                     }
                     finally
                     {
+                        semaphoreSlim = null;
+
                         updateTimer = null;
-                        worker = null;
                         PoloniexClient = null;
                     }
                 }
@@ -268,17 +261,8 @@ namespace DallEX.io.View
         {
             if (updateTimer != null)
                 updateTimer.Dispose();
-
-            if (worker != null)
-            {
-                if (worker.IsBusy)
-                    worker.CancelAsync();
-
-                worker.Dispose();
-            }
-
             updateTimer = null;
-            worker = null;
+
         }
 
         public void Dispose()

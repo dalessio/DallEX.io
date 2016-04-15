@@ -24,6 +24,7 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
+                <DataGridTextColumn x:Uid="marketValue" x:Name="marketValue" Header="Market" Binding="{Binding Value.marketValue, StringFormat=\{0:0.00000000\}}" Width="*" FontWeight="Bold" />
                 <DataGridTextColumn x:Uid="brzValue" x:Name="brzValue" Header="R$ Value" Binding="{Binding Value.brzValue, StringFormat=\{0:0.00000000\}}" Width="*" FontWeight="Bold" />
                 <DataGridTextColumn x:Uid="btcValue" x:Name="btcValue" Header="BTC Value" Binding="{Binding Value.btcValue, StringFormat=\{0:0.00000000\}}" Width="*" FontWeight="Bold">
                     <DataGridTextColumn.CellStyle>

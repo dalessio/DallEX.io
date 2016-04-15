@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Configuration;
+using System.Reflection;
 
 namespace DallEX.io.View
 {
@@ -30,9 +31,10 @@ namespace DallEX.io.View
     public partial class TradeHistory : Window
     {
         private PoloniexClient PoloniexClient;
-        public CurrencyPair CurrencyPair;
 
-        public TradeHistoryService TradeHistoryService;
+        private SemaphoreSlim semaphoreSlim;
+
+        public CurrencyPair CurrencyPair;
 
         private static int selectedIndex;
 
@@ -42,9 +44,14 @@ namespace DallEX.io.View
         {
             InitializeComponent();
 
+            // Set icon from the assembly
+            this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
+
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
             CurrencyPair = currencyPair;
+
+            Title = string.Concat("Trade History", "(", CurrencyPair.ToString(), ")");
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

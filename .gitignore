@@ -45,6 +45,12 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.suo
+*.user
+.vs
 PoloniexApi.Net.Demo/App.config
-PoloniexApi.Net.Demo/App.config
-PoloniexApi.Net.Demo/App.config
+PoloniexApi.Net.Demo/bin
+PoloniexApi.Net.Demo/obj
+PoloniexApi.Net/bin
+PoloniexApi.Net/obj
