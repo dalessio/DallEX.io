@@ -32,8 +32,6 @@ namespace DallEX.io.View
     {
         private PoloniexClient PoloniexClient;
 
-        private SemaphoreSlim semaphoreSlim;
-
         public CurrencyPair CurrencyPair;
 
         private static int selectedIndex;

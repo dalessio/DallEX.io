@@ -66,6 +66,7 @@ namespace DallEX.io.View
                                         market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
 
                                         market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
+                                        market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
 
                                         dtgExchange.Items.Add(market);
                                     }

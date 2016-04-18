@@ -9,13 +9,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Canvas ClipToBounds="True" Name="canMain" Background="Transparent">
-            <Grid Width="{Binding ElementName=canMain, Path=ActualWidth}">
-                <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtTitleNow" HorizontalAlignment="Left" Height="30" Margin="10,0,0,0" TextWrapping="Wrap" Text="Now &gt;&gt;" VerticalAlignment="Top" Width="72" FontSize="16" IsReadOnly="True" />
-                <Border BorderBrush="Black" BorderThickness="1">
-                    <TextBox  ClipToBounds="True"  BorderBrush="Transparent" Foreground="#5bc0de" Background="#000000" x:Name="txtDisplay" HorizontalAlignment="Stretch" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" IsReadOnly="True" Margin="99,0,0,0" />
-                </Border>
-            </Grid>
-        </Canvas>
+        <TextBox BorderBrush="Black" Foreground="#5bc0de" Background="#000000" x:Name="txtTitleNow" HorizontalAlignment="Left" Height="30" Margin="10,0,0,0" TextWrapping="Wrap" Text="Now &gt;&gt;" VerticalAlignment="Top" Width="72" FontSize="16" IsReadOnly="True" />
+        <Label  ClipToBounds="True"  BorderBrush="Transparent" Foreground="#5bc0de" Background="#000000" x:Name="txtDisplay" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Top" FontSize="16" Margin="99,0,0,0" />
     </Grid>
 </UserControl>

@@ -30,7 +30,13 @@ namespace DallEX.io.View.UserControls
         public ucTopDisplay()
         {
             InitializeComponent();
+
+            animation = new DoubleAnimation(0, 0, TimeSpan.FromSeconds(10));
+            txtDisplay.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleYProperty, animation);
+
         }
+
+        DoubleAnimation animation;
 
         public async Task LoadLoanOffersAsync(PoloniexClient PoloniexClient)
         {
@@ -60,7 +66,8 @@ namespace DallEX.io.View.UserControls
 
                             txtDisplay.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
                             {
-                                txtDisplay.Text = string.Concat(btc, "          ", eth, "          ", loan);
+                                animation = new DoubleAnimation((Application.Current.MainWindow.Width - 202), 0, TimeSpan.FromSeconds(10));
+                                txtDisplay.Content = string.Concat(btc, "          ", eth, "          ", loan);
                             });
 
                         }
