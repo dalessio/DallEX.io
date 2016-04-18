@@ -34,121 +34,91 @@ namespace DallEX.io.View
             InitializeComponent();
 
             if (!int.TryParse(ConfigurationManager.AppSettings.Get("walletUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+                MessageBox.Show("O parametro do App.Config walletUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
             FachadaWSSGS = Singleton<FachadaWSSGS.FachadaWSSGSClient>.Instance;
+
+            UpdateGrid(null);
         }
 
         private async Task LoadSummaryAsync()
         {
-            await Task.Run(async () =>
+            DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
+
+            double btcTheterPriceLast = 0;
+
+            try
             {
-                DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
+                if (PoloniexClient != null)
+                    WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
 
-                double btcTheterPriceLast = 0;
+                if (WalletService.Instance().WalletAsync != null)
+                    if (WalletService.Instance().WalletAsync.Any())
+                    {
+                        double totalBTC = 0.0;
 
-                try
-                {
-                    if (PoloniexClient != null)
-                        WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+                        btcTheterPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).Value.PriceLast;
 
-                    if (WalletService.Instance().WalletAsync != null)
-                        if (WalletService.Instance().WalletAsync.Any())
+                        bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
+
+                        double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
+
+                        CurrencyPair CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_ETH"));
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
                         {
-                            double totalBTC = 0.0;
-
-                            btcTheterPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-
-                            bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
-
-                            double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
-
-                            CurrencyPair CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_ETH"));
-
-                            this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                            if (WalletService.Instance().WalletAsync != null)
                             {
-                                if (WalletService.Instance().WalletAsync != null)
+                                dtgAccount.Items.Clear();
+                                foreach (var balance in WalletService.Instance().WalletAsync.OrderBy(x => x.Key).OrderByDescending(x => x.Value.btcValue))
                                 {
-                                    dtgAccount.Items.Clear();
-                                    foreach (var balance in WalletService.Instance().WalletAsync.OrderBy(x => x.Key))
+                                    totalBTC = totalBTC + balance.Value.btcValue;
+
+                                    if (balance.Value.btcValue > 0 && btcTheterPriceLast > 0 && valorDolarCompraBC > 0)
                                     {
-                                        totalBTC = totalBTC + balance.Value.btcValue;
+                                        balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
 
-                                        if (balance.Value.btcValue > 0 && btcTheterPriceLast > 0 && valorDolarCompraBC > 0)
-                                        {
-                                            balance.Value.brzValue = Math.Round(Math.Round((btcTheterPriceLast * balance.Value.btcValue), 2) * valorDolarCompraBC, 2);
+                                        balance.Value.marketValue = 0;
 
-                                            balance.Value.marketValue = 0;
+                                        CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_", balance.Key));
 
-                                            CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_", balance.Key));
+                                        if (balance.Key.Equals("IFC"))
+                                            CurrencyPair = CurrencyPair.Parse(string.Concat("XMR_", balance.Key));
 
-                                            if (balance.Key.Equals("IFC"))
-                                                CurrencyPair = CurrencyPair.Parse(string.Concat("XMR_", balance.Key));
+                                        if (balance.Key.Equals("BTC"))
+                                            CurrencyPair = CurrencyPair.Parse(string.Concat("USDT_BTC"));
 
-                                            if (balance.Key.Equals("BTC"))
-                                                CurrencyPair = CurrencyPair.Parse(string.Concat("USDT_BTC"));
+                                                var marketValue = MarketService.Instance().MarketAsync.First(x => x.Key.Equals(CurrencyPair)).Value.PriceLast;
 
-                                            var marketAsync = MarketService.Instance().MarketAsync.Where(x => x.Key.Equals(CurrencyPair)).OrderBy(x => x.Value.PriceLast);
+                                                if (balance.Key.Equals("IFC"))
+                                                {
+                                                    var xmrBtcValue = MarketService.Instance().MarketAsync.First(x => x.Key.Equals(CurrencyPair.Parse("BTC_XMR"))).Value.PriceLast;
 
-                                            if (marketAsync != null)
-                                                if (marketAsync.Any())
-                                                    if (!balance.Key.Equals("IFC"))
-                                                        balance.Value.marketValue = marketAsync.First().Value.PriceLast;
-                                                    else
-                                                    {
-                                                        var ifcXmrValue = marketAsync.First().Value.PriceLast;
-                                                        var xmrBtcValue = MarketService.Instance().MarketAsync.Where(x => x.Key.Equals(CurrencyPair.Parse("BTC_XMR"))).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-
-                                                        balance.Value.marketValue = ifcXmrValue * xmrBtcValue;
-                                                    }
-
-
-                                            dtgAccount.Items.Add(balance);
-                                        }
+                                                    balance.Value.marketValue = marketValue * xmrBtcValue;
+                                                }
+                                                else
+                                                    balance.Value.marketValue = marketValue;
+                                        dtgAccount.Items.Add(balance);
                                     }
                                 }
+                            }
 
-                                var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
+                            var totalUSD = Math.Round((btcTheterPriceLast * totalBTC), 2);
 
-                                txtTotalBTC.Text = totalBTC.ToString("0.00000000");
-                                txtTotalUSD.Text = totalUSD.ToString("000.00000000");
-                                txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
+                            txtTotalBTC.Text = totalBTC.ToString("0.00000000");
+                            txtTotalUSD.Text = totalUSD.ToString("000.00000000");
+                            txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
 
-                            });
-                        }
-                }
-                finally
-                {
-                    bcAsync = null;
-                }
-            });
-        }
-
-        private bool dtgAccount_Loaded_fistTime = true;
-
-        private void dtgAccount_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (dtgAccount_Loaded_fistTime)
-            {
-                dtgAccount_Loaded_fistTime = false;
-
-                var column = dtgAccount.Columns[2];
-
-                // Clear current sort descriptions
-                dtgAccount.Items.SortDescriptions.Clear();
-
-                // Add the new sort description
-                dtgAccount.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, ListSortDirection.Descending));
-
-                // Apply sort
-                foreach (var col in dtgAccount.Columns)
-                {
-                    col.SortDirection = null;
-                }
-                column.SortDirection = ListSortDirection.Descending;
+                        });
+                    }
             }
+            finally
+            {
+                bcAsync = null;
+            }
+
         }
 
         private async void UpdateGrid(object state)

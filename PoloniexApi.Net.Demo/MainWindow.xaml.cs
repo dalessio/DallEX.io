@@ -1,12 +1,18 @@
 ﻿using DallEX.io.API;
+using DallEX.io.API.MarketTools;
 using DallEX.io.View.Service;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Windows.Media;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace DallEX.io.View
 {
@@ -86,7 +92,63 @@ namespace DallEX.io.View
             accountTab.Background = System.Windows.Media.Brushes.GreenYellow;
             TabMain.Items.Add(accountTab);
 
+            txtTrollbox.Document.Background = Brushes.Black;
+            txtTrollbox.BorderThickness = new Thickness(0);
+            txtTrollbox.Margin = new Thickness(2);
+
+            PoloniexClient.Live.OnTrollboxMessage += Live_OnTrollboxMessage;
+            //PoloniexClient.Live.OnTickerChanged += Live_OnTickerChanged;
+
+            LiveStart();
+
             disposedValue = false;
+        }
+
+        private void Live_OnTickerChanged(object sender, TickerChangedEventArgs e)
+        {
+
+            if (MarketService.Instance().MarketAsync.ContainsKey(e.CurrencyPair))
+                MarketService.Instance().MarketAsync.Remove(e.CurrencyPair);
+
+            MarketService.Instance().MarketAsync.Add(e.CurrencyPair, e.MarketData);
+
+
+        }
+
+        private async void LiveStart()
+        {
+            PoloniexClient.Live.Start();
+            //await PoloniexClient.Live.SubscribeToTickerAsync();
+            await PoloniexClient.Live.SubscribeToTrollboxAsync();          
+        }
+
+        private void Live_OnTrollboxMessage(object sender, TrollboxMessageEventArgs e)
+        {
+            txtTrollbox.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+            {
+                var paragraph = txtTrollbox.Document.Blocks.FirstBlock as Paragraph;
+                paragraph.Margin = new Thickness(0,10,0,0);
+
+                paragraph.Inlines.Add(new Bold(new Run(e.SenderName + ": "))
+                {
+                    Foreground = Brushes.Orange,
+                    FontSize = 10
+                    
+                });
+
+                paragraph.Inlines.Add(new Run(e.MessageText + ": ")
+                {
+                    Foreground = Brushes.LightGray,
+                    FontSize = 11
+                });
+
+                paragraph.Inlines.Add(new LineBreak());
+
+                paragraph.Inlines.Add(new Run(" "){ FontSize = 5 });
+                paragraph.Inlines.Add(new LineBreak());
+
+                txtTrollbox.ScrollToEnd();
+            });              
         }
 
         private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -140,7 +202,7 @@ namespace DallEX.io.View
                 try
                 {
                     MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
-                    await ucHeader.LoadLoanOffersAsync(PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey));
+                    await ucHeader.LoadLoanOffersAsync(PoloniexClient);
                     WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
                 }
                 finally
@@ -158,12 +220,16 @@ namespace DallEX.io.View
             {
                 chatColumn.Width = new GridLength(0);
                 btnChat.Content = "<<";
-                Grid.SetColumn(btnChat, 0);
+                btnChat.ToolTip = "Open Trollbox";
+                //Grid.SetColumn(btnChat, 0);
+                LiveStart();
             }
             else {
                 chatColumn.Width = new GridLength(200);
                 btnChat.Content = ">>";
-                Grid.SetColumn(btnChat, 1);
+                btnChat.ToolTip = "Close Trollbox";
+                //Grid.SetColumn(btnChat, 1);
+                PoloniexClient.Live.Stop();
             }
         }
 
@@ -183,6 +249,10 @@ namespace DallEX.io.View
                 {
                     if (disposing)
                     {
+                        if (PoloniexClient != null)
+                            if (PoloniexClient.Live != null)
+                                PoloniexClient.Live.Stop();
+                                               
                         if (updateTimer != null)
                             updateTimer.Dispose();
 
@@ -220,7 +290,6 @@ namespace DallEX.io.View
                                 TabMain.Items.Clear();
 
                         LoanContext.Instance().Dispose();
-
                     }                    
                 }
             }
@@ -244,8 +313,7 @@ namespace DallEX.io.View
         {
             Dispose(true);
         }
-        #endregion
 
-        
+        #endregion
     }
 }

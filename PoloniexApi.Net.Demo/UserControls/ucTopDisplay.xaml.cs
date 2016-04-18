@@ -47,8 +47,8 @@ namespace DallEX.io.View.UserControls
                     if (MarketService.Instance().MarketAsync != null)
                         if (MarketService.Instance().MarketAsync.Any())
                         {
-                            double ethPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
-                            double btcPriceLast = MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).OrderBy(x => x.Value.PriceLast).First().Value.PriceLast;
+                            double ethPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).Value.PriceLast;
+                            double btcPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).Value.PriceLast;
 
                             firstLoanOffer.ethExchangeValue = ethPriceLast;
                             firstLoanOffer.btcExchangeValue = btcPriceLast;

@@ -14,7 +14,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" Loaded="dtgAccount_Loaded" Margin="0,0,0,0"  AlternatingRowBackground="LightGray" FontSize="16" TextBlock.TextAlignment="Right">
+        <DataGrid x:Name="dtgAccount" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="*" AutoGenerateColumns="False" Grid.Column="0" Grid.Row="2" Foreground="#333333" Margin="0,0,0,0"  AlternatingRowBackground="LightGray" FontSize="16" TextBlock.TextAlignment="Right">
 
             <DataGrid.Columns>
                 <DataGridTextColumn x:Uid="id" x:Name="id" Header="Coin" Binding="{Binding Key}" CanUserResize="False" FontWeight="Bold">

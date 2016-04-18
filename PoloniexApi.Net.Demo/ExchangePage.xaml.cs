@@ -26,7 +26,7 @@ namespace DallEX.io.View
 
         private TradeHistory TradeHistoryWindow = null;
 
-        private double exchangeBTCVolumeMinimun = 8.1;
+        private double exchangeBTCVolumeMinimun = 3.1;
         private int updateTimeMiliseconds = 15000;
 
         private IList<string> currencyItems = null;
@@ -259,7 +259,7 @@ namespace DallEX.io.View
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(ConfigurationManager.AppSettings.Get("exchangeUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+                MessageBox.Show("O parametro do App.Config exchangeUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
 
             switch (currentExchangeCoin)
             {
@@ -277,8 +277,8 @@ namespace DallEX.io.View
                     selectedCurrency = "BTC_ETH";
                     if (!double.TryParse(ConfigurationManager.AppSettings.Get("exchangeBTCVolumeMinimun"), out exchangeBTCVolumeMinimun))
                     {
-                        MessageBox.Show("O parametro do App.Config exchangeBTCVolumeMinimun está setado com valor inválido, foi aplicado o valor padrão (8.1)!");
-                        exchangeBTCVolumeMinimun = 8.1;
+                        MessageBox.Show("O parametro do App.Config exchangeBTCVolumeMinimun está setado com valor inválido, foi aplicado o valor padrão (3.1)!");
+                        exchangeBTCVolumeMinimun = 3.1;
                     }
                     break;
             }
