@@ -1,4 +1,4 @@
-﻿<local:PageBase x:Class="DallEX.io.View.AccountPage"
+﻿<Page x:Class="DallEX.io.View.AccountPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:DallEX.io.View.UserControls"
@@ -45,4 +45,4 @@
         <Label Foreground="#5cb85c" Content="Total R$:" HorizontalAlignment="Left" Margin="5,86,0,0" VerticalAlignment="Top" Grid.Column="1" Width="71"/>
         <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtTotalBRL" HorizontalAlignment="Left" Height="30" Margin="76,86,0,0" TextWrapping="Wrap" Text="000.00000000" VerticalAlignment="Top" Width="123" FontSize="17" IsReadOnly="True" Grid.Column="1" FontWeight="Bold" />
     </Grid>
-</local:PageBase>
+</Page>

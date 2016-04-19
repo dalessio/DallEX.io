@@ -63,11 +63,14 @@ namespace DallEX.io.View.UserControls
                             string eth = string.Concat("BTC/ETH: ", firstLoanOffer.ethExchangeValue.ToString("0.00000000"));
                             string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.00000000"));
                             string loan = string.Concat("BTC Loan Rate: ", firstLoanOffer.rate.ToString("0.00000%"));
+                            string dolar = string.Concat("Dolar Venda BC: R$", (FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync.getUltimoValorVOReturn.ultimoValor.svalor));
+
+
 
                             txtDisplay.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
                             {
                                 animation = new DoubleAnimation((Application.Current.MainWindow.Width - 202), 0, TimeSpan.FromSeconds(10));
-                                txtDisplay.Content = string.Concat(btc, "          ", eth, "          ", loan);
+                                txtDisplay.Content = string.Concat(btc, "          ", eth, "          ", loan, "          ", dolar);
                             });
 
                         }

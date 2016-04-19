@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace DallEX.io.View
@@ -18,14 +19,12 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for Account.xaml
     /// </summary>
-    public sealed partial class AccountPage : PageBase, IDisposable
+    public sealed partial class AccountPage : Page, IDisposable
     {
         private PoloniexClient PoloniexClient;
         private SemaphoreSlim semaphoreSlim;
 
         private Timer updateTimer;
-
-        private FachadaWSSGS.FachadaWSSGSClient FachadaWSSGS;
 
         private int updateTimeMiliseconds = 5000;
 
@@ -37,23 +36,14 @@ namespace DallEX.io.View
                 MessageBox.Show("O parametro do App.Config walletUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
-
-            FachadaWSSGS = Singleton<FachadaWSSGS.FachadaWSSGSClient>.Instance;
-
-            UpdateGrid(null);
         }
 
-        private async Task LoadSummaryAsync()
+        private void LoadSummary()
         {
-            DallEX.io.View.FachadaWSSGS.getUltimoValorVOResponse bcAsync = null;
-
             double btcTheterPriceLast = 0;
 
             try
             {
-                if (PoloniexClient != null)
-                    WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
-
                 if (WalletService.Instance().WalletAsync != null)
                     if (WalletService.Instance().WalletAsync.Any())
                     {
@@ -61,9 +51,7 @@ namespace DallEX.io.View
 
                         btcTheterPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).Value.PriceLast;
 
-                        bcAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
-
-                        double valorDolarCompraBC = double.Parse(bcAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
+                        double valorDolarCompraBC = double.Parse(FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync.getUltimoValorVOReturn.ultimoValor.svalor.Replace(".", ","));
 
                         CurrencyPair CurrencyPair = CurrencyPair.Parse(string.Concat("BTC_ETH"));
 
@@ -112,11 +100,12 @@ namespace DallEX.io.View
                             txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
 
                         });
+
                     }
             }
             finally
             {
-                bcAsync = null;
+                
             }
 
         }
@@ -129,7 +118,7 @@ namespace DallEX.io.View
 
                 try
                 {
-                    await LoadSummaryAsync();
+                    LoadSummary();
                 }
                 finally
                 {
@@ -177,10 +166,6 @@ namespace DallEX.io.View
                     try
                     {
                         CancelTimer();
-
-                        if (FachadaWSSGS != null)
-                            FachadaWSSGS.Close();
-
                         if (semaphoreSlim != null)
                             semaphoreSlim.Dispose();
                     }
@@ -188,7 +173,6 @@ namespace DallEX.io.View
                     {
                         updateTimer = null;
                         semaphoreSlim = null;
-                        FachadaWSSGS = null;
                         PoloniexClient = null;
                     }
                 }

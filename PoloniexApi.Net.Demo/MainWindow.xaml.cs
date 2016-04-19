@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using System.Windows.Input;
+using DallEX.io.View.Library;
 
 namespace DallEX.io.View
 {
@@ -24,6 +25,8 @@ namespace DallEX.io.View
         private PoloniexClient PoloniexClient;
 
         private SemaphoreSlim semaphoreSlim;
+
+        FachadaWSSGS.FachadaWSSGSClient FachadaWSSGS;
 
         private Timer updateTimer;
 
@@ -60,11 +63,13 @@ namespace DallEX.io.View
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
             PoloniexClient.Live.OnTrollboxMessage += Live_OnTrollboxMessage;
 
+            FachadaWSSGS = Singleton<FachadaWSSGS.FachadaWSSGSClient>.Instance;
+
             LiveStart();
 
             semaphoreSlim = new SemaphoreSlim(1);
 
-            updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);          
+            updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);           
 
             disposedValue = false;
         }
@@ -191,17 +196,28 @@ namespace DallEX.io.View
                 if (semaphoreSlim != null)
                 {
                     await semaphoreSlim.WaitAsync();
+
                     try
                     {
                         MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
-                        await ucHeader.LoadLoanOffersAsync(PoloniexClient);
                         WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+
+                        try
+                        {
+                            FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
+                        }
+                        catch
+                        {
+                        }
+
+                        await ucHeader.LoadLoanOffersAsync(PoloniexClient);
                     }
                     finally
                     {
                         if (semaphoreSlim != null)
                             semaphoreSlim.Release();
                     }
+
                 }
 
         }
@@ -282,7 +298,12 @@ namespace DallEX.io.View
                                 TabMain.Items.Clear();
 
                         LoanContext.Instance().Dispose();
-                    }                    
+
+
+                        if (FachadaWSSGS != null)
+                            FachadaWSSGS.Close();
+
+                    }
                 }
             }
             finally
@@ -296,6 +317,8 @@ namespace DallEX.io.View
                 exchangeUSDTTab = null;
                 accountTab = null;
                 lendingTab = null;
+
+                FachadaWSSGS = null;
 
                 disposedValue = true;
             }

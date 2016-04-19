@@ -77,6 +77,11 @@ namespace DallEX.io.View.UserControls
 
             zgc1.AxisChange();
 
+            zgc1.Refresh();
+            zgc1.Update();
+
+            this.UpdateLayout();
+
             IsGraphLoaded = true;
         }
     }

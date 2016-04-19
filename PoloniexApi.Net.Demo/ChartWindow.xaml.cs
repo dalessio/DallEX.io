@@ -73,10 +73,7 @@ namespace DallEX.io.View
             {
                 if (PoloniexClient != null)
                 {
-                    PoloniexClient.Markets.GetChartDataAsync(CurrencyPair, MarketPeriod.Day).ContinueWith
-                    (async resultAsync =>
-                    {
-                        var chartData = await resultAsync;
+                    var chartData = await PoloniexClient.Markets.GetChartDataAsync(CurrencyPair, MarketPeriod.Day);
                         if (chartData != null)
                             switch (selectedIndex)
                             {
@@ -89,10 +86,11 @@ namespace DallEX.io.View
                                         {
                                             if (!ucCandlestick.IsGraphLoaded)
                                                 ucCandlestick.LoadGraph(CurrencyPair, chartData);
+
+                                            this.UpdateLayout();
                                         });
                                     break;
                             }
-                    }).Dispose();
 
                 }
             }
