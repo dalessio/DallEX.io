@@ -45,18 +45,32 @@ namespace DallEX.io.View
         {
             InitializeComponent();
 
-            if (!int.TryParse(ConfigurationManager.AppSettings.Get("headerUpdateTimeMiliseconds"), out updateTimeMiliseconds))
-                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+            BuildTabs();
+
+            txtTrollbox.Document.Background = Brushes.Black;
+            txtTrollbox.BorderThickness = new Thickness(0);
+            txtTrollbox.Margin = new Thickness(2);
 
             // Set icon from the assembly
             this.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location).ToImageSource();
 
+            if (!int.TryParse(ConfigurationManager.AppSettings.Get("headerUpdateTimeMiliseconds"), out updateTimeMiliseconds))
+                MessageBox.Show("O parametro do App.Config lendingUpdateTimeMiliseconds está setado com valor inválido, foi aplicado o valor padrão (" + updateTimeMiliseconds + ")!");
+
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
+            PoloniexClient.Live.OnTrollboxMessage += Live_OnTrollboxMessage;
+
+            LiveStart();
 
             semaphoreSlim = new SemaphoreSlim(1);
 
-            updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);
+            updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);          
 
+            disposedValue = false;
+        }
+
+        private void BuildTabs()
+        {
             //0
             lendingPage = new LendingPage();
             lendingTab = new TabItem();
@@ -91,34 +105,11 @@ namespace DallEX.io.View
             accountTab.Header = "Account";
             accountTab.Background = System.Windows.Media.Brushes.GreenYellow;
             TabMain.Items.Add(accountTab);
-
-            txtTrollbox.Document.Background = Brushes.Black;
-            txtTrollbox.BorderThickness = new Thickness(0);
-            txtTrollbox.Margin = new Thickness(2);
-
-            PoloniexClient.Live.OnTrollboxMessage += Live_OnTrollboxMessage;
-            //PoloniexClient.Live.OnTickerChanged += Live_OnTickerChanged;
-
-            LiveStart();
-
-            disposedValue = false;
-        }
-
-        private void Live_OnTickerChanged(object sender, TickerChangedEventArgs e)
-        {
-
-            if (MarketService.Instance().MarketAsync.ContainsKey(e.CurrencyPair))
-                MarketService.Instance().MarketAsync.Remove(e.CurrencyPair);
-
-            MarketService.Instance().MarketAsync.Add(e.CurrencyPair, e.MarketData);
-
-
         }
 
         private async void LiveStart()
         {
             PoloniexClient.Live.Start();
-            //await PoloniexClient.Live.SubscribeToTickerAsync();
             await PoloniexClient.Live.SubscribeToTrollboxAsync();          
         }
 
@@ -196,21 +187,22 @@ namespace DallEX.io.View
 
         private async void UpdateView(object state)
         {
-            if (semaphoreSlim != null)
-            {
-                await semaphoreSlim.WaitAsync();
-                try
+            if(PoloniexClient != null)
+                if (semaphoreSlim != null)
                 {
-                    MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
-                    await ucHeader.LoadLoanOffersAsync(PoloniexClient);
-                    WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+                    await semaphoreSlim.WaitAsync();
+                    try
+                    {
+                        MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
+                        await ucHeader.LoadLoanOffersAsync(PoloniexClient);
+                        WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+                    }
+                    finally
+                    {
+                        if (semaphoreSlim != null)
+                            semaphoreSlim.Release();
+                    }
                 }
-                finally
-                {
-                    if (semaphoreSlim != null)
-                        semaphoreSlim.Release();
-                }
-            }
 
         }
 

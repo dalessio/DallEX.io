@@ -25,6 +25,7 @@ namespace DallEX.io.View
         private Timer updateTimer;
 
         private TradeHistory TradeHistoryWindow = null;
+        private ChartWindow chartWindow = null;
 
         private double exchangeBTCVolumeMinimun = 3.1;
         private int updateTimeMiliseconds = 15000;
@@ -43,71 +44,70 @@ namespace DallEX.io.View
 
         private async Task LoadMarketSummaryAsync()
         {
-            await Task.Run(async () =>
+            try
             {
-                try
-                {
-                    if (MarketService.Instance().MarketAsync != null)
-                        if (MarketService.Instance().MarketAsync.Any())
+                if (MarketService.Instance().MarketAsync != null)
+                    if (MarketService.Instance().MarketAsync.Any())
+                    {
+                        await this.Dispatcher.Invoke(async () =>
                         {
-                            await this.Dispatcher.Invoke(async () => {
+                            {
+                                if (cbCurrency.SelectedValue != null)
+                                    selectedCurrency = string.Concat(string.Concat(currentExchangeCoin, "_"), cbCurrency.SelectedValue.ToString());
+
+                                dtgExchange.Items.Clear();
+                                foreach (var market in MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().Contains(string.Concat(currentExchangeCoin, "_")) && x.Value.Volume24HourBase > exchangeBTCVolumeMinimun).OrderByDescending(x => x.Value.Volume24HourBase))
                                 {
-                                    if (cbCurrency.SelectedValue != null)
-                                        selectedCurrency = string.Concat(string.Concat(currentExchangeCoin, "_"), cbCurrency.SelectedValue.ToString());
+                                    if (currencyItems != null)
+                                        if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
+                                            currencyItems.Add(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""));
 
-                                    dtgExchange.Items.Clear();
-                                    foreach (var market in MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().Contains(string.Concat(currentExchangeCoin, "_")) && x.Value.Volume24HourBase > exchangeBTCVolumeMinimun).OrderByDescending(x => x.Value.Volume24HourBase))
+
+                                    market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
+
+                                    market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
+                                    market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
+
+                                    dtgExchange.Items.Add(market);
+                                }
+
+                                if (currencyItems != null)
+                                    if (currencyItems.Count() != cbCurrency.Items.Count)
                                     {
-                                        if (currencyItems != null)
-                                            if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
-                                                currencyItems.Add(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""));
-
-
-                                        market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
-
-                                        market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
-                                        market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
-
-                                        dtgExchange.Items.Add(market);
+                                        cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
+                                        cbCurrency.SelectedItem = selectedCurrency.Replace(string.Concat(currentExchangeCoin, "_"), "");
                                     }
 
-                                    if (currencyItems != null)
-                                        if (currencyItems.Count() != cbCurrency.Items.Count)
-                                        {
-                                            cbCurrency.ItemsSource = currencyItems.OrderBy(x => x);
-                                            cbCurrency.SelectedItem = selectedCurrency.Replace(string.Concat(currentExchangeCoin, "_"), "");
-                                        }
 
+                                var OpenOrdersAsync = await PoloniexClient.Markets.GetOpenOrdersAsync(CurrencyPair.Parse(selectedCurrency), 100);
 
-                                    var OpenOrdersAsync = await PoloniexClient.Markets.GetOpenOrdersAsync(CurrencyPair.Parse(selectedCurrency), 100);
-
-                                    if (OpenOrdersAsync != null)
+                                if (OpenOrdersAsync != null)
+                                {
+                                    if (OpenOrdersAsync.SellOrders != null)
                                     {
-                                        if(OpenOrdersAsync.SellOrders != null){
-                                            dtgTradeHistorySells.Items.Clear();
-                                            foreach (var sell in OpenOrdersAsync.SellOrders)
-                                            {
-                                                dtgTradeHistorySells.Items.Add(sell);
-                                            }
-                                        }
-
-                                        if (OpenOrdersAsync.BuyOrders != null)
+                                        dtgTradeHistorySells.Items.Clear();
+                                        foreach (var sell in OpenOrdersAsync.SellOrders)
                                         {
-                                            dtgTradeHistoryBuys.Items.Clear();
-                                            foreach (var buy in OpenOrdersAsync.BuyOrders)
-                                            {
-                                                dtgTradeHistoryBuys.Items.Add(buy);
-                                            }
+                                            dtgTradeHistorySells.Items.Add(sell);
+                                        }
+                                    }
+
+                                    if (OpenOrdersAsync.BuyOrders != null)
+                                    {
+                                        dtgTradeHistoryBuys.Items.Clear();
+                                        foreach (var buy in OpenOrdersAsync.BuyOrders)
+                                        {
+                                            dtgTradeHistoryBuys.Items.Add(buy);
                                         }
                                     }
                                 }
-                            });
-                            await OpenThreadTradeHistory();
-                        }
+                            }
+                        });
+                        await OpenThreadTradeHistory();
+                    }
 
-                }
-                catch{}
-            });
+            }
+            catch { }
         }
 
         private async Task OpenThreadTradeHistory()
@@ -308,6 +308,42 @@ namespace DallEX.io.View
             ResetDetailsFields();
         }
 
+
+        private async void btnChartHistory_Click(object sender, RoutedEventArgs e)
+        {
+            await OpenChartHistory();
+        }
+
+        private async Task OpenChartHistory()
+        {
+            await Task.Run(() =>
+            {
+                this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+                {
+                    if (chartWindow == null)
+                    {
+                        chartWindow = new ChartWindow(CurrencyPair.Parse(selectedCurrency));
+
+                        chartWindow.Left = MainWindow.Left + (MainWindow.Width - chartWindow.ActualWidth) / 2;
+                        chartWindow.Top = MainWindow.Top + (MainWindow.Height - chartWindow.ActualHeight) / 2;
+
+                        chartWindow.Show();
+                        chartWindow.Closed += ChartWindow_Closed;
+                    }
+                });
+            });
+        }
+
+        private void ChartWindow_Closed(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+            {
+                chartWindow = null;
+            });
+
+        }
+
+
         #region Trade History
         private async void btnTradeHistory_Click(object sender, RoutedEventArgs e)
         {
@@ -350,9 +386,6 @@ namespace DallEX.io.View
             {
                 if (TradeHistoryWindow != null)
                 {
-                    MainWindow.WindowState = (sender as Window).WindowState;
-                    TradeHistoryWindow.WindowState = (sender as Window).WindowState;
-
                     MainWindow.WindowState = WindowState.Normal;
                     TradeHistoryWindow.WindowState = WindowState.Normal;
 
@@ -470,5 +503,6 @@ namespace DallEX.io.View
             Dispose(true);
         }
         #endregion
+
     }
 }
