@@ -128,6 +128,9 @@
       <DependentUpon>AccountPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
+    <Compile Include="TradeWindow.xaml.cs">
+      <DependentUpon>TradeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ChartWindow.xaml.cs">
       <DependentUpon>ChartWindow.xaml</DependentUpon>
     </Compile>
@@ -153,12 +156,22 @@
     <Compile Include="UserControls\ucJapaneseCandlestick.xaml.cs">
       <DependentUpon>ucJapaneseCandlestick.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ucTradeSell.xaml.cs">
+      <DependentUpon>ucTradeSell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ucTradeBuy.xaml.cs">
+      <DependentUpon>ucTradeBuy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ucTopDisplay.xaml.cs">
       <DependentUpon>ucTopDisplay.xaml</DependentUpon>
     </Compile>
     <Page Include="AccountPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TradeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ChartWindow.xaml">
       <SubType>Designer</SubType>
@@ -189,6 +202,14 @@
     <Page Include="UserControls\ucJapaneseCandlestick.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ucTradeSell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\ucTradeBuy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\ucTopDisplay.xaml">
       <SubType>Designer</SubType>

@@ -28,13 +28,13 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for ChartWindow.xaml
     /// </summary>
-    public partial class ChartWindow : Window
+    public partial class TradeWindow : Window
     {
         private PoloniexClient PoloniexClient;
 
         public CurrencyPair CurrencyPair;
 
-        public ChartWindow(CurrencyPair currencyPair)
+        public TradeWindow(CurrencyPair currencyPair)
         {
             InitializeComponent();
 
@@ -45,30 +45,10 @@ namespace DallEX.io.View
 
             CurrencyPair = currencyPair;
 
-            Title = string.Concat("History ", "(", CurrencyPair.ToString(), ")");
+            Title = string.Concat("Trade ", "(", CurrencyPair.ToString(), ")");
 
-            LoadChart();
-        }
-
-        public async void LoadChart()
-        {
-            try
-            {
-                if (PoloniexClient != null)
-                {
-                    var chartData = await PoloniexClient.Markets.GetChartDataAsync(CurrencyPair, MarketPeriod.Day);
-                    if (chartData != null)
-                        Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
-                        {
-                            ucCandlestick.LoadGraph(CurrencyPair, chartData);
-                            this.UpdateLayout();
-
-                            dtgHistory.ItemsSource = chartData.OrderByDescending(x => x.Time);
-                        });
-                }
-            }
-            catch { }
-
+            ucBuy.SetCurrency(currencyPair);
+            ucSell.SetCurrency(currencyPair);
         }
     }
 }

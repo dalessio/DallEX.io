@@ -6,40 +6,36 @@
         xmlns:UserControls="clr-namespace:DallEX.io.View.UserControls"
         xmlns:local="clr-namespace:DallEX.io.View"
         mc:Ignorable="d"
-        Title="Trade History" Height="Auto" Width="Auto">
-    <Grid>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="tabControl_SelectionChanged">
-            <TabItem Header="Candlestick Graph">
-                <Grid Background="Black">
-                    <UserControls:ucJapaneseCandlestick x:Name="ucCandlestick" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  />
-                </Grid>
-            </TabItem>
-            <TabItem Header="Data History">
-                <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="dtgTradeHistory" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Column="0" Foreground="#333333" FontSize="12" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn x:Uid="Time" Header="Time" Binding="{Binding Time}" FontSize="10" />
-                            <DataGridTextColumn x:Uid="Type" Header="Type" Binding="{Binding Type}">
-                                <DataGridTextColumn.CellStyle>
-                                    <Style TargetType="{x:Type DataGridCell}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Type}" Value="Sell">
-                                                <Setter Property="Foreground" Value="Green" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Type}" Value="Buy">
-                                                <Setter Property="Foreground" Value="Red" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.CellStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
-                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}" />
-                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </Grid>
+        Title="Chart Candlestick" Height="auto" Width="auto">
+    <DockPanel>
+        <Grid Margin="3" TextElement.Foreground="#ffffff" Background="Black">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="450"/>
+            </Grid.ColumnDefinitions>
+            <UserControls:ucJapaneseCandlestick x:Name="ucCandlestick" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  />
+
+            <DataGrid x:Name="dtgHistory" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="False" Grid.Column="1" Foreground="#333333" FontSize="12" FontWeight="Bold" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Uid="Time" Header="Time" Binding="{Binding Time, StringFormat=\{0:dd/MM/yyyy \}}" FontSize="10"/>
+
+                    <DataGridTextColumn x:Uid="High" Header="High" Binding="{Binding High, StringFormat=\{0:0.00000000\}}" Foreground="Green" />
+                    <DataGridTextColumn x:Uid="Low" Header="Low" Binding="{Binding Close, StringFormat=\{0:0.00000000\}}" Foreground="Red" />
+
+                    <DataGridTextColumn x:Uid="Open" Header="Open" Binding="{Binding Open, StringFormat=\{0:0.00000000\}}" />
+                    <DataGridTextColumn x:Uid="Close" Header="Close" Binding="{Binding Close, StringFormat=\{0:0.00000000\}}" />
+
+                    <DataGridTextColumn x:Uid="VolumeBase" Header="VolumeBase" Binding="{Binding VolumeBase, StringFormat=\{0:0.00000000\}}" />
+                    <DataGridTextColumn x:Uid="VolumeQuote" Header="VolumeQuote" Binding="{Binding VolumeQuote, StringFormat=\{0:0.00000000\}}" />
+
+                    <DataGridTextColumn x:Uid="WeightedAverage" Header="WeightedAverage" Binding="{Binding WeightedAverage, StringFormat=\{0:0.00000000\}}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
 </Window>

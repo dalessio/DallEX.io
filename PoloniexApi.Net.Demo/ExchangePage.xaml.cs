@@ -26,6 +26,7 @@ namespace DallEX.io.View
 
         private TradeHistory TradeHistoryWindow = null;
         private ChartWindow chartWindow = null;
+        private TradeWindow tradeWindow = null;
 
         private double exchangeBTCVolumeMinimun = 3.1;
         private int updateTimeMiliseconds = 15000;
@@ -163,28 +164,39 @@ namespace DallEX.io.View
                                     if (TradeHistoryService.Instance().TradesHistoryListAsync.Any())
                                     {
                                         if (highOrderRate != null)
-                                            txtHighPrice.Text = highOrderRate.PricePerCoin.ToString("0.00000000");
+                                        {
+                                            lblHighPrice.Content = string.Format("High Price ({0}):", highOrderRate.Time.ToShortTimeString());
+                                            txtHighPrice.Text = highOrderRate.PricePerCoin.ToString("0.00000000") + " (" + highOrderRate.Type + ")";                                           
+                                        }
 
                                         if (lowOrderRate != null)
-                                            txtLowPrice.Text = string.Concat(lowOrderRate.PricePerCoin.ToString("0.00000000"), " ", "(", lowOrderRate.Time.ToShortTimeString(), ")");
+                                        {
+                                            lblLowPrice.Content = string.Format("Low Price ({0}):", lowOrderRate.Time.ToShortTimeString());
+                                            txtLowPrice.Text = string.Format("{0} ({1})", lowOrderRate.PricePerCoin.ToString("0.00000000"), lowOrderRate.Type);
+                                        }
 
                                         txtPriceAverage.Text = averageOrderRate.ToString("0.00000000");
 
-                                        txtLastPrice.Text = TradeHistoryService.Instance().TradesHistoryListAsync.OrderByDescending(x => x.Time).First().PricePerCoin.ToString("0.00000000");
-                                        txtDataRegistro.Text = highOrderRate.Time.ToString();
+
+                                        var lastPrice = TradeHistoryService.Instance().TradesHistoryListAsync.OrderByDescending(x => x.Time).First();
+                                        if (lastPrice != null)
+                                        {
+                                            lblLastPrice.Content = string.Format("Last Trade ({0}):", lastPrice.Time.ToShortTimeString());
+                                            txtLastPrice.Text = lastPrice.PricePerCoin.ToString("0.00000000") + " (" + lastPrice.Type + ")";
+                                        }
 
                                         var buys = TradeHistoryService.Instance().TradesHistoryListAsync.Where(x => x.Type == OrderType.Buy);
                                         var sells = TradeHistoryService.Instance().TradesHistoryListAsync.Where(x => x.Type == OrderType.Sell);
 
-                                        lblOrdersTotal.Content = "Orders Total (" + (buys.Count() + sells.Count()) + ") :";
+                                        lblOrdersTotal.Content = "Total Trades (" + (buys.Count() + sells.Count()) + ") :";
                                         txtTotalBuy.Text = buys.Count().ToString() + " buys.";
                                         txtTotalSell.Text = sells.Count().ToString() + " sells.";
 
                                         if (buys.Any())
-                                            lblFirstBid.Content = "1st. Bid: " + buys.First().Time;
+                                            lblFirstBid.Content = "1st. Buy: " + buys.First().Time;
 
                                         if (sells.Any())
-                                            lblFirstAsk.Content = "1st. Ask: " + sells.First().Time;
+                                            lblFirstAsk.Content = "1st. Sell: " + sells.First().Time;
 
                                         if (buys.Any() && sells.Any())
                                             lblGapSenconds.Content = "Trade Gap: " + (sells.First().Time - buys.First().Time).TotalSeconds + "s.";
@@ -219,7 +231,6 @@ namespace DallEX.io.View
                 txtPriceAverage.Text = 0.ToString("0.00000000");
                 txtPriceAverage.Text = 0.ToString("0.00000000");
                 txtLastPrice.Text = 0.ToString("0.00000000");
-                txtDataRegistro.Text = 0.ToString("0.00000000");
                 lblFirstBid.Content = "1st. Bid: " + 0.ToString("0.00000000");
                 lblFirstAsk.Content = "1st. Ask: " + 0.ToString("0.00000000");
 
@@ -301,6 +312,9 @@ namespace DallEX.io.View
 
             if (TradeHistoryWindow != null)
                 TradeHistoryWindow.Close();
+
+            if (chartWindow != null)
+                chartWindow.Close();
         }
 
         private void cbCurrency_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -308,7 +322,43 @@ namespace DallEX.io.View
             ResetDetailsFields();
         }
 
+        #region Trade Window
+        private async void btnTrade_Click(object sender, RoutedEventArgs e)
+        {
+            await OpenTradeWindow();
+        }
 
+        private async Task OpenTradeWindow()
+        {
+            await Task.Run(() =>
+            {
+                this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+                {
+                    if (tradeWindow == null)
+                    {
+                        tradeWindow = new TradeWindow(CurrencyPair.Parse(selectedCurrency));
+                        tradeWindow.Owner = MainWindow;
+
+                        tradeWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+                        tradeWindow.Show();
+                        tradeWindow.Closed += TradeWindow_Closed;
+                    }
+                });
+            });
+        }
+
+        private void TradeWindow_Closed(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+            {
+                tradeWindow = null;
+            });
+
+        }
+        #endregion
+
+        #region ChartCandlestick
         private async void btnChartHistory_Click(object sender, RoutedEventArgs e)
         {
             await OpenChartHistory();
@@ -323,9 +373,11 @@ namespace DallEX.io.View
                     if (chartWindow == null)
                     {
                         chartWindow = new ChartWindow(CurrencyPair.Parse(selectedCurrency));
+                        chartWindow.Owner = MainWindow;
 
-                        chartWindow.Left = MainWindow.Left + (MainWindow.Width - chartWindow.ActualWidth) / 2;
-                        chartWindow.Top = MainWindow.Top + (MainWindow.Height - chartWindow.ActualHeight) / 2;
+                        chartWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                        chartWindow.Width = MainWindow.Width / 1.2;
+                        chartWindow.Height = MainWindow.Height / 1.2;
 
                         chartWindow.Show();
                         chartWindow.Closed += ChartWindow_Closed;
@@ -333,7 +385,7 @@ namespace DallEX.io.View
                 });
             });
         }
-
+        
         private void ChartWindow_Closed(object sender, EventArgs e)
         {
             this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
@@ -342,7 +394,7 @@ namespace DallEX.io.View
             });
 
         }
-
+        #endregion
 
         #region Trade History
         private async void btnTradeHistory_Click(object sender, RoutedEventArgs e)
@@ -469,6 +521,9 @@ namespace DallEX.io.View
                         if (TradeHistoryWindow != null)
                             TradeHistoryWindow.Close();
 
+                        if (chartWindow != null)
+                            chartWindow.Close();
+
                         if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
                             TradeHistoryService.Instance().TradesHistoryListAsync.Clear();
 
@@ -482,6 +537,7 @@ namespace DallEX.io.View
                         PoloniexClient = null;
                         currencyItems = null;
                         TradeHistoryWindow = null;
+                        chartWindow = null;
 
                         TradeHistoryService.Instance().TradesHistoryListAsync = null;
 
@@ -503,6 +559,5 @@ namespace DallEX.io.View
             Dispose(true);
         }
         #endregion
-
     }
 }

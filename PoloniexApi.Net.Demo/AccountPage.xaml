@@ -39,7 +39,7 @@
         </DataGrid>
         <Label Foreground="#5cb85c" Content="Total BTC:" HorizontalAlignment="Left" Margin="5,28,0,0" VerticalAlignment="Top" Grid.Column="1" Width="71"/>
         <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtTotalBTC" HorizontalAlignment="Left" Height="30" Margin="76,24,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="123" FontSize="20" IsReadOnly="True" Grid.Column="1" FontWeight="Bold" />
-        <TextBox BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDashboard" HorizontalAlignment="Left" Height="30" Margin="5,3,0,0" TextWrapping="Wrap" Text="Dashboard" VerticalAlignment="Top" Width="176" FontSize="16" IsReadOnly="True" Grid.Column="1"/>
+        <Label BorderBrush="Black" Foreground="#ffffff" Background="#000000" x:Name="txtDashboard" HorizontalAlignment="Left" Height="30" Margin="5,3,0,0" Content="Dashboard" VerticalAlignment="Top" Width="176" FontSize="16" Grid.Column="1"/>
         <Label Foreground="#5cb85c" Content="Total USDT:" HorizontalAlignment="Left" Margin="5,58,0,0" VerticalAlignment="Top" Grid.Column="1" Width="71"/>
         <TextBox Foreground="#5cb85c" Background="#000000" BorderBrush="Black" x:Name="txtTotalUSD" HorizontalAlignment="Left" Height="30" Margin="76,58,0,0" TextWrapping="Wrap" Text="000.00000000" VerticalAlignment="Top" Width="123" FontSize="17" IsReadOnly="True" Grid.Column="1" FontWeight="Bold" />
         <Label Foreground="#5cb85c" Content="Total R$:" HorizontalAlignment="Left" Margin="5,86,0,0" VerticalAlignment="Top" Grid.Column="1" Width="71"/>
