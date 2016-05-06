@@ -55,5 +55,6 @@ namespace DallEX.io.API
         /// <param name="currencyPair">The currency pair to stop fetching data at.</param>
         /// <summary>Returns all of your Trade History.</summary>
         Task<IList<ITrade>> GetTradesHistoryAsync(CurrencyPair currencyPair);
+        Task<IList<ITrade>> GetTradesHistoryAsync(CurrencyPair currencyPair, DateTime startTime, DateTime endTime);
     }
 }

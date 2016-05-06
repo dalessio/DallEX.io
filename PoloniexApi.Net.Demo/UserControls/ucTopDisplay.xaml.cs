@@ -60,17 +60,17 @@ namespace DallEX.io.View.UserControls
                             firstLoanOffer.btcExchangeValue = btcPriceLast;
 
 
+                            string dolarValor = FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync.getUltimoValorVOReturn.ultimoValor.svalor;
+
                             string eth = string.Concat("BTC/ETH: ", firstLoanOffer.ethExchangeValue.ToString("0.00000000"));
-                            string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.00000000"));
+                            string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.000000"));
                             string loan = string.Concat("BTC Loan Rate: ", firstLoanOffer.rate.ToString("0.00000%"));
-                            string dolar = string.Concat("Dolar Venda BC: R$", (FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync.getUltimoValorVOReturn.ultimoValor.svalor));
+                            string dolar = string.Concat("USD: ", double.Parse(dolarValor.Replace(".", ",")).ToString("C2"));
+                            string btcReal = string.Concat("BTC: ", (firstLoanOffer.btcExchangeValue * double.Parse(dolarValor.Replace(".", ","))).ToString("C2"));
 
-
-
-                            txtDisplay.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
-                            {
+                            txtDisplay.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate{
                                 animation = new DoubleAnimation((Application.Current.MainWindow.Width - 202), 0, TimeSpan.FromSeconds(10));
-                                txtDisplay.Content = string.Concat(btc, "          ", eth, "          ", loan, "          ", dolar);
+                                txtDisplay.Content = string.Concat(btc, "     ", eth, "     ", loan, "     ", dolar, "     ", btcReal);
                             });
 
                         }

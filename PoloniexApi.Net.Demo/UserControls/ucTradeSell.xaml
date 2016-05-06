@@ -12,9 +12,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="txtPrice" Grid.Row="1" HorizontalAlignment="Left" Height="32" Margin="112,18,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333"/>
-        <TextBox x:Name="txtAmount" Grid.Row="1" HorizontalAlignment="Left" Height="31" Margin="112,64,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333"/>
-        <TextBox x:Name="txtTotal" Grid.Row="1" HorizontalAlignment="Left" Height="32" Margin="112,109,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333"/>
+        <TextBox x:Name="txtPrice" Grid.Row="1" HorizontalAlignment="Left" Height="32" Margin="112,18,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333" KeyUp="txtPrice_KeyUp" />
+        <TextBox x:Name="txtAmount" Grid.Row="1" HorizontalAlignment="Left" Height="31" Margin="112,64,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333" KeyUp="txtAmount_KeyUp" />
+        <TextBox x:Name="txtTotal" Grid.Row="1" HorizontalAlignment="Left" Height="32" Margin="112,109,0,0" TextWrapping="Wrap" Text="0.00000000" VerticalAlignment="Top" Width="468" FontSize="21.333" KeyUp="txtTotal_KeyUp"/>
         <Label x:Name="lblPrice" Grid.Row="1" Content="Price:" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Foreground="White" FontSize="21.333"/>
         <Label x:Name="lblAmount" Grid.Row="1" Content="Amount:" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Foreground="White" FontSize="21.333"/>
         <Label x:Name="lblTotal" Grid.Row="1" Content="Total:" HorizontalAlignment="Left" Margin="10,107,0,0" VerticalAlignment="Top" Foreground="White" FontSize="21.333"/>

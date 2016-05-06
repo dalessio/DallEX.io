@@ -34,27 +34,69 @@ namespace DallEX.io.View.UserControls
             InitializeComponent();
         }
 
+        #region Calc
         private void lblYouHaveValue_MouseDown(object sender, MouseButtonEventArgs e)
         {
             txtTotal.Text = tbYouHaveValue.Text;
-            txtAmount.Text = (double.Parse(txtTotal.Text) / double.Parse(txtPrice.Text)).ToString("0.00000000");
+            CalcAmount();
         }
 
         private void lblLowestAskValue_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            double amount = 0;
-            if (!double.TryParse(txtAmount.Text, out amount))
-            {
-                txtAmount.Text = (double.Parse(txtTotal.Text) / double.Parse(txtPrice.Text)).ToString("0.00000000");
-            }
-
             txtPrice.Text = tbYouLowestAskValue.Text;
-            txtTotal.Text = (double.Parse(txtAmount.Text) * double.Parse(txtPrice.Text)).ToString("0.00000000");
+            CalcTotal();
         }
 
-        private void btnBuy_Click(object sender, RoutedEventArgs e)
+        private void txtPrice_KeyUp(object sender, KeyEventArgs e)
         {
+            CalcTotal();
+        }
 
+        private void txtAmount_KeyUp(object sender, KeyEventArgs e)
+        {
+            CalcTotal();
+        }
+
+        private void txtTotal_KeyUp(object sender, KeyEventArgs e)
+        {
+            CalcAmount();
+        }
+
+        private void CalcAmount()
+        {
+            double total = 0;
+            double price = 0;
+
+            txtAmount.Text = string.Empty;
+
+            if (double.TryParse(txtTotal.Text, out total))
+                if (double.TryParse(txtPrice.Text, out price))
+                    txtAmount.Text = (total / price).ToString("0.00000000");
+
+        }
+
+        private void CalcTotal()
+        {
+            double amount = 0;
+            double price = 0;
+
+            txtTotal.Text = string.Empty;
+
+            if (double.TryParse(txtAmount.Text, out amount))
+                if (double.TryParse(txtPrice.Text, out price))
+                    txtTotal.Text = (amount * price).ToString("0.00000000");
+
+        }
+        #endregion
+
+        private async void btnBuy_Click(object sender, RoutedEventArgs e)
+        {
+            double amount = 0;
+            double price = 0;
+
+            if (double.TryParse(txtAmount.Text, out amount))
+                if (double.TryParse(txtPrice.Text, out price))
+                    await PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey).Trading.PostOrderAsync(_currencyPair, OrderType.Buy, price, amount);
         }
 
         public void SetCurrency(CurrencyPair currencyPair)
@@ -65,9 +107,18 @@ namespace DallEX.io.View.UserControls
             lblBaseCoinYouHave.Content = currencyPair.BaseCurrency;
             lblBaseCoinLowestAskValue.Content = currencyPair.BaseCurrency;
 
-            tbYouHaveValue.Text = Service.WalletService.Instance().WalletAsync.First(x => x.Key.Equals(currencyPair.BaseCurrency)).Value.available.ToString("0.00000000"); ;
-            tbYouLowestAskValue.Text = Service.MarketService.Instance().MarketAsync.First(x => x.Key.Equals(currencyPair)).Value.OrderTopSell.ToString("0.00000000");
+            Fillvalues(_currencyPair);
             txtPrice.Text = double.Parse(tbYouLowestAskValue.Text).ToString("0.00000000");
         }
+
+        public void Fillvalues(CurrencyPair currencyPair)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+            {
+                tbYouHaveValue.Text = Service.WalletService.Instance().WalletAsync.First(x => x.Key.Equals(currencyPair.BaseCurrency)).Value.available.ToString("0.00000000"); ;
+                tbYouLowestAskValue.Text = Service.MarketService.Instance().MarketAsync.First(x => x.Key.Equals(currencyPair)).Value.OrderTopSell.ToString("0.00000000");
+            });
+        }
+
     }
 }

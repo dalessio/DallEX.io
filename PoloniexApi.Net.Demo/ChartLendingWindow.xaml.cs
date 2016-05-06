@@ -28,13 +28,13 @@ namespace DallEX.io.View
     /// <summary>
     /// Interaction logic for ChartWindow.xaml
     /// </summary>
-    public partial class TradeWindow : Window
+    public partial class ChartLendingWindow : Window
     {
         private PoloniexClient PoloniexClient;
 
-        public CurrencyPair CurrencyPair;
+        public string Currency;
 
-        public TradeWindow(CurrencyPair currencyPair)
+        public ChartLendingWindow(string currency)
         {
             InitializeComponent();
 
@@ -43,18 +43,33 @@ namespace DallEX.io.View
 
             PoloniexClient = PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey);
 
-            CurrencyPair = currencyPair;
+            Currency = currency;
 
-            Title = string.Concat("Trade ", "(", CurrencyPair.ToString(), ")");
+            Title = string.Concat("Lending Candlestick ", "(", currency, ")");
 
-            ucBuy.SetCurrency(currencyPair);
-            ucSell.SetCurrency(currencyPair);
+            LoadChart();
         }
 
-        public void FillValues(CurrencyPair currencyPair)
+        public void LoadChart()
         {
-            ucBuy.Fillvalues(currencyPair);
-            ucSell.Fillvalues(currencyPair);
+            try
+            {
+                if (PoloniexClient != null)
+                {
+                    var chartData = LoanContext.Instance().LendingOffers.ToList();
+
+                    if (chartData != null)
+                        Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+                        {
+                            ucCandlestick.LoadLoanGraph(Currency, chartData);
+                            this.UpdateLayout();
+
+                            dtgHistory.ItemsSource = chartData.GroupBy(x => x.dataRegistro).Distinct().Select(x => new { Time = x.Key, Rate = x.Max(m => m.rate) }).OrderByDescending(x=> x.Time);
+                        });
+                }
+            }
+            catch { }
+
         }
     }
 }

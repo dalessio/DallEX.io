@@ -67,11 +67,25 @@ namespace DallEX.io.API.WalletTools
             PostData<IGeneratedDepositAddress>("withdraw", postData);
         }
 
-        #region Trade
         private IList<ITrade> GetTradesHistory(CurrencyPair currencyPair)
         {
             var postData = new Dictionary<string, object> {
                 { "currencyPair", currencyPair }
+            };
+
+            var data = PostData<IList<Trade>>("returnTradeHistory", postData);
+
+            return new List<ITrade>(data);
+        }
+
+
+        #region Trade
+        private IList<ITrade> GetTradesHistory(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        {
+            var postData = new Dictionary<string, object> {
+                { "currencyPair", currencyPair },
+                { "start", Helper.DateTimeToUnixTimeStamp(startTime) },
+                { "end", Helper.DateTimeToUnixTimeStamp(endTime) }
             };
 
             var data = PostData<IList<Trade>>("returnTradeHistory" , postData);
@@ -82,6 +96,12 @@ namespace DallEX.io.API.WalletTools
         {
             return Task.Run(() => GetTradesHistory(currencyPair));
         }
+
+        public Task<IList<ITrade>> GetTradesHistoryAsync(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
+        {
+            return Task.Run(() => GetTradesHistory(currencyPair, startTime, endTime));
+        }
+
 
         #endregion
 

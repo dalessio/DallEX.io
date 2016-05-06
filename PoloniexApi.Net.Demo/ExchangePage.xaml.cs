@@ -63,8 +63,10 @@ namespace DallEX.io.View
                                         if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
                                             currencyItems.Add(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""));
 
-
-                                    market.Value.indiceMaluco = (market.Value.OrderSpreadPercentage * market.Value.Volume24HourBase) / 100;
+                                    double spreadRateBase = market.Value.OrderSpread / 2;
+                                    double volumeRateBase = market.Value.Volume24HourBase * 3;
+                                    double changeRateBase = market.Value.PriceChangePercentage * 2;
+                                    market.Value.indiceMaluco = Math.Round((spreadRateBase * volumeRateBase * changeRateBase * 100) / 3, 5).Normalize();
 
                                     market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
                                     market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
@@ -250,6 +252,13 @@ namespace DallEX.io.View
                 try
                 {
                     await LoadMarketSummaryAsync();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
+                    { 
+                        if (tradeWindow != null)
+                            tradeWindow.FillValues(CurrencyPair.Parse(selectedCurrency));
+                    });
+
                 }
                 finally
                 {
@@ -397,12 +406,17 @@ namespace DallEX.io.View
         #endregion
 
         #region Trade History
+        private async void btnOpenOrders_Click(object sender, RoutedEventArgs e)
+        {
+            await OpenTradeHistory(2);
+        }
+
         private async void btnTradeHistory_Click(object sender, RoutedEventArgs e)
         {
             await OpenTradeHistory();
         }
 
-        private async Task OpenTradeHistory()
+        private async Task OpenTradeHistory(int selectedIndex = 0)
         {
             await Task.Run(() =>
             {
@@ -410,7 +424,7 @@ namespace DallEX.io.View
                 {
                     if (TradeHistoryWindow == null)
                     {
-                        TradeHistoryWindow = new TradeHistory(CurrencyPair.Parse(selectedCurrency));
+                        TradeHistoryWindow = new TradeHistory(CurrencyPair.Parse(selectedCurrency), selectedIndex);
 
                         TradeHistoryWindow.Top = MainWindow.Top;
                         TradeHistoryWindow.Left = MainWindow.Left + MainWindow.Width;
@@ -559,5 +573,6 @@ namespace DallEX.io.View
             Dispose(true);
         }
         #endregion
+
     }
 }

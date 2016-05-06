@@ -27,8 +27,14 @@ namespace DallEX.io.View
 
         private Timer updateTimer;
 
+        private ChartLendingWindow chartWindow = null;
+
+        private static readonly Window MainWindow = Application.Current.MainWindow;
+
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
+
+        private string selectedCurrency;
 
         public LendingPage()
         {
@@ -39,7 +45,7 @@ namespace DallEX.io.View
         {
             await Task.Run(async () =>
             {
-                string currency = "BTC"; //defaultValue
+                selectedCurrency = "BTC"; //defaultValue
 
                 PublicLoanOffersData lendings = null;
                 LendingOffer firstLoanOffer = null;
@@ -55,10 +61,10 @@ namespace DallEX.io.View
                         {
                             if (cbCurrency.SelectedValue != null)
                                 if (cbCurrency.SelectedValue.ToString().Split(':').Any())
-                                    currency = cbCurrency.SelectedValue.ToString().Split(':')[1].ToString();
+                                    selectedCurrency = cbCurrency.SelectedValue.ToString().Split(':')[1].ToString();
                         });
 
-                        lendings = await PoloniexClient.Lendings.GetLoanOffersAsync(currency.Trim());
+                        lendings = await PoloniexClient.Lendings.GetLoanOffersAsync(selectedCurrency.Trim());
 
                         if (markets != null)
                             if (markets.Any())
@@ -79,19 +85,19 @@ namespace DallEX.io.View
 
                                     if (firstLoanOffer != null)
                                         using (var context = new LoanContext())
-                                            if (!context.LendingOffers.Any(x => x.currency.Equals(currency) &&
+                                            if (!context.LendingOffers.Any(x => x.currency.Equals(selectedCurrency) &&
                                                                                                             x.amount.Equals(firstLoanOffer.amount) &&
                                                                                                             x.rate.Equals(firstLoanOffer.rate) &&
                                                                                                             x.rangeMin.Equals(firstLoanOffer.rangeMin) &&
                                                                                                             x.rangeMax.Equals(firstLoanOffer.rangeMax)))
                                             {
-                                                firstLoanOffer.currency = currency;
+                                                firstLoanOffer.currency = selectedCurrency;
                                                 context.LendingOffers.Add(firstLoanOffer);
                                                 await context.SaveChangesAsync();
 
                                             }
 
-                                    await FillDetails(currency);
+                                    await FillDetails(selectedCurrency);
 
                                 }
                     }
@@ -227,6 +233,41 @@ namespace DallEX.io.View
         {
             CancelTimer();
         }
+
+        #region ChartCandlestick
+        private void btnChartHistory_Click(object sender, RoutedEventArgs e)
+        {
+            OpenChartHistory();
+        }
+
+        private void OpenChartHistory()
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+            {
+                if (chartWindow == null)
+                {
+                    chartWindow = new ChartLendingWindow(selectedCurrency);
+                    chartWindow.Owner = MainWindow;
+
+                    chartWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    chartWindow.Width = MainWindow.Width / 1.2;
+                    chartWindow.Height = MainWindow.Height / 1.2;
+
+                    chartWindow.Show();
+                    chartWindow.Closed += ChartWindow_Closed;
+                }
+            });
+        }
+
+        private void ChartWindow_Closed(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
+            {
+                chartWindow = null;
+            });
+
+        }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false;

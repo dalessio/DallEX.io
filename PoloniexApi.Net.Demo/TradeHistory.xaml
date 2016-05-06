@@ -60,6 +60,32 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Open Orders">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dtgOpenOrders" IsReadOnly="True" HeadersVisibility="Column" ColumnWidth="Auto" AutoGenerateColumns="false" Grid.Column="0" Foreground="#333333" FontSize="12" TextBlock.TextAlignment="Right" AlternatingRowBackground="LightGray" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn x:Uid="IdOrder" Header="Id" Binding="{Binding IdOrder}" />
+                            <DataGridTextColumn x:Uid="Type" Header="Type" Binding="{Binding Type}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Type}" Value="Sell">
+                                                <Setter Property="Foreground" Value="Green" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Type}" Value="Buy">
+                                                <Setter Property="Foreground" Value="Red" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}" />
+                            <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

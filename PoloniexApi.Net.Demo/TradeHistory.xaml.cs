@@ -38,7 +38,9 @@ namespace DallEX.io.View
 
         public int Minutos = 20;
 
-        public TradeHistory(CurrencyPair currencyPair)
+        int controlOpenOrdersUpdate = 0;
+
+        public TradeHistory(CurrencyPair currencyPair, int _selectedIndex = 0)
         {
             InitializeComponent();
 
@@ -50,6 +52,7 @@ namespace DallEX.io.View
             CurrencyPair = currencyPair;
 
             Title = string.Concat("Trade History", "(", CurrencyPair.ToString(), ")");
+            tabControl.SelectedIndex = _selectedIndex;
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -61,6 +64,7 @@ namespace DallEX.io.View
         {
             dtgYourTradeHistory.Items.Clear();
             dtgTradeHistory.Items.Clear();
+            dtgOpenOrders.Items.Clear();
         }
 
 
@@ -86,7 +90,7 @@ namespace DallEX.io.View
                                 break;
 
                             case 1:  //Your  
-                                var YourTradeHistory = await PoloniexClient.Wallet.GetTradesHistoryAsync(CurrencyPair);
+                                var YourTradeHistory = await PoloniexClient.Wallet.GetTradesHistoryAsync(CurrencyPair, DateTime.Now.AddYears(-1), DateTime.Now.AddHours(12));
                                     if (YourTradeHistory != null)
                                     {
                                         ClearGrids();
@@ -97,6 +101,29 @@ namespace DallEX.io.View
                                     }
                                 YourTradeHistory = null;
                                 break;
+                            case 2:  //Your  
+
+                                    if (controlOpenOrdersUpdate.Equals(0))
+                                    {
+                                        controlOpenOrdersUpdate = 10;
+
+                                        var openOrders = await PoloniexClient.Trading.GetOpenOrdersAsync(CurrencyPair);
+                                        if (openOrders != null)
+                                        {
+                                            ClearGrids();
+
+                                            foreach (var trade in openOrders)
+                                                dtgOpenOrders.Items.Add(trade);
+
+                                            openOrders.Clear();
+                                        }
+                                        openOrders = null;
+                                    }
+                                    else
+                                        controlOpenOrdersUpdate--;
+
+                                break;
+
                             }
                         });
                     }

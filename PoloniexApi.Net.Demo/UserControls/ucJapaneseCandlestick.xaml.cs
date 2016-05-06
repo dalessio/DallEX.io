@@ -1,4 +1,5 @@
 ﻿using DallEX.io.API;
+using DallEX.io.API.LendingTools;
 using DallEX.io.API.MarketTools;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,13 @@ namespace DallEX.io.View.UserControls
     /// </summary>
     public partial class ucJapaneseCandlestick : UserControl
     {
+        public bool IsGraphLoaded = false;
+
         public ucJapaneseCandlestick()
         {
             InitializeComponent();
         }
+
         public async Task LoadGraphAsync(CurrencyPair currencyPair, IList<IMarketChartData> chartData)
         {
             await this.Dispatcher.Invoke(async () =>
@@ -37,8 +41,6 @@ namespace DallEX.io.View.UserControls
                 });
             });
         }
-
-        public bool IsGraphLoaded = false;
         public void LoadGraph(CurrencyPair currencyPair, IList<IMarketChartData> chartData)
         {
             GraphPane myPane = zgc1.GraphPane;
@@ -59,11 +61,11 @@ namespace DallEX.io.View.UserControls
                 double low = data.Low;
                 double open = data.Open;
 
-                StockPt pt = new StockPt(x, hi, low, open, close, 100000);
+                StockPt pt = new StockPt(x, hi, low, open, close, data.VolumeBase);
                 spl.Add(pt);
             }
 
-            JapaneseCandleStickItem myCurve = myPane.AddJapaneseCandleStick("trades", spl);
+            JapaneseCandleStickItem myCurve = myPane.AddJapaneseCandleStick("Price", spl);
             myCurve.Stick.IsAutoSize = true;
             myCurve.Stick.Color = System.Drawing.Color.Red;
 
@@ -79,10 +81,69 @@ namespace DallEX.io.View.UserControls
 
             zgc1.Refresh();
             zgc1.Update();
-
+            zgc1.IsShowCursorValues = true;
             this.UpdateLayout();
 
             IsGraphLoaded = true;
+        }
+
+        public void LoadLoanGraph(string currency, IList<LendingOffer> chartData)
+        {
+            GraphPane myPane = zgc1.GraphPane;
+
+            // Set the title and axis labels
+            myPane.Title.Text = "Candlestick Chart " + currency;
+            myPane.XAxis.Title.Text = "Date";
+            myPane.YAxis.Title.Text = "Rate";
+
+            // Generate some sine-based data values
+            PointPairList list = new PointPairList();
+            foreach (var data in chartData.GroupBy(x => x.dataRegistro).Distinct().Select(x => new {Time = x.Key, Rate = x.Max(m => m.rate)  }).OrderBy(x => x.Time))
+            {
+                var xDate = new XDate(data.Time.Year, data.Time.Month, data.Time.Day, data.Time.Hour, data.Time.Minute, data.Time.Second);
+                double x = (double)xDate;
+                double y = data.Rate;
+                list.Add(x, y);
+            }
+
+            //GraphDemo1(myPane, list);
+
+            GraphDemo2(myPane, list);
+
+            // Set the XAxis to date type
+            myPane.XAxis.Type = AxisType.Date;
+
+            zgc1.AxisChange();
+
+            zgc1.Refresh();
+            zgc1.Update();
+
+            zgc1.IsShowCursorValues = true;
+
+            UpdateLayout();
+
+            IsGraphLoaded = true;
+        }
+        private static void GraphDemo2(GraphPane myPane, PointPairList list)
+        {
+            // Add a red curve with circle symbols
+            LineItem curve = myPane.AddCurve("Rate", list, System.Drawing.Color.Red, SymbolType.Circle);
+            curve.Line.Width = 1.5F;
+            // Fill the area under the curve
+            curve.Line.Fill = new Fill(System.Drawing.Color.White, System.Drawing.Color.FromArgb(60, 190, 50), 90F);
+            // Fill the symbols with white to make them opaque
+            curve.Symbol.Fill = new Fill(System.Drawing.Color.White);
+            curve.Symbol.Size = 5;
+
+            // Set the curve type to forward steps
+            curve.Line.StepType = StepType.ForwardStep;
+        }
+        private static void GraphDemo1(GraphPane myPane, PointPairList list)
+        {
+            // Generate a red curve with diamond
+            // symbols, and "My Curve" in the legend
+            LineItem myCurve = myPane.AddCurve("Rate",
+                list, System.Drawing.Color.Red, SymbolType.Diamond);
         }
     }
 }

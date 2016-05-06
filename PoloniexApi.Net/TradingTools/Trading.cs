@@ -15,14 +15,14 @@ namespace DallEX.io.API.TradingTools
             ApiWebClient = apiWebClient;
         }
 
-        private IList<IOrder> GetOpenOrders(CurrencyPair currencyPair)
+        private IList<Order> GetOpenOrders(CurrencyPair currencyPair)
         {
             var postData = new Dictionary<string, object> {
                 { "currencyPair", currencyPair }
             };
 
             var data = PostData<IList<Order>>("returnOpenOrders", postData);
-            return (IList<IOrder>)data;
+            return data;
         }
 
         private IList<ITrade> GetTrades(CurrencyPair currencyPair, DateTime startTime, DateTime endTime)
@@ -60,7 +60,7 @@ namespace DallEX.io.API.TradingTools
             return data.Value<byte>("success") == 1;
         }
 
-        public Task<IList<IOrder>> GetOpenOrdersAsync(CurrencyPair currencyPair)
+        public Task<IList<Order>> GetOpenOrdersAsync(CurrencyPair currencyPair)
         {
             return Task.Run(() => GetOpenOrders(currencyPair));
         }

@@ -9,7 +9,7 @@ namespace DallEX.io.API
     {
         /// <summary>Fetches the current open orders in your account, ordered by most recent first.</summary>
         /// <param name="currencyPair">The currency pair, which consists of the currency being traded on the market, and the base's code.</param>
-        Task<IList<IOrder>> GetOpenOrdersAsync(CurrencyPair currencyPair);
+        Task<IList<Order>> GetOpenOrdersAsync(CurrencyPair currencyPair);
 
         /// <summary>Fetches the trades made in your account, ordered by most recent first.</summary>
         /// <param name="currencyPair">The currency pair, which consists of the currency being traded on the market, and the base's code.</param>
