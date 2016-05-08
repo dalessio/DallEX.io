@@ -82,6 +82,15 @@
                             <DataGridTextColumn x:Uid="PricePerCoin" Header="Coin Price" Binding="{Binding PricePerCoin, StringFormat=\{0:0.00000000\}}" />
                             <DataGridTextColumn x:Uid="AmountQuote" Header="Amount Quote" Binding="{Binding AmountQuote, StringFormat=\{0:0.00000000\}}" />
                             <DataGridTextColumn x:Uid="AmountBase" Header="Amount Base" Binding="{Binding AmountBase, StringFormat=\{0:0.00000000\}}" />
+
+                            <DataGridTemplateColumn Header="Cancel">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="X" Tag="{Binding IdOrder}" Click="btnCancel_Click" Foreground="Red" Background="Black" FontWeight="Bold" FontSize="14" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

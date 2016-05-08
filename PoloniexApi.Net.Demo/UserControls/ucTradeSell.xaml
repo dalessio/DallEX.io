@@ -23,13 +23,13 @@
             <StackPanel Grid.Row="0" Background="#333333" Orientation="Horizontal"
                     DockPanel.Dock="Top"
                     Height="auto">
-                <Label x:Name="lblTitle" Grid.Row="0" Content="Sell CLAM" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" Height="47"/>
+                <Label x:Name="lblTitle" Grid.Row="0" Content="Sell CLAM" Foreground="Green" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" FontWeight="Bold" Height="47"/>
 
             </StackPanel>
-            <Border BorderBrush="Red" BorderThickness="2" Grid.Row="0" />
+            <Border BorderBrush="Green" BorderThickness="2" Grid.Row="0" />
         </DockPanel>
-        <Label x:Name="lblYouHave" Content="You Have:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Coral" Margin="160,14,0,0" FontSize="16" />
-        <Label x:Name="lblYouHaveValue" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Coral" Margin="234,14,0,0" FontWeight="Bold"  MouseDown="lblYouHaveValue_MouseDown" FontSize="16">
+        <Label x:Name="lblYouHave" Content="You Have:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="YellowGreen" Margin="160,14,0,0" FontSize="16" />
+        <Label x:Name="lblYouHaveValue" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="YellowGreen" Margin="234,14,0,0" FontWeight="Bold"  MouseDown="lblYouHaveValue_MouseDown" FontSize="16">
             <TextBlock Text="1.00000000" TextDecorations="Underline" x:Name="tbYouHaveValue">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" >
@@ -42,7 +42,7 @@
                 </TextBlock.Style>
             </TextBlock>
         </Label>
-        <Label x:Name="lblQuoteCoinYouHave" Content="CLAM" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Coral" Margin="324,14,0,0" FontSize="16" />
+        <Label x:Name="lblQuoteCoinYouHave" Content="CLAM" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="YellowGreen" Margin="324,14,0,0" FontSize="16" />
 
         <Label x:Name="lblHighestBid" Content="Highest Bid:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Goldenrod" Margin="372,14,0,0" FontSize="16"   />
         <Label x:Name="lblHighestBidValue" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Goldenrod" Margin="459,14,0,0" FontWeight="Bold" FontSize="16" MouseDown="lblHighestBidValue_MouseDown">

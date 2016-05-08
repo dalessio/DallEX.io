@@ -131,5 +131,15 @@ namespace DallEX.io.View
                 catch{}
             });
         }
+
+        private async void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            ulong idOrder = ulong.Parse(((Button)sender).Tag.ToString());
+
+            if (await PoloniexClient.Trading.DeleteOrderAsync(CurrencyPair, idOrder))
+                MessageBox.Show("Canceled");
+            else
+                MessageBox.Show("Error");
+        }
     }
 }

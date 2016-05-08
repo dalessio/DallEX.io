@@ -96,8 +96,12 @@ namespace DallEX.io.View.UserControls
             if (double.TryParse(txtAmount.Text, out amount))
                 if (double.TryParse(txtPrice.Text, out price))
                 {
-                    await PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey).Trading.PostOrderAsync(_currencyPair, OrderType.Sell, price, amount);
-                    Fillvalues(_currencyPair);
+                    var t = await PoloniexClient.Instance(ApiKeys.PublicKey, ApiKeys.PrivateKey).Trading.PostOrderAsync(_currencyPair, OrderType.Sell, price, amount);
+
+                    if (t > 0)
+                        MessageBox.Show("Confirmed!");
+                    else
+                        MessageBox.Show("Error!");
                 }
         }
 

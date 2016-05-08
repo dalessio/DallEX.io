@@ -229,15 +229,13 @@ namespace DallEX.io.View
                 chatColumn.Width = new GridLength(0);
                 btnChat.Content = "<<";
                 btnChat.ToolTip = "Open Trollbox";
-                //Grid.SetColumn(btnChat, 0);
-                LiveStart();
+                PoloniexClient.Live.Stop();
             }
             else {
                 chatColumn.Width = new GridLength(200);
                 btnChat.Content = ">>";
                 btnChat.ToolTip = "Close Trollbox";
-                //Grid.SetColumn(btnChat, 1);
-                PoloniexClient.Live.Stop();
+                LiveStart();
             }
         }
 
