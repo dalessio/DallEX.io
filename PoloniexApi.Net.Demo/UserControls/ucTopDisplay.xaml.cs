@@ -50,17 +50,17 @@ namespace DallEX.io.View.UserControls
                     lendings = await PoloniexClient.Lendings.GetLoanOffersAsync("BTC");
                     firstLoanOffer = lendings.offers.OrderBy(x => x.rate).First();
 
-                    if (MarketService.Instance().MarketAsync != null)
-                        if (MarketService.Instance().MarketAsync.Any())
+                    if (MarketService.Instance().MarketList != null)
+                        if (MarketService.Instance().MarketList.Any())
                         {
-                            double ethPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).Value.PriceLast;
-                            double btcPriceLast = MarketService.Instance().MarketAsync.First(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).Value.PriceLast;
+                            double ethPriceLast = MarketService.Instance().MarketList.First(x => x.Key.ToString().ToUpper().Equals("BTC_ETH")).Value.PriceLast;
+                            double btcPriceLast = MarketService.Instance().MarketList.First(x => x.Key.ToString().ToUpper().Equals("USDT_BTC")).Value.PriceLast;
 
                             firstLoanOffer.ethExchangeValue = ethPriceLast;
                             firstLoanOffer.btcExchangeValue = btcPriceLast;
 
 
-                            string dolarValor = FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync.getUltimoValorVOReturn.ultimoValor.svalor;
+                            string dolarValor = FachadaWSSGSService.Instance().getUltimoValorVOResponse.getUltimoValorVOReturn.ultimoValor.svalor;
 
                             string eth = string.Concat("BTC/ETH: ", firstLoanOffer.ethExchangeValue.ToString("0.00000000"));
                             string btc = string.Concat("USDT/BTC: ", firstLoanOffer.btcExchangeValue.ToString("0.000000"));

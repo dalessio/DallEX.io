@@ -47,8 +47,8 @@ namespace DallEX.io.View
         {
             try
             {
-                if (MarketService.Instance().MarketAsync != null)
-                    if (MarketService.Instance().MarketAsync.Any())
+                if (MarketService.Instance().MarketList != null)
+                    if (MarketService.Instance().MarketList.Any())
                     {
                         await this.Dispatcher.Invoke(async () =>
                         {
@@ -57,7 +57,7 @@ namespace DallEX.io.View
                                     selectedCurrency = string.Concat(string.Concat(currentExchangeCoin, "_"), cbCurrency.SelectedValue.ToString());
 
                                 dtgExchange.Items.Clear();
-                                foreach (var market in MarketService.Instance().MarketAsync.Where(x => x.Key.ToString().Contains(string.Concat(currentExchangeCoin, "_")) && x.Value.Volume24HourBase > exchangeBTCVolumeMinimun).OrderByDescending(x => x.Value.Volume24HourBase))
+                                foreach (var market in MarketService.Instance().MarketList.Where(x => x.Key.ToString().Contains(string.Concat(currentExchangeCoin, "_")) && x.Value.Volume24HourBase > exchangeBTCVolumeMinimun).OrderByDescending(x => x.Value.Volume24HourBase))
                                 {
                                     if (currencyItems != null)
                                         if (!currencyItems.Any(x => x.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), ""))))
@@ -68,7 +68,7 @@ namespace DallEX.io.View
                                     double changeRateBase = market.Value.PriceChangePercentage * 2;
                                     market.Value.indiceMaluco = Math.Round((spreadRateBase * volumeRateBase * changeRateBase * 100) / 3, 5).Normalize();
 
-                                    market.Value.isHave = Service.WalletService.Instance().WalletAsync.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
+                                    market.Value.isHave = Service.WalletService.Instance().WalletList.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
                                     market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
 
                                     dtgExchange.Items.Add(market);
@@ -144,26 +144,26 @@ namespace DallEX.io.View
                     var endTime = DateTime.Now.AddHours(3);
 
                     if (PoloniexClient != null)
-                        TradeHistoryService.Instance().TradesHistoryListAsync = await PoloniexClient.Markets.GetTradesAsync(CurrencyPair.Parse(selectedCurrency), startTime, endTime);
+                        MarketService.Instance().TradesHistoryList = await PoloniexClient.Markets.GetTradesAsync(CurrencyPair.Parse(selectedCurrency), startTime, endTime);
 
-                    if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
+                    if (MarketService.Instance().TradesHistoryList != null)
                     {
-                        if (TradeHistoryService.Instance().TradesHistoryListAsync.Any())
-                        {
-                            if (TradeHistoryWindow != null)
-                                await TradeHistoryWindow.Dispatcher.Invoke(async () =>
-                                {
-                                    await TradeHistoryWindow.LoadTradeSummaryAsync();
-                                });
+                        if (TradeHistoryWindow != null)
+                            await TradeHistoryWindow.Dispatcher.Invoke(async () =>
+                            {
+                                await TradeHistoryWindow.LoadTradeSummaryAsync();
+                            });
 
-                            highOrderRate = TradeHistoryService.Instance().TradesHistoryListAsync.OrderByDescending(o => o.PricePerCoin).First();
-                            lowOrderRate = TradeHistoryService.Instance().TradesHistoryListAsync.OrderBy(o => o.PricePerCoin).First();
-                            var averageOrderRate = TradeHistoryService.Instance().TradesHistoryListAsync.Average(x => x.PricePerCoin);
+                        if (MarketService.Instance().TradesHistoryList.Any())
+                        {
+                            highOrderRate = MarketService.Instance().TradesHistoryList.OrderByDescending(o => o.PricePerCoin).First();
+                            lowOrderRate = MarketService.Instance().TradesHistoryList.OrderBy(o => o.PricePerCoin).First();
+                            var averageOrderRate = MarketService.Instance().TradesHistoryList.Average(x => x.PricePerCoin);
 
                             this.Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)delegate
                             {
-                                if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
-                                    if (TradeHistoryService.Instance().TradesHistoryListAsync.Any())
+                                if (MarketService.Instance().TradesHistoryList != null)
+                                    if (MarketService.Instance().TradesHistoryList.Any())
                                     {
                                         if (highOrderRate != null)
                                         {
@@ -180,15 +180,15 @@ namespace DallEX.io.View
                                         txtPriceAverage.Text = averageOrderRate.ToString("0.00000000");
 
 
-                                        var lastPrice = TradeHistoryService.Instance().TradesHistoryListAsync.OrderByDescending(x => x.Time).First();
+                                        var lastPrice = MarketService.Instance().TradesHistoryList.OrderByDescending(x => x.Time).First();
                                         if (lastPrice != null)
                                         {
                                             lblLastPrice.Content = string.Format("Last Trade ({0}):", lastPrice.Time.ToShortTimeString());
                                             txtLastPrice.Text = lastPrice.PricePerCoin.ToString("0.00000000") + " (" + lastPrice.Type + ")";
                                         }
 
-                                        var buys = TradeHistoryService.Instance().TradesHistoryListAsync.Where(x => x.Type == OrderType.Buy);
-                                        var sells = TradeHistoryService.Instance().TradesHistoryListAsync.Where(x => x.Type == OrderType.Sell);
+                                        var buys = MarketService.Instance().TradesHistoryList.Where(x => x.Type == OrderType.Buy);
+                                        var sells = MarketService.Instance().TradesHistoryList.Where(x => x.Type == OrderType.Sell);
 
                                         lblOrdersTotal.Content = "Total Trades (" + (buys.Count() + sells.Count()) + ") :";
                                         txtTotalBuy.Text = buys.Count().ToString() + " buys.";
@@ -538,8 +538,8 @@ namespace DallEX.io.View
                         if (chartWindow != null)
                             chartWindow.Close();
 
-                        if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
-                            TradeHistoryService.Instance().TradesHistoryListAsync.Clear();
+                        if (MarketService.Instance().TradesHistoryList != null)
+                            MarketService.Instance().TradesHistoryList.Clear();
 
                         if (semaphoreSlim != null)
                             semaphoreSlim.Dispose();
@@ -553,7 +553,7 @@ namespace DallEX.io.View
                         TradeHistoryWindow = null;
                         chartWindow = null;
 
-                        TradeHistoryService.Instance().TradesHistoryListAsync = null;
+                        MarketService.Instance().TradesHistoryList = null;
 
                         disposedValue = true;
                     }

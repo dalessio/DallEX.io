@@ -199,12 +199,12 @@ namespace DallEX.io.View
 
                     try
                     {
-                        MarketService.Instance().MarketAsync = await PoloniexClient.Markets.GetSummaryAsync();
-                        WalletService.Instance().WalletAsync = await PoloniexClient.Wallet.GetBalancesAsync();
+                        MarketService.Instance().MarketList = await PoloniexClient.Markets.GetSummaryAsync();
+                        WalletService.Instance().WalletList = await PoloniexClient.Wallet.GetBalancesAsync();
 
                         try
                         {
-                            FachadaWSSGSService.Instance().getUltimoValorVOResponseAsync = await FachadaWSSGS.getUltimoValorVOAsync(10813);
+                            FachadaWSSGSService.Instance().getUltimoValorVOResponse = await FachadaWSSGS.getUltimoValorVOAsync(10813);
                         }
                         catch
                         {
@@ -306,8 +306,8 @@ namespace DallEX.io.View
             }
             finally
             {
-                MarketService.Instance().MarketAsync = null;
-                WalletService.Instance().WalletAsync = null;
+                MarketService.Instance().MarketList = null;
+                WalletService.Instance().WalletList = null;
                 TabMain = null;
 
                 exchangeBTCTab = null;

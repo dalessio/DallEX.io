@@ -15,9 +15,9 @@ namespace DallEX.io.View.Service
 
         public FachadaWSSGSService()
         {
-            getUltimoValorVOResponseAsync = null;
+            getUltimoValorVOResponse = null;
         }
 
-        public FachadaWSSGS.getUltimoValorVOResponse getUltimoValorVOResponseAsync;
+        public FachadaWSSGS.getUltimoValorVOResponse getUltimoValorVOResponse;
     }
 }

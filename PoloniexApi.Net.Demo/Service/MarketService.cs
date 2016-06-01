@@ -16,10 +16,12 @@ namespace DallEX.io.View.Service
 
         public MarketService()
         {
-            MarketAsync = null;
+            MarketList = null;
+            TradesHistoryList = null;
         }
 
-        public IDictionary<CurrencyPair, IMarketData> MarketAsync;
+        public IDictionary<CurrencyPair, IMarketData> MarketList;
+        public IList<ITrade> TradesHistoryList;
 
     }
 }

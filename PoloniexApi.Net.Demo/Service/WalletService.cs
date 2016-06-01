@@ -15,10 +15,10 @@ namespace DallEX.io.View.Service
 
         public WalletService()
         {
-            WalletAsync = null;
+            WalletList = null;
         }
 
-        public IDictionary<string, Balance> WalletAsync;
+        public IDictionary<string, Balance> WalletList;
 
     }
 }

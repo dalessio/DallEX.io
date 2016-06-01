@@ -15,9 +15,9 @@ namespace DallEX.io.View.Service
 
         public LendingService()
         {
-            LendingOffersAsync = null;
+            LendingOffers = null;
         }
 
-        public PublicLoanOffersData LendingOffersAsync;
+        public PublicLoanOffersData LendingOffers;
     }
 }

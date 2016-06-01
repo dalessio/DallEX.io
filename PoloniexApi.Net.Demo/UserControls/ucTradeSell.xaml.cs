@@ -121,8 +121,8 @@ namespace DallEX.io.View.UserControls
         {
             this.Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)delegate
             {
-                tbYouHaveValue.Text = Service.WalletService.Instance().WalletAsync.First(x => x.Key.Equals(currencyPair.QuoteCurrency)).Value.available.ToString("0.00000000");
-                tbHighestBidValue.Text = Service.MarketService.Instance().MarketAsync.First(x => x.Key.Equals(currencyPair)).Value.OrderTopBuy.ToString("0.00000000");
+                tbYouHaveValue.Text = Service.WalletService.Instance().WalletList.First(x => x.Key.Equals(currencyPair.QuoteCurrency)).Value.available.ToString("0.00000000");
+                tbHighestBidValue.Text = Service.MarketService.Instance().MarketList.First(x => x.Key.Equals(currencyPair)).Value.OrderTopBuy.ToString("0.00000000");
             });
         }
     }

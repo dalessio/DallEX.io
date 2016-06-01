@@ -155,7 +155,7 @@
     <Compile Include="TradeHistory.xaml.cs">
       <DependentUpon>TradeHistory.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Service\TradeHistoryService.cs" />
+    <Compile Include="Service\TradingService.cs" />
     <Compile Include="UserControls\ucJapaneseCandlestick.xaml.cs">
       <DependentUpon>ucJapaneseCandlestick.xaml</DependentUpon>
     </Compile>

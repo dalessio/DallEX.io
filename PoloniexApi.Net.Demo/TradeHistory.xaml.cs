@@ -81,10 +81,10 @@ namespace DallEX.io.View
                         switch (selectedIndex)
                         {
                             case 0: //All
-                                    if (TradeHistoryService.Instance().TradesHistoryListAsync != null)
+                                    if (MarketService.Instance().TradesHistoryList != null)
                                     {
                                         ClearGrids();
-                                        foreach (var trade in TradeHistoryService.Instance().TradesHistoryListAsync)
+                                        foreach (var trade in MarketService.Instance().TradesHistoryList)
                                             dtgTradeHistory.Items.Add(trade);
                                     }
                                 break;
@@ -101,11 +101,11 @@ namespace DallEX.io.View
                                     }
                                 YourTradeHistory = null;
                                 break;
-                            case 2:  //Your  
+                            case 2:  //Your Open Orders
 
                                     if (controlOpenOrdersUpdate.Equals(0))
                                     {
-                                        controlOpenOrdersUpdate = 10;
+                                        controlOpenOrdersUpdate = 3;
 
                                         var openOrders = await PoloniexClient.Trading.GetOpenOrdersAsync(CurrencyPair);
                                         if (openOrders != null)

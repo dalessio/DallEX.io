@@ -231,7 +231,8 @@ namespace DallEX.io.View
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
-            CancelTimer();
+            updateTimer = new Timer(UpdateLoans, null, 0, updateTimeMiliseconds*3);
+            //CancelTimer();
         }
 
         #region ChartCandlestick
