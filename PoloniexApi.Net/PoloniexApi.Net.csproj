@@ -119,6 +119,7 @@
     <Compile Include="LiveTools\Live.Interface.cs" />
     <Compile Include="MarketTools\OrderBook.Interface.cs" />
     <Compile Include="MarketTools\OrderBook.cs" />
+    <Compile Include="TradingBotTools\OrderBot.cs" />
     <Compile Include="PoloniexClient.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="General\ApiWebClient.cs" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TradingBotTools\ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

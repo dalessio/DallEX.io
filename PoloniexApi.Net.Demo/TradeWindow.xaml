@@ -6,7 +6,7 @@
         xmlns:UserControls="clr-namespace:DallEX.io.View.UserControls"
         xmlns:local="clr-namespace:DallEX.io.View"
         mc:Ignorable="d"
-        Title="Chart Candlestick" Width="605" Height="550" ResizeMode="NoResize">
+        Title="Trade" Width="605" Height="550" ResizeMode="NoResize">
     <DockPanel>
         <Grid TextElement.Foreground="#ffffff" Background="Black">
 

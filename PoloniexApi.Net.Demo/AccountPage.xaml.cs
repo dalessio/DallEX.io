@@ -113,8 +113,11 @@ namespace DallEX.io.View
                             txtTotalUSD.Text = totalUSD.ToString("000.00000000");
                             txtTotalBRL.Text = Math.Round(Math.Round(totalUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
 
-                            txtTotalOrders.Text = (await CalcTotalOpenOrders()).ToString("0.00000000");
+                            var calcTotalOpenOrders = await CalcTotalOpenOrders();
+                            var totalOpenOrdersUSD = Math.Round((btcTheterPriceLast * calcTotalOpenOrders), 2);
 
+                            txtTotalOrders.Text = (calcTotalOpenOrders).ToString("0.00000000");
+                            txtTotalOrdersReais.Text = Math.Round(Math.Round(totalOpenOrdersUSD * valorDolarCompraBC, 2), 2).ToString("C2").Replace("R$ ", "");
                         });
                     }
             }

@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace DallEX.io.View.UserControls
-{
+{   
     /// <summary>
     /// Interaction logic for ucTopDisplay.xaml
     /// </summary>
@@ -71,7 +71,7 @@ namespace DallEX.io.View.UserControls
 
             if (double.TryParse(txtTotal.Text, out total))
                 if (double.TryParse(txtPrice.Text, out price))
-                    txtAmount.Text = (total / price).ToString("0.00000000");
+                    txtAmount.Text = (price / total).ToString("0.00000000");
 
         }
 

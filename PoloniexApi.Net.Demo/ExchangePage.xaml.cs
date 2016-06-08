@@ -68,7 +68,10 @@ namespace DallEX.io.View
                                     double changeRateBase = market.Value.PriceChangePercentage * 2;
                                     market.Value.indiceMaluco = Math.Round((spreadRateBase * volumeRateBase * changeRateBase * 100) / 3, 5).Normalize();
 
-                                    market.Value.isHave = Service.WalletService.Instance().WalletList.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
+                                    market.Value.isHave = false;
+                                    if(Service.WalletService.Instance().WalletList != null)
+                                        market.Value.isHave = Service.WalletService.Instance().WalletList.Any(x => x.Key.Equals(market.Key.ToString().Replace(string.Concat(currentExchangeCoin, "_"), "")) && x.Value.btcValue > 0);
+                                    
                                     market.Value.isPositiveChange = (market.Value.PriceChangePercentage > 0);
 
                                     dtgExchange.Items.Add(market);
