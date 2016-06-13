@@ -297,6 +297,11 @@ namespace DallEX.io.View
                     exchangeBTCVolumeMinimun = 0;
                     break;
 
+                case "ETH":
+                    selectedCurrency = "ETH_LSK";
+                    exchangeBTCVolumeMinimun = 0;
+                    break;
+
                 default:
                     selectedCurrency = "BTC_ETH";
                     if (!double.TryParse(ConfigurationManager.AppSettings.Get("exchangeBTCVolumeMinimun"), out exchangeBTCVolumeMinimun))

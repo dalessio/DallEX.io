@@ -32,11 +32,13 @@ namespace DallEX.io.View
 
         private LendingPage lendingPage;
         private ExchangePage exchangeBTCPage;
+        private ExchangePage exchangeETHPage;
         private ExchangePage exchangeXMRPage;
         private ExchangePage exchangeUSDTPage;
         private AccountPage accountPage;
 
         private TabItem exchangeBTCTab;
+        private TabItem exchangeETHTab;
         private TabItem exchangeXMRTab;
         private TabItem exchangeUSDTTab;
         private TabItem accountTab;
@@ -91,13 +93,20 @@ namespace DallEX.io.View
             TabMain.Items.Add(exchangeBTCTab);
 
             //2
+            exchangeETHPage = new ExchangePage("ETH");
+            exchangeETHTab = new TabItem();
+            exchangeETHTab.Header = "Exchange ETH";
+            exchangeETHTab.Background = System.Windows.Media.Brushes.Yellow;
+            TabMain.Items.Add(exchangeETHTab);
+
+            //3
             exchangeXMRPage = new ExchangePage("XMR");
             exchangeXMRTab = new TabItem();
             exchangeXMRTab.Header = "Exchange XMR";
             exchangeXMRTab.Background = System.Windows.Media.Brushes.IndianRed;
             TabMain.Items.Add(exchangeXMRTab);
 
-            //3
+            //4
             exchangeUSDTPage = new ExchangePage("USDT");
             exchangeUSDTTab = new TabItem();
             exchangeUSDTTab.Header = "Exchange USDT";
@@ -150,12 +159,14 @@ namespace DallEX.io.View
         private void TabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             exchangeBTCTab.Content = null;
+            exchangeETHTab.Content = null;
             exchangeXMRTab.Content = null;
             exchangeUSDTTab.Content = null;
             accountTab.Content = null;
             lendingTab.Content = null;
 
             exchangeBTCPage.IsEnabled = false;
+            exchangeETHPage.IsEnabled = false;
             exchangeXMRPage.IsEnabled = false;
             exchangeUSDTPage.IsEnabled = false;
             lendingPage.IsEnabled = false;
@@ -173,17 +184,22 @@ namespace DallEX.io.View
                     exchangeBTCTab.Content = exchangeBTCPage.Content;
                     break;
 
-                case 2:  //Exchange XMR
+                case 2:  //Exchange ETH
+                    exchangeETHPage.IsEnabled = true;
+                    exchangeETHTab.Content = exchangeETHPage.Content;
+                    break;
+
+                case 3:  //Exchange XMR
                     exchangeXMRPage.IsEnabled = true;
                     exchangeXMRTab.Content = exchangeXMRPage.Content;
                     break;
 
-                case 3:  //Exchange USDT
+                case 4:  //Exchange USDT
                     exchangeUSDTPage.IsEnabled = true;
                     exchangeUSDTTab.Content = exchangeUSDTPage.Content;
                     break;
 
-                case 4: //Account
+                case 5: //Account
                     accountPage.IsEnabled = true;
                     accountTab.Content = accountPage.Content;
                     break;
