@@ -5,9 +5,9 @@ using System.Text;
 
 namespace DallEX.io.API.TradingBotTools
 {
-    public class OrderBot : API.TradingTools.Order
+    public class BotParameters
     {
-        public OrderBot()
+        public BotParameters()
         {
             Time = DateTime.Now;
         }
@@ -16,7 +16,8 @@ namespace DallEX.io.API.TradingBotTools
 
         public virtual DateTime Time { get; private set; }
 
-        public double Spread { get; private set; }
+        public double UnitValueAboveTopAsk { get; private set; }
+        public double UnitValueBelowTopBid { get; private set; }
 
         public virtual CurrencyPair CurrencyPair { get; private set; }
     }
