@@ -5,14 +5,16 @@ using System.Text;
 
 namespace DallEX.io.API.TradingBotTools
 {
-    public class OrderBot : API.TradingTools.Order
+    public class BotOrder : API.TradingTools.Order
     {
-        public OrderBot()
+        public BotOrder()
         {
             Time = DateTime.Now;
         }
 
-        public int Id{ get; private set; }
+        public long Id{ get; private set; }
+
+        public long MainIdOrder { get; set; }
 
         public virtual DateTime Time { get; private set; }
 

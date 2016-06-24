@@ -35,7 +35,7 @@ namespace DallEX.io.View
         private string selectedCurrency;
         private string currentExchangeCoin;
 
-        private static readonly Window MainWindow = Application.Current.MainWindow;
+        private static readonly MainWindow MainWindow = (MainWindow)Application.Current.MainWindow;
 
         public ExchangePage(string _currentExchangeCoin = "BTC") : base()
         {

@@ -14,6 +14,7 @@ using System.Windows.Documents;
 using System.Windows.Threading;
 using System.Windows.Input;
 using DallEX.io.View.Library;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace DallEX.io.View
 {
@@ -35,6 +36,7 @@ namespace DallEX.io.View
         private ExchangePage exchangeETHPage;
         private ExchangePage exchangeXMRPage;
         private ExchangePage exchangeUSDTPage;
+        private BotTrader botTrader;
         private AccountPage accountPage;
 
         private TabItem exchangeBTCTab;
@@ -43,6 +45,7 @@ namespace DallEX.io.View
         private TabItem exchangeUSDTTab;
         private TabItem accountTab;
         private TabItem lendingTab;
+        private TabItem botTab;
 
         private int updateTimeMiliseconds = 5000;
 
@@ -74,6 +77,23 @@ namespace DallEX.io.View
             updateTimer = new Timer(UpdateView, null, 0, updateTimeMiliseconds);           
 
             disposedValue = false;
+
+            myNotifyIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+            myNotifyIcon.ToolTipText = this.Title;
+            myNotifyIcon.MenuActivation = Hardcodet.Wpf.TaskbarNotification.PopupActivationMode.LeftClick;
+            myNotifyIcon.PopupActivation = Hardcodet.Wpf.TaskbarNotification.PopupActivationMode.DoubleClick;
+
+            txtTitleNotify.Text = this.Title;
+
+            var contextMenu = new ContextMenu();
+            myNotifyIcon.ContextMenu = contextMenu;
+
+            myNotifyIcon.ShowBalloonTip(this.Title, "DallEX is started!", BalloonIcon.Info);           
+        }
+
+        public void SendBaloonMessage(string message, BalloonIcon icon)
+        {
+            myNotifyIcon.ShowBalloonTip(message, message, icon);
         }
 
         private void BuildTabs()
@@ -119,6 +139,14 @@ namespace DallEX.io.View
             accountTab.Header = "Account";
             accountTab.Background = System.Windows.Media.Brushes.GreenYellow;
             TabMain.Items.Add(accountTab);
+
+            //4
+            botTrader = new BotTrader();
+            botTab = new TabItem();
+            botTab.Header = "Bot Trader";
+            botTab.Background = System.Windows.Media.Brushes.Salmon;
+            TabMain.Items.Add(botTab);
+
         }
 
         private async void LiveStart()
@@ -164,6 +192,7 @@ namespace DallEX.io.View
             exchangeUSDTTab.Content = null;
             accountTab.Content = null;
             lendingTab.Content = null;
+            botTab.Content = null;
 
             exchangeBTCPage.IsEnabled = false;
             exchangeETHPage.IsEnabled = false;
@@ -171,6 +200,7 @@ namespace DallEX.io.View
             exchangeUSDTPage.IsEnabled = false;
             lendingPage.IsEnabled = false;
             accountPage.IsEnabled = false;
+            botTrader.IsEnabled = false;
 
             switch (TabMain.SelectedIndex)
             {
@@ -202,6 +232,11 @@ namespace DallEX.io.View
                 case 5: //Account
                     accountPage.IsEnabled = true;
                     accountTab.Content = accountPage.Content;
+                    break;
+
+                case 6: //Bot
+                    botTrader.IsEnabled = true;
+                    botTab.Content = botTrader.Content;
                     break;
             }
         }

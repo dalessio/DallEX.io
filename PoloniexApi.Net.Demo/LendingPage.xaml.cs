@@ -29,7 +29,7 @@ namespace DallEX.io.View
 
         private ChartLendingWindow chartWindow = null;
 
-        private static readonly Window MainWindow = Application.Current.MainWindow;
+        private static readonly MainWindow MainWindow = (MainWindow)Application.Current.MainWindow;
 
         private int updateTimeMiliseconds = 3000;
         private int lendingPeriodMinute = 60;
@@ -227,6 +227,8 @@ namespace DallEX.io.View
             txtMinutos.Text = lendingPeriodMinute.ToString();
 
             disposedValue = false;
+
+            MainWindow.SendBaloonMessage("Lending", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.None);
         }
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
