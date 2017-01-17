@@ -49,7 +49,6 @@ Temporary Items
 *.suo
 *.user
 .vs
-PoloniexApi.Net.Demo/App.config
 PoloniexApi.Net.Demo/bin
 PoloniexApi.Net.Demo/obj
 PoloniexApi.Net/bin
@@ -57,4 +56,5 @@ PoloniexApi.Net/obj
 
 ZedGraphSource/bin
 ZedGraphSource/obj
-PoloniexApi.Net.Demo/App.config
+.vs/PoloniexApi.Net/v14/.suo
+/.vs

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DallEX.io.API.WalletTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
